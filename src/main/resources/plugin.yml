@@ -1,0 +1,11 @@
+name: CVCreativePlots
+main: org.cubeville.cvcreativeplots.CVCreativePlots
+authors: [Ptown16]
+version: 0.1
+api-version: 1.16
+depend: [CVTools,WorldEdit,WorldGuard]
+
+commands:
+  cvcreativeplots:
+    permission: cvcreativeplots.createplot
+
