@@ -25,59 +25,78 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import org.cubeville.commons.commands.Command;
+import org.cubeville.commons.commands.BaseCommand;
 import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
 
-public class CreatePlot extends Command {
-    private final String CREATIVE_WORLD_NAME = "creative";
-    private final World CREATIVE_WORLD = Bukkit.getServer().getWorld(CREATIVE_WORLD_NAME);
+public class CreatePlot extends BaseCommand {
+    // private final String CREATIVE_WORLD_NAME = "creative";
+    // private final World CREATIVE_WORLD = Bukkit.getServer().getWorld(CREATIVE_WORLD_NAME);
 
-    private final int REGION_SIZE = 300; // Size of the square region
-    private final int PLOT_DISTANCE = 9; // Distance between Plots
+    // private final int REGION_SIZE = 300; // Size of the square region
+    // private final int PLOT_DISTANCE = 9; // Distance between Plots
     private final int MAX_PLOTS = 1000;
-    private final int PASTE_Y = 63;
-    private final int WG_REGION_MIN_Y = 5;
-    private final int WG_REGION_MAX_Y = 254;
-    private final String TEMPLATE_REGION = "plottemplate";
+    // private final int PASTE_Y = 63;
+    // private final int WG_REGION_MIN_Y = 5;
+    // private final int WG_REGION_MAX_Y = 254;
+    // private final String TEMPLATE_REGION = "plottemplate";
 
-    public CreatePlot() {
-        super("createplot");
+    String worldname;
+    int regionSize;
+    int plotDistance;
+    int pasteY;
+    int wgRegionMinY;
+    int wgRegionMaxY;
+    String templateRegionWorld;
+    String templateRegion;
+    
+    public CreatePlot(String worldname, int regionSize, int plotDistance, int pasteY, int wgRegionMinY, int wgRegionMaxY, String templateRegionWorld, String templateRegion) {
+        super("createplot " + worldname);
         addBaseParameter(new CommandParameterString());
         setPermission("cvcreativeplots.createplot");
+        this.worldname = worldname;
+        this.regionSize = regionSize;
+        this.plotDistance = plotDistance;
+        this.pasteY = pasteY;
+        this.wgRegionMinY = wgRegionMinY;
+        this.wgRegionMaxY = wgRegionMaxY;
+        this.templateRegionWorld = templateRegionWorld;
+        this.templateRegion = templateRegion;
     }
 
     private void copyPlotToLocation(BlockVector3 loc) {
         String cmd = String.format("cvblocks copytocoord %s %s %s %d,%d,%d",
-                                   CREATIVE_WORLD_NAME, // source world
-                                   TEMPLATE_REGION, // source region
-                                   CREATIVE_WORLD_NAME, // target world
-                                   loc.getX(), PASTE_Y, loc.getZ() // (x, y, z)
+                                   templateRegionWorld, // source world
+                                   templateRegion, // source region
+                                   worldname, // target world
+                                   loc.getX(), pasteY, loc.getZ() // (x, y, z)
                                    );
+        System.out.println("Running cvblocks command: " + cmd);
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
     }
 
     // TODO Switch player to Player class and add player as UUID
     private void createPlotRegion(BlockVector3 min, String player) {
-        min = min.add(PLOT_DISTANCE - 1, 0, PLOT_DISTANCE - 1);
-        BlockVector3 max = BlockVector3.at(min.getX() + REGION_SIZE - 1, WG_REGION_MAX_Y, min.getZ() + REGION_SIZE - 1);
+        min = min.add(plotDistance - 1, 0, plotDistance - 1);
+        BlockVector3 max = BlockVector3.at(min.getX() + regionSize - 1, wgRegionMaxY, min.getZ() + regionSize - 1);
         ProtectedRegion region = new ProtectedCuboidRegion(String.format("%s", player), min, max);
         region.getMembers().addPlayer(player);
         region.setFlag(Flags.GREET_MESSAGE, String.format("&bEntering the plot of &3%s&b!", player));
         region.setFlag(Flags.FAREWELL_MESSAGE, String.format("&bLeaving the plot of &3%s&b!", player));
 
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        RegionManager allRegions = container.get(BukkitAdapter.adapt(CREATIVE_WORLD));
+        RegionManager allRegions = container.get(BukkitAdapter.adapt(Bukkit.getServer().getWorld(worldname)));
 
         allRegions.addRegion(region);
     }
 
     private BlockVector3 findPlotLocation() throws CommandExecutionException {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        RegionManager allRegions = container.get(BukkitAdapter.adapt(CREATIVE_WORLD));
+        RegionManager allRegions = container.get(BukkitAdapter.adapt(Bukkit.getServer().getWorld(worldname)));
 
         // Set initial value of grid location to (0, 1)
         BlockVector2 gridLocation = BlockVector2.at(0, 1);
@@ -87,9 +106,9 @@ public class CreatePlot extends Command {
 
         for (int i = 0; i < MAX_PLOTS; i++) {
             BlockVector3 plotLocation = BlockVector3.at(
-                                                        gridLocation.getX() * (REGION_SIZE + PLOT_DISTANCE),
-                                                        WG_REGION_MIN_Y,
-                                                        gridLocation.getZ()  * (REGION_SIZE + PLOT_DISTANCE)
+                                                        gridLocation.getX() * (regionSize + plotDistance),
+                                                        wgRegionMinY,
+                                                        gridLocation.getZ()  * (regionSize + plotDistance)
                                                         );
             BlockVector3 checkLocation = plotLocation.add(10, 0, 10);
             ApplicableRegionSet pointRegionSet = allRegions.getApplicableRegions(checkLocation);
@@ -118,17 +137,17 @@ public class CreatePlot extends Command {
     }
 
     @Override
-    public CommandResponse execute(Player sender, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
+    public CommandResponse execute(CommandSender sender, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
         throws CommandExecutionException {
 
         CommandResponse cr = new CommandResponse();
         cr.setBaseMessage("&c&lCreating Plot...");
-        if (sender instanceof Player) {
-            BlockVector3 plotLocation = findPlotLocation();
-            copyPlotToLocation(plotLocation);
-            createPlotRegion(plotLocation, (String) baseParameters.get(0));
-            cr.addMessage(String.format("&bPlot has been created for %s at &3&lX: %d&b,&3&l Z: %d &b!", baseParameters.get(0), plotLocation.getX(), plotLocation.getZ()));
-        }
+
+        BlockVector3 plotLocation = findPlotLocation();
+        copyPlotToLocation(plotLocation);
+        createPlotRegion(plotLocation, (String) baseParameters.get(0));
+        cr.addMessage(String.format("&bPlot has been created for %s at &3&lX: %d&b,&3&l Z: %d &b!", baseParameters.get(0), plotLocation.getX(), plotLocation.getZ()));
+
         return cr;
     }
 }
