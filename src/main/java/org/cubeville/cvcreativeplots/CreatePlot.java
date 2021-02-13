@@ -30,7 +30,7 @@ import org.bukkit.entity.Player;
 
 import org.cubeville.commons.commands.BaseCommand;
 import org.cubeville.commons.commands.CommandExecutionException;
-import org.cubeville.commons.commands.CommandParameterString;
+import org.cubeville.commons.commands.CommandParameterOnlinePlayer;
 import org.cubeville.commons.commands.CommandResponse;
 
 public class CreatePlot extends BaseCommand {
@@ -56,7 +56,7 @@ public class CreatePlot extends BaseCommand {
     
     public CreatePlot(String worldname, int regionSize, int plotDistance, int pasteY, int wgRegionMinY, int wgRegionMaxY, String templateRegionWorld, String templateRegion) {
         super("createplot " + worldname);
-        addBaseParameter(new CommandParameterString());
+        addBaseParameter(new CommandParameterOnlinePlayer());
         setPermission("cvcreativeplots.createplot");
         this.worldname = worldname;
         this.regionSize = regionSize;
@@ -79,14 +79,13 @@ public class CreatePlot extends BaseCommand {
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
     }
 
-    // TODO Switch player to Player class and add player as UUID
-    private void createPlotRegion(BlockVector3 min, String player) {
+    private void createPlotRegion(BlockVector3 min, Player player) {
         min = min.add(plotDistance - 1, 0, plotDistance - 1);
         BlockVector3 max = BlockVector3.at(min.getX() + regionSize - 1, wgRegionMaxY, min.getZ() + regionSize - 1);
-        ProtectedRegion region = new ProtectedCuboidRegion(String.format("%s", player), min, max);
-        region.getMembers().addPlayer(player);
-        region.setFlag(Flags.GREET_MESSAGE, String.format("&bEntering the plot of &3%s&b!", player));
-        region.setFlag(Flags.FAREWELL_MESSAGE, String.format("&bLeaving the plot of &3%s&b!", player));
+        ProtectedRegion region = new ProtectedCuboidRegion(player.getName(), min, max);
+        region.getOwners().addPlayer(player.getUniqueId());
+        region.setFlag(Flags.GREET_MESSAGE, String.format("&bEntering the plot of &3%s&b!", player.getName()));
+        region.setFlag(Flags.FAREWELL_MESSAGE, String.format("&bLeaving the plot of &3%s&b!", player.getName()));
 
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionManager allRegions = container.get(BukkitAdapter.adapt(Bukkit.getServer().getWorld(worldname)));
@@ -145,7 +144,7 @@ public class CreatePlot extends BaseCommand {
 
         BlockVector3 plotLocation = findPlotLocation();
         copyPlotToLocation(plotLocation);
-        createPlotRegion(plotLocation, (String) baseParameters.get(0));
+        createPlotRegion(plotLocation, (Player) baseParameters.get(0));
         cr.addMessage(String.format("&bPlot has been created for %s at &3&lX: %d&b,&3&l Z: %d &b!", baseParameters.get(0), plotLocation.getX(), plotLocation.getZ()));
 
         return cr;
