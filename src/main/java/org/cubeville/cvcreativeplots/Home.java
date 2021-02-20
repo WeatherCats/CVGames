@@ -104,7 +104,7 @@ public class Home extends BaseCommand {
 			return new CommandResponse("&bTeleported to your plot");
 		}
 
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "broadcast " + "Creating plot for " + p.getName());
-		return new CommandResponse("&bSuccessfully created a plot");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cvcreativeplots createplot " + world.getName() + " " + p.getName());
+		return new CommandResponse("&bRan create plot command");
 	}
 }
