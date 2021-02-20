@@ -1,6 +1,5 @@
 package org.cubeville.cvcreativeplots;
 
-import jdk.packager.builders.mac.MacAppImageBuilder;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
