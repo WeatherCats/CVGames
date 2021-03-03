@@ -1,2 +1,4 @@
-org/cubeville/cvgames/GamesTestCommand.class
+org/cubeville/cvgames/GameQueue.class
+org/cubeville/cvgames/Paintball.class
+org/cubeville/cvgames/QueueableGame.class
 org/cubeville/cvgames/CVGames.class
