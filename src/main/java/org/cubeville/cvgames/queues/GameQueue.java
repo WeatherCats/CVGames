@@ -1,33 +1,34 @@
-package org.cubeville.cvgames;
+package org.cubeville.cvgames.queues;
 
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.CommandResponse;
 
 import java.util.*;
 
-class GameQueue {
+abstract public class GameQueue {
 
 	private Set<Player> queueing = new HashSet<>();
 	private QueueableGame game;
 	private int players;
 
-	GameQueue(QueueableGame game, int players) {
+	public GameQueue(QueueableGame game, int players) {
 		this.game = game;
 		this.players = players;
 	}
 
-	CommandResponse execute(Player p, List<Object> baseParameters) {
+	public CommandResponse execute(Player p, List<Object> baseParameters) {
 		System.out.println(baseParameters);
 		if (baseParameters.get(0).equals("join")) {
-			// add to queue if the game can handle a queue and queue does not already contain player
+			// add to queues if the game can handle a queues and queues does not already contain player
 			if (game.canStartQueue() && !queueing.contains(p)) {
 				queueing.add(p);
-				CommandResponse cr = new CommandResponse("&bYou joined the queue!");
 				for (Player queued : queueing) {
 					queued.sendMessage("§e" + queueing.size() + "/" + players + " players in the queue." );
 				}
+				System.out.println(queueing.size());
+				System.out.println(queueing);
 				if (queueing.size() >= players) {
-					game.startGame(queueing);
+					this.setupGame(queueing);
 					queueing.clear();
 				}
 			}
@@ -45,5 +46,6 @@ class GameQueue {
 		}
 	}
 
+	abstract void setupGame(Set<Player> player);
 
 }

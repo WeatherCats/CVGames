@@ -1,4 +1,14 @@
-org/cubeville/cvgames/GameQueue.class
-org/cubeville/cvgames/Paintball.class
-org/cubeville/cvgames/QueueableGame.class
+org/cubeville/cvgames/queues/TeamGameQueue.class
+org/cubeville/cvgames/arenas/DisconnectArena.class
+org/cubeville/cvgames/arenas/ConnectArena.class
+org/cubeville/cvgames/queues/QueueableGame.class
+org/cubeville/cvgames/arenas/AddArenaSpawn.class
+org/cubeville/cvgames/arenas/CreateArena.class
 org/cubeville/cvgames/CVGames.class
+org/cubeville/cvgames/queues/GameQueue.class
+org/cubeville/cvgames/queues/QueueableFFAGame.class
+org/cubeville/cvgames/queues/FFAGameQueue.class
+org/cubeville/cvgames/Paintball.class
+org/cubeville/cvgames/queues/QueueableTeamGame.class
+org/cubeville/cvgames/arenas/ArenaManager.class
+org/cubeville/cvgames/arenas/DeleteArena.class

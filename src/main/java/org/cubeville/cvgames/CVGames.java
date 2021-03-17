@@ -7,6 +7,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import org.cubeville.commons.commands.CommandParser;
+import org.cubeville.cvgames.arenas.*;
 
 public class CVGames extends JavaPlugin implements Listener {
 
@@ -15,8 +16,15 @@ public class CVGames extends JavaPlugin implements Listener {
     public void onEnable() {
         System.out.println("Hey look at me I started!");
         commandParser = new CommandParser();
-        Paintball pb = new Paintball();
+        Paintball pb = new Paintball(this);
         commandParser.addCommand(pb);
+        commandParser.addCommand(new CreateArena(this));
+        commandParser.addCommand(new DeleteArena(this));
+        commandParser.addCommand(new AddArenaSpawn(this));
+        commandParser.addCommand(new ConnectArena(this));
+        commandParser.addCommand(new DisconnectArena(this));
+
+        saveDefaultConfig();
 
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(pb, this);

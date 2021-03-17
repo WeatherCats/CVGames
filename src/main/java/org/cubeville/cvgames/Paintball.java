@@ -13,22 +13,29 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandParameterEnumeratedString;
 import org.cubeville.commons.commands.CommandResponse;
+import org.cubeville.cvgames.arenas.ArenaManager;
+import org.cubeville.cvgames.queues.FFAGameQueue;
+import org.cubeville.cvgames.queues.QueueableFFAGame;
 
 import java.util.*;
 
-public class Paintball extends Command implements Listener, QueueableGame {
+public class Paintball extends Command implements Listener, QueueableFFAGame {
 
-	Paintball() {
-		super("paintball queue");
+	private ArenaManager am;
+
+	Paintball(JavaPlugin plugin) {
+		super("paintball queues");
 		addBaseParameter(new CommandParameterEnumeratedString("join", "leave"));
 		setPermission("cvgames.paintball");
+		am = new ArenaManager(plugin, "paintball");
 	}
 
 	private TreeMap<UUID, Integer> paintball = new TreeMap<>();
-	private GameQueue queue = new GameQueue(this, 2);
+	private FFAGameQueue queue = new FFAGameQueue(this, 2);
 
 	private ItemStack createColoredLeatherArmor(Material armorType, Color color) {
 		ItemStack armorItem = new ItemStack(armorType);
@@ -42,6 +49,9 @@ public class Paintball extends Command implements Listener, QueueableGame {
 
 	@Override
 	public void startGame(Set<Player> players) {
+		Map<String, List<Player>> teamMap = new HashMap<>();
+		teamMap.put("ffa", new ArrayList<>(players));
+		am.startTeleport(teamMap);
 		for (Player player : players) {
 			PlayerInventory inv = player.getInventory();
 
@@ -82,7 +92,7 @@ public class Paintball extends Command implements Listener, QueueableGame {
 			if (paintball.containsKey(uuid) && paintball.containsKey(attacker.getUniqueId())) {
 
 				// if the player isn't shooting themselves
-				//if (!uuid.equals(attacker.getUniqueId())) {
+				if (!uuid.equals(attacker.getUniqueId())) {
 
 					hit.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, hit.getLocation(), 30, .1, .1, .1, .1);
 
@@ -122,7 +132,7 @@ public class Paintball extends Command implements Listener, QueueableGame {
 							}
 							break;
 					}
-				//}
+				}
 			}
 		}
 	}

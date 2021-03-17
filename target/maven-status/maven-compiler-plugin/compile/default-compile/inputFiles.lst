@@ -1,3 +1,13 @@
-/Users/peytontanzillo/Desktop/CV Plugins/CVGames/src/main/java/org/cubeville/cvgames/GameQueue.java
+/Users/peytontanzillo/Desktop/CV Plugins/CVGames/src/main/java/org/cubeville/cvgames/arenas/DeleteArena.java
+/Users/peytontanzillo/Desktop/CV Plugins/CVGames/src/main/java/org/cubeville/cvgames/queues/FFAGameQueue.java
 /Users/peytontanzillo/Desktop/CV Plugins/CVGames/src/main/java/org/cubeville/cvgames/CVGames.java
 /Users/peytontanzillo/Desktop/CV Plugins/CVGames/src/main/java/org/cubeville/cvgames/Paintball.java
+/Users/peytontanzillo/Desktop/CV Plugins/CVGames/src/main/java/org/cubeville/cvgames/queues/QueueableGame.java
+/Users/peytontanzillo/Desktop/CV Plugins/CVGames/src/main/java/org/cubeville/cvgames/arenas/DisconnectArena.java
+/Users/peytontanzillo/Desktop/CV Plugins/CVGames/src/main/java/org/cubeville/cvgames/queues/QueueableFFAGame.java
+/Users/peytontanzillo/Desktop/CV Plugins/CVGames/src/main/java/org/cubeville/cvgames/queues/TeamGameQueue.java
+/Users/peytontanzillo/Desktop/CV Plugins/CVGames/src/main/java/org/cubeville/cvgames/arenas/AddArenaSpawn.java
+/Users/peytontanzillo/Desktop/CV Plugins/CVGames/src/main/java/org/cubeville/cvgames/arenas/ConnectArena.java
+/Users/peytontanzillo/Desktop/CV Plugins/CVGames/src/main/java/org/cubeville/cvgames/queues/GameQueue.java
+/Users/peytontanzillo/Desktop/CV Plugins/CVGames/src/main/java/org/cubeville/cvgames/arenas/CreateArena.java
+/Users/peytontanzillo/Desktop/CV Plugins/CVGames/src/main/java/org/cubeville/cvgames/queues/QueueableTeamGame.java
