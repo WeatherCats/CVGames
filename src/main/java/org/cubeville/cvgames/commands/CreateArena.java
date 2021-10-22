@@ -1,4 +1,4 @@
-package org.cubeville.cvgames.arenas;
+package org.cubeville.cvgames.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -7,6 +7,7 @@ import org.cubeville.commons.commands.BaseCommand;
 import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
+import org.cubeville.cvgames.ArenaManager;
 
 import java.util.List;
 import java.util.Map;
@@ -14,28 +15,22 @@ import java.util.Set;
 
 public class CreateArena extends BaseCommand {
 
-	private JavaPlugin plugin;
-
-	public CreateArena(JavaPlugin plugin) {
+	public CreateArena() {
 		super("arenas create");
-		addBaseParameter(new CommandParameterString()); // arenas name
+		addBaseParameter(new CommandParameterString()); // arena name
 		setPermission("cvgames.arenas.create");
-
-		this.plugin = plugin;
 	}
 
 	@Override
 	public CommandResponse execute(CommandSender commandSender, Set<String> set, Map<String, Object> map,
 		List<Object> baseParameters) throws CommandExecutionException {
-		FileConfiguration config = plugin.getConfig();
+		String arenaName = ((String) baseParameters.get(0)).toLowerCase();
 
-		if (config.contains("arenas." + baseParameters.get(0))) {
-			throw new CommandExecutionException("Arena with name " + baseParameters.get(0) + " already exists!");
+		if (ArenaManager.hasArena(arenaName)) {
+			throw new CommandExecutionException("Arena with name " + arenaName + " already exists!");
 		}
 
-		System.out.println(baseParameters.get(0));
-		config.createSection("arenas." + (String) baseParameters.get(0));
-		plugin.saveConfig();
-		return new CommandResponse("&aCreated the arena " + baseParameters.get(0) + "!");
+		ArenaManager.addArena(arenaName);
+		return new CommandResponse("&aCreated the arena " + arenaName + "!");
 	}
 }

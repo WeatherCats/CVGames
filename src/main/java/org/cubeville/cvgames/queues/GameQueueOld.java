@@ -5,13 +5,13 @@ import org.cubeville.commons.commands.CommandResponse;
 
 import java.util.*;
 
-abstract public class GameQueue {
+abstract public class GameQueueOld {
 
 	private Set<Player> queueing = new HashSet<>();
 	private QueueableGame game;
 	private int players;
 
-	public GameQueue(QueueableGame game, int players) {
+	public GameQueueOld(QueueableGame game, int players) {
 		this.game = game;
 		this.players = players;
 	}

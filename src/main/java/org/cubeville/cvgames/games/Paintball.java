@@ -1,4 +1,4 @@
-package org.cubeville.cvgames;
+package org.cubeville.cvgames.games;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -17,7 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandParameterEnumeratedString;
 import org.cubeville.commons.commands.CommandResponse;
-import org.cubeville.cvgames.arenas.ArenaManager;
+import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.queues.FFAGameQueue;
 import org.cubeville.cvgames.queues.QueueableFFAGame;
 

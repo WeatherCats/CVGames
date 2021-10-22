@@ -1,4 +1,4 @@
-package org.cubeville.cvgames.arenas;
+package org.cubeville.cvgames.managers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -42,7 +42,7 @@ public class ArenaManager {
 		String selectedArena = arenaNames.get(rand.nextInt(arenaNames.size()));
 
 		for (String team : teamMap.keySet()) {
-			List<String> startPoints = config.getStringList("arenas." + selectedArena + "." + team);
+			List<String> startPoints = config.getStringList("managers." + selectedArena + "." + team);
 			Collections.shuffle(startPoints);
 
 			List<Player> teamPlayers = teamMap.get(team);

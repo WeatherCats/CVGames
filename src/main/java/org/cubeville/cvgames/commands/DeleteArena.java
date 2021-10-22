@@ -1,4 +1,4 @@
-package org.cubeville.cvgames.arenas;
+package org.cubeville.cvgames.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -7,6 +7,8 @@ import org.cubeville.commons.commands.BaseCommand;
 import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
+import org.cubeville.cvgames.Arena;
+import org.cubeville.cvgames.ArenaManager;
 
 import java.util.List;
 import java.util.Map;
@@ -14,28 +16,22 @@ import java.util.Set;
 
 public class DeleteArena extends BaseCommand {
 
-
-	private JavaPlugin plugin;
-
-	public DeleteArena(JavaPlugin plugin) {
+	public DeleteArena() {
 		super("arenas delete");
-		addBaseParameter(new CommandParameterString()); // arenas name
+		addBaseParameter(new CommandParameterString()); // arena name
 		setPermission("cvgames.arenas.delete");
-
-		this.plugin = plugin;
 	}
 
 	@Override
 	public CommandResponse execute(CommandSender commandSender, Set<String> set, Map<String, Object> map,
 		List<Object> baseParameters) throws CommandExecutionException {
-		FileConfiguration config = plugin.getConfig();
+		String arenaName = ((String) baseParameters.get(0)).toLowerCase();
 
-		if (!config.contains("arenas." + baseParameters.get(0))) {
-			throw new CommandExecutionException("Arena with name " + baseParameters.get(0) + " does not exist!");
+		if (!ArenaManager.hasArena(arenaName)) {
+			throw new CommandExecutionException("Arena with name " + arenaName + " does not exist!");
 		}
 
-		config.set("arenas." + baseParameters.get(0), null);
-		plugin.saveConfig();
-		return new CommandResponse("&aDeleted the arenas " + baseParameters.get(0) + "!");
+		ArenaManager.deleteArena(arenaName);
+		return new CommandResponse("&aDeleted the arena " + arenaName + "!");
 	}
 }

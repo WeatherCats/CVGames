@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Set;
 
-public class FFAGameQueue extends GameQueue {
+public class FFAGameQueue extends GameQueueOld {
 
 	int numberOfTeams;
 	private QueueableFFAGame game;

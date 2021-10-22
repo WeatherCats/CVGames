@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class TeamGameQueue extends GameQueue {
+public class TeamGameQueue extends GameQueueOld {
 
 	private int numberOfTeams;
 	private QueueableTeamGame game;
