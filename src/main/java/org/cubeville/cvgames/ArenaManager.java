@@ -1,5 +1,6 @@
 package org.cubeville.cvgames;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.cubeville.commons.commands.CommandExecutionException;
 
@@ -17,9 +18,13 @@ public class ArenaManager {
 		return arenas.get(name);
 	}
 
-	public static void addArena(String name) {
-		getInstance().getConfig().set("arenas." + name, new Object());
+	public static void createArena(String name) {
+		getInstance().getConfig().set("arenas." + name, new HashMap<>());
 		getInstance().saveConfig();
+		addArena(name);
+	}
+
+	public static void addArena(String name) {
 		arenas.put(name, new Arena(name));
 	}
 
@@ -29,20 +34,31 @@ public class ArenaManager {
 		arenas.remove(name);
 	}
 
-	public static void setArenaGame(String name, String game) throws CommandExecutionException {
+	public static void setArenaGame(String name, String game) throws Error {
 		try {
-			arenas.get(name).setGame((Game) gameManager().getGame(game).getDeclaredConstructor().newInstance());
+			Class[] cArgs = new Class[1];
+			cArgs[0] = String.class;
+			arenas.get(name).setGame((Game) gameManager().getGame(game).getDeclaredConstructor(cArgs).newInstance(game));
 		}
 		catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
 			e.printStackTrace();
-			throw new CommandExecutionException("Could not set arena game properly, please contact a system administrator.");
+			throw new Error("Could not set game properly for arena " + name + " and game " + game + "!");
 		}
 		getInstance().getConfig().set("arenas." + name + ".game", game);
 		getInstance().saveConfig();
 	}
 
+
+
 	public static boolean hasArena(String name) {
 		return arenas.containsKey(name) || getInstance().getConfig().contains("arenas." + name);
 	}
 
+	public static String filterArenaInput(String name) throws CommandExecutionException {
+		String arenaName = name.toLowerCase();
+		if (!hasArena(arenaName)) {
+			throw new CommandExecutionException("Arena with name " + arenaName + " does not exist!");
+		}
+		return arenaName;
+	}
 }

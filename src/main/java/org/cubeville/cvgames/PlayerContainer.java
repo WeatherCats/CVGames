@@ -3,5 +3,5 @@ import org.bukkit.entity.Player;
 
 public interface PlayerContainer {
 
-	 void onPlayerLogout(Player p);
+	 void whenPlayerLogout(Player p, Arena a);
 }

@@ -13,7 +13,7 @@ public class GameUtils {
 	public static Map<String, List<Player>> divideTeams(List<Player> players, List<String> teamNames) {
 		List<Float> percentages = new ArrayList<>();
 		for (String ignored : teamNames) {
-			percentages.add((1.0F / teamNames.size()));
+			percentages.add((1.0F / (float) teamNames.size()));
 		}
 		return divideTeams(players, teamNames, percentages);
 	}
@@ -22,21 +22,25 @@ public class GameUtils {
 		if (teamNames.size() != percentages.size()) {
 			throw new Error("The size of team names did not match the size of percentages");
 		}
-		Map<String, List<Player>> divided = new HashMap<>();
-		List<Player> currentTeam = new ArrayList<>();
-		int teamIndex = 0;
-		float maxPercentage = percentages.get(0);
+		Collections.shuffle(players);
+		int teamIndex = -1;
+		float pivotPct = 0;
+		Map<String, List<Player>> resultMap = new HashMap<>();
+
 		for (int i = 0; i < players.size(); i++) {
-			if ((float) (i + 1) / (float) players.size() > maxPercentage) {
-				divided.put(teamNames.get(teamIndex), currentTeam);
-				currentTeam.clear();
+			if (pivotPct <= ((float) i / (float) players.size()) || i == 0) {
 				teamIndex++;
-				maxPercentage += percentages.get(teamIndex);
+				pivotPct += percentages.get(teamIndex);
+				resultMap.put(teamNames.get(teamIndex), new ArrayList<>());
 			}
-			currentTeam.add(players.get(i));
+			List<Player> ps = resultMap.get(teamNames.get(teamIndex));
+			ps.add(players.get(i));
+			resultMap.put(teamNames.get(teamIndex), ps);
 		}
-		return divided;
+
+		return resultMap;
 	}
+
 
 	public static void messagePlayerList(List<Player> players, String message) {
 		messagePlayerList(players, message, null);
@@ -71,15 +75,13 @@ public class GameUtils {
 				location.getWorld().getName(), // world
 				String.valueOf(location.getBlockX()),
 				String.valueOf(location.getBlockY()),
-				String.valueOf(location.getBlockZ()),
-				String.valueOf(location.getYaw()),
-				String.valueOf(location.getPitch())
+				String.valueOf(location.getBlockZ())
 			)
 		);
 		return String.join(",", locParameters);
 	}
 
-	private static Location parsePlayerLocation(String s) {
+	public static Location parsePlayerLocation(String s) {
 		List<String> params = Arrays.asList(s.split(","));
 		return new Location(
 			Bukkit.getWorld(params.get(0)), // world
@@ -91,15 +93,13 @@ public class GameUtils {
 		);
 	}
 
-	private static Location parseBlockLocation(String s) {
+	public static Location parseBlockLocation(String s) {
 		List<String> params = Arrays.asList(s.split(","));
 		return new Location(
 			Bukkit.getWorld(params.get(0)), // world
 			Integer.parseInt(params.get(1)), // x
 			Integer.parseInt(params.get(2)), // y
-			Integer.parseInt(params.get(3)), // z
-			Float.parseFloat(params.get(4)), // pitch
-			Float.parseFloat(params.get(5)) // yaw
+			Integer.parseInt(params.get(3)) // z
 		);
 	}
 

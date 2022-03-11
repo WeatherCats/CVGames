@@ -13,6 +13,7 @@ public class QueueSign {
 		this.arena = arena;
 		this.sign.setLine(0, arena.getName());
 		this.displayStatus(arena.getStatus());
+		this.displayFill();
 	}
 
 
@@ -40,8 +41,12 @@ public class QueueSign {
 		return sign;
 	}
 
+	public String getArenaName() {
+		return arena.getName();
+	}
+
 	public void onRightClick(Player p) {
 		this.arena.getQueue().join(p);
-		displayFill();
+		SignManager.updateArenaSignsFill(getArenaName());
 	}
 }

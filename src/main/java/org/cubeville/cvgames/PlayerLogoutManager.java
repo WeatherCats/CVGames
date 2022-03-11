@@ -19,7 +19,6 @@ public class PlayerLogoutManager {
 
 	public static Arena getPlayerArena(Player p) {
 		Arena result = ArenaManager.getArena(uuidToArenaName.get(p.getUniqueId()));
-		removePlayer(p);
 		return result;
 	}
 }

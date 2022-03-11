@@ -1,15 +1,17 @@
-package org.cubeville.cvgames.types;
+package org.cubeville.cvgames.vartypes;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.CommandExecutionException;
+
+import javax.annotation.Nullable;
 
 public class GameVariableMaterial extends GameVariable {
 
 	private Material blockMaterial;
 
 	@Override
-	public void setItem(Player player, String input) throws CommandExecutionException {
+	public void setItem(Player player, String input, String arenaName) throws CommandExecutionException {
 		Material mat;
 		if (input != null) {
 			mat = Material.valueOf(input.toUpperCase());
@@ -21,12 +23,26 @@ public class GameVariableMaterial extends GameVariable {
 	}
 
 	@Override
+	public String displayString() {
+		return "Material";
+	}
+
+	@Override
+	public void setItem(@Nullable String string, String arenaName) {
+		if (string == null) {
+			blockMaterial = null;
+		} else {
+			blockMaterial = Material.valueOf(string.toUpperCase());
+		}
+	}
+
+	@Override
 	public Material getItem() {
 		return blockMaterial;
 	}
 
 	@Override
-	public String storeFormat() {
+	public String itemString() {
 		if (blockMaterial == null) {
 			return null;
 		}

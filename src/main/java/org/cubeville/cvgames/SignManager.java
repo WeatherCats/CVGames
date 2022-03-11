@@ -4,48 +4,37 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class SignManager {
 
-	public static final Set<Material> signMaterials;
-
-	static {
-		signMaterials = new HashSet<>();
-		signMaterials.add(Material.SPRUCE_WALL_SIGN);
-		signMaterials.add(Material.ACACIA_WALL_SIGN);
-		signMaterials.add(Material.BIRCH_WALL_SIGN);
-		signMaterials.add(Material.DARK_OAK_WALL_SIGN);
-		signMaterials.add(Material.JUNGLE_WALL_SIGN);
-		signMaterials.add(Material.OAK_WALL_SIGN);
-		signMaterials.add(Material.CRIMSON_WALL_SIGN);
-		signMaterials.add(Material.WARPED_WALL_SIGN);
-		signMaterials.add(Material.SPRUCE_SIGN);
-		signMaterials.add(Material.ACACIA_SIGN);
-		signMaterials.add(Material.BIRCH_SIGN);
-		signMaterials.add(Material.DARK_OAK_SIGN);
-		signMaterials.add(Material.JUNGLE_SIGN);
-		signMaterials.add(Material.OAK_SIGN);
-		signMaterials.add(Material.CRIMSON_SIGN);
-		signMaterials.add(Material.WARPED_SIGN);
-	}
-
 	private static HashMap<String, QueueSign> signs = new HashMap<>();
 
-	public static QueueSign addSign(Sign sign, Arena arena) {
-		QueueSign queueSign = new QueueSign(sign, arena);
+	public static final Set<Material> signMaterials = new HashSet<>(
+		Arrays.asList(
+			Material.SPRUCE_WALL_SIGN,
+			Material.ACACIA_WALL_SIGN,
+			Material.BIRCH_WALL_SIGN,
+			Material.DARK_OAK_WALL_SIGN,
+			Material.JUNGLE_WALL_SIGN,
+			Material.OAK_WALL_SIGN,
+			Material.CRIMSON_WALL_SIGN,
+			Material.WARPED_WALL_SIGN,
+			Material.SPRUCE_SIGN,
+			Material.ACACIA_SIGN,
+			Material.BIRCH_SIGN,
+			Material.DARK_OAK_SIGN,
+			Material.JUNGLE_SIGN,
+			Material.OAK_SIGN,
+			Material.CRIMSON_SIGN,
+			Material.WARPED_SIGN
+		)
+	);
+
+	public static QueueSign addSign(Sign sign, String arenaName) {
+		QueueSign queueSign = new QueueSign(sign, ArenaManager.getArena(arenaName));
 		signs.put(createKey(sign.getLocation()), queueSign);
-
-		CVGames gameInstance = CVGames.getInstance();
-		String signsPath = "arenas." + arena.getName() + ".signs";
-		List<String> signLocations = gameInstance.getConfig().getStringList(signsPath);
-		signLocations.add(GameUtils.blockLocToString(sign.getLocation()));
-		gameInstance.getConfig().set(signsPath, signLocations);
-		gameInstance.saveConfig();
-
+		System.out.println("Added sign for " + arenaName);
 		return queueSign;
 	}
 
@@ -57,9 +46,26 @@ public class SignManager {
 		return signs.remove(createKey(location));
 	}
 
-
 	public static String createKey(Location l) {
 		String coordinateString = l.getX() + "," + l.getY() + "," + l.getZ();
 		return "#" + l.getWorld().getName() + "~" + coordinateString;
+	}
+
+	public static void updateArenaSignsFill(String arenaName) {
+		for (QueueSign sign : signs.values()) {
+			if (sign.getArenaName().equals(arenaName)) sign.displayFill();
+		}
+	}
+
+	public static void updateArenaSignsStatus(String arenaName, ArenaStatus status) {
+		for (QueueSign sign : signs.values()) {
+			if (sign.getArenaName().equals(arenaName)) sign.displayStatus(status);
+		}
+	}
+
+	public static void updateArenaSigns(String arenaName, ArenaStatus status) {
+		for (QueueSign sign : signs.values()) {
+			if (sign.getArenaName().equals(arenaName)) sign.displayStatus(status); sign.displayFill();
+		}
 	}
 }

@@ -16,7 +16,7 @@ import java.util.Set;
 public class CreateArena extends BaseCommand {
 
 	public CreateArena() {
-		super("arenas create");
+		super("arena create");
 		addBaseParameter(new CommandParameterString()); // arena name
 		setPermission("cvgames.arenas.create");
 	}
@@ -30,7 +30,7 @@ public class CreateArena extends BaseCommand {
 			throw new CommandExecutionException("Arena with name " + arenaName + " already exists!");
 		}
 
-		ArenaManager.addArena(arenaName);
+		ArenaManager.createArena(arenaName);
 		return new CommandResponse("&aCreated the arena " + arenaName + "!");
 	}
 }

@@ -17,7 +17,7 @@ import java.util.Set;
 public class DeleteArena extends BaseCommand {
 
 	public DeleteArena() {
-		super("arenas delete");
+		super("arena delete");
 		addBaseParameter(new CommandParameterString()); // arena name
 		setPermission("cvgames.arenas.delete");
 	}
@@ -25,13 +25,10 @@ public class DeleteArena extends BaseCommand {
 	@Override
 	public CommandResponse execute(CommandSender commandSender, Set<String> set, Map<String, Object> map,
 		List<Object> baseParameters) throws CommandExecutionException {
-		String arenaName = ((String) baseParameters.get(0)).toLowerCase();
 
-		if (!ArenaManager.hasArena(arenaName)) {
-			throw new CommandExecutionException("Arena with name " + arenaName + " does not exist!");
-		}
-
+		String arenaName = ArenaManager.filterArenaInput((String) baseParameters.get(0));
 		ArenaManager.deleteArena(arenaName);
+
 		return new CommandResponse("&aDeleted the arena " + arenaName + "!");
 	}
 }

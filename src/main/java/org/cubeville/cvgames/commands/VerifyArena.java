@@ -1,41 +1,46 @@
 package org.cubeville.cvgames.commands;
 
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
+import org.cubeville.commons.commands.BaseCommand;
 import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
-import org.cubeville.cvgames.ArenaCommand;
 import org.cubeville.cvgames.ArenaManager;
 import org.cubeville.cvgames.Game;
-import org.cubeville.cvgames.types.GameVariable;
+import org.cubeville.cvgames.vartypes.GameVariable;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public class VerifyArena extends ArenaCommand {
+public class VerifyArena extends BaseCommand {
 
 	public VerifyArena() {
 		super("verify");
+		addBaseParameter(new CommandParameterString()); // arena name
 		setPermission("cvgames.arenas.verify");
 	}
 
 	@Override
-	public CommandResponse execute(Player player, Set<String> set, Map<String, Object> map, List<Object> baseParameters)
+	public CommandResponse execute(CommandSender commandSender, Set<String> set, Map<String, Object> map, List<Object> baseParameters)
 		throws CommandExecutionException {
+		String arenaName = ArenaManager.filterArenaInput((String) baseParameters.get(0));
 		Game arenaGame = ArenaManager.getArena(arenaName).getGame();
 		if (arenaGame == null) throw new CommandExecutionException("You need to set the game for the arena " + arenaName);
 
 		CommandResponse cr = new CommandResponse("Variables for the arena " + arenaName + ":");
 
-		for (Object key : arenaGame.getVerificationMap().keySet()) {
-			GameVariable gv = (GameVariable) arenaGame.getVerificationMap().get(key);
-			if (gv.storeFormat() instanceof List) {
-				for (Object item : (List) gv.storeFormat()) {
+		// Sort the variables alphabetically
+		List<String> varKeys = new ArrayList<>(arenaGame.getVariables());
+		Collections.sort(varKeys);
+
+		for (String key : varKeys) {
+			GameVariable gv = arenaGame.getGamesVariable(key);
+			if (gv.itemString() instanceof List) {
+				cr.addMessage(addGameVarString(key + " [" + gv.displayString() + "]: ", gv.isValid()));
+				for (Object item : (List) gv.itemString()) {
 					cr.addMessage(addGameVarString("- " + item, gv.isValid()));
 				}
 			} else {
-				cr.addMessage(addGameVarString((String) gv.storeFormat(), gv.isValid()));
+				cr.addMessage(addGameVarString(key + " [" + gv.displayString() + "]: " + gv.itemString(), gv.isValid()));
 			}
 		}
 
@@ -43,14 +48,14 @@ public class VerifyArena extends ArenaCommand {
 	}
 
 	private String addGameVarString(String message, boolean isValid) {
-		String colorCode;
+		String prefix;
 		if (isValid) {
-			colorCode = "&a";
+			prefix = "&a";
 		} else {
-			colorCode = "&c";
+			prefix = "&c";
 		}
 
-		return colorCode + message;
+		return prefix + message;
 	}
 
 

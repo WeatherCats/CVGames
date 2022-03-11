@@ -1,11 +1,6 @@
 package org.cubeville.cvgames;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Arena {
 
@@ -21,7 +16,8 @@ public class Arena {
 
 	public void setGame(Game game) {
 		this.game = game;
-		this.queue = new GameQueue(this, game.getQueueMin(), game.getQueueMax());
+		this.queue = new GameQueue(this);
+		this.status = ArenaStatus.OPEN;
 	}
 
 	public Game getGame() {
@@ -33,6 +29,7 @@ public class Arena {
 	}
 
 	public void setStatus(ArenaStatus status) {
+		SignManager.updateArenaSignsStatus(getName(), status);
 		this.status = status;
 	}
 
@@ -46,9 +43,9 @@ public class Arena {
 
 	public void playerLogoutCleanup(Player p) {
 		if (status == ArenaStatus.OPEN) {
-			queue.onPlayerLogout(p);
+			queue.whenPlayerLogout(p, this);
 		} else {
-			game.onPlayerLogout(p);
+			game.whenPlayerLogout(p, this);
 		}
 	}
 }
