@@ -14,14 +14,14 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.16.4-R0.1-SNAPSHOT</version>
+      <version>1.18-R0.1-SNAPSHOT</version>
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.cubeville</groupId>
       <artifactId>CVTools</artifactId>
-      <version>0.5</version>
+      <version>1.18</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
@@ -42,16 +42,6 @@
     <repository>
       <id>spigot-repo</id>
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-    </repository>
-    <repository>
-      <id>sk89q-snapshots</id>
-      <url>http://maven.sk89q.com/artifactory/repo</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
     </repository>
   </repositories>
 </project>

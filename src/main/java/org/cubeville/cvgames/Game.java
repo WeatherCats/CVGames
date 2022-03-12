@@ -2,14 +2,16 @@ package org.cubeville.cvgames;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.cubeville.cvgames.vartypes.GameVariable;
 import org.cubeville.cvgames.vartypes.GameVariableList;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-abstract public class Game implements PlayerContainer {
+abstract public class Game implements PlayerContainer, Listener {
 	private String id;
+	protected Arena arena;
 	private final Map<String, GameVariable> verificationMap = new HashMap<>();
 
 	public Game(String id) {
@@ -32,23 +34,25 @@ abstract public class Game implements PlayerContainer {
 	}
 
 	public void startGame(List<Player> players, Arena arena) {
-		//TODO -- STUFF FOR EVERY GAME START
+		players.forEach(player -> player.getInventory().clear());
+		this.arena = arena;
 		onGameStart(players);
 	};
 
-	public void finishGame(List<Player> players, Arena arena) {
+	public void finishGame(List<Player> players) {
 		arena.setStatus(ArenaStatus.OPEN);
-		players.forEach(PlayerLogoutManager::removePlayer);
+		arena.getQueue().clear();
+		players.forEach(p -> {
+			PlayerLogoutManager.removePlayer(p);
+			p.teleport((Location) getVariable("exit"));
+			p.getInventory().clear();
+		});
 		onGameFinish(players);
 	};
 
 	public abstract void onGameStart(List<Player> players);
 
 	public abstract void onGameFinish(List<Player> players);
-
-	public  Map<String, GameVariable> getVerificationMap() {
-		return verificationMap;
-	}
 
 	public GameVariable getGamesVariable(String var) {
 		return verificationMap.get(var);

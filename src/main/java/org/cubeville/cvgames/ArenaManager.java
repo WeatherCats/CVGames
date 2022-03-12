@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.bukkit.Bukkit.getServer;
 import static org.cubeville.cvgames.CVGames.*;
 
 public class ArenaManager {
@@ -38,7 +39,10 @@ public class ArenaManager {
 		try {
 			Class[] cArgs = new Class[1];
 			cArgs[0] = String.class;
-			arenas.get(name).setGame((Game) gameManager().getGame(game).getDeclaredConstructor(cArgs).newInstance(game));
+			Game arenaGame = (Game) gameManager().getGame(game).getDeclaredConstructor(cArgs).newInstance(name);
+			getServer().getPluginManager().registerEvents(arenaGame, CVGames.getInstance());
+
+			arenas.get(name).setGame(arenaGame);
 		}
 		catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
 			e.printStackTrace();

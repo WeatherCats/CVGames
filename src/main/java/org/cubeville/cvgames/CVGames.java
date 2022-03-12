@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.commons.commands.CommandParser;
 import org.cubeville.cvgames.commands.*;
+import org.cubeville.cvgames.games.Paintball;
 import org.cubeville.cvgames.games.TestGame;
 
 import java.util.ArrayList;
@@ -37,11 +38,14 @@ public class CVGames extends JavaPlugin implements Listener {
         commandParser.addCommand(new CenterPosition());
         commandParser.addCommand(new AddArenaVariable());
 
+        games.registerGame("paintball", Paintball.class);
         games.registerGame("test", TestGame.class);
+
 
         saveDefaultConfig();
 
         PluginManager pm = getServer().getPluginManager();
+
         pm.registerEvents(new EventHandlers(), this);
 
         ConfigImportManager.importConfiguration();

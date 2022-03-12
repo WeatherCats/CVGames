@@ -20,8 +20,8 @@ public class GameQueue implements PlayerContainer {
 
 	GameQueue(Arena arena) {
 		this.arena = arena;
-		arena.getGame().addGamesVariable("queue-min", new GameVariableInt());
-		arena.getGame().addGamesVariable("queue-max", new GameVariableInt());
+		arena.getGame().addGamesVariable("queue-min", new GameVariableInt(), 0);
+		arena.getGame().addGamesVariable("queue-max", new GameVariableInt(), 0);
 		arena.getGame().addGamesVariable("lobby", new GameVariableLocation());
 		arena.getGame().addGamesVariable("exit", new GameVariableLocation());
 		arena.getGame().addGamesVariable("signs", new GameVariableList<>(GameVariableQueueSign.class));
@@ -146,5 +146,10 @@ public class GameQueue implements PlayerContainer {
 		im.setDisplayName(name);
 		item.setItemMeta(im);
 		return item;
+	}
+
+	public void clear() {
+		players.clear();
+		SignManager.updateArenaSignsFill(arena.getName());
 	}
 }

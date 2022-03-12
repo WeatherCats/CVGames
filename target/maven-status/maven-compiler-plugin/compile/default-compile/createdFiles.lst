@@ -5,12 +5,15 @@ org/cubeville/cvgames/queues/TeamGameQueue.class
 org/cubeville/cvgames/vartypes/GameVariableLocation.class
 org/cubeville/cvgames/commands/CenterPosition.class
 org/cubeville/cvgames/PlayerLogoutManager.class
+org/cubeville/cvgames/games/SurvivalGames.class
 org/cubeville/cvgames/PlayerContainer.class
 org/cubeville/cvgames/GameManager.class
 org/cubeville/cvgames/vartypes/GameVariableBlock.class
 org/cubeville/cvgames/queues/QueueableGame.class
+org/cubeville/cvgames/vartypes/GameVariableChatColor.class
 org/cubeville/cvgames/vartypes/GameVariableMaterial.class
 org/cubeville/cvgames/CVGames.class
+org/cubeville/cvgames/games/PVPLives.class
 org/cubeville/cvgames/GameUtils.class
 org/cubeville/cvgames/EventHandlers.class
 org/cubeville/cvgames/queues/QueueableFFAGame.class
@@ -24,6 +27,7 @@ org/cubeville/cvgames/vartypes/GameVariableQueueSign.class
 org/cubeville/cvgames/commands/AddArenaVariable.class
 org/cubeville/cvgames/SignManager.class
 org/cubeville/cvgames/commands/SetArenaGame.class
+org/cubeville/cvgames/games/PaintballState.class
 org/cubeville/cvgames/ArenaManager.class
 org/cubeville/cvgames/queues/GameQueueOld.class
 org/cubeville/cvgames/commands/DeleteArena.class

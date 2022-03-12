@@ -2,7 +2,6 @@ package org.cubeville.cvgames.vartypes;
 
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.CommandExecutionException;
-import scala.Int;
 
 import javax.annotation.Nullable;
 

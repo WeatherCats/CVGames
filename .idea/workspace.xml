@@ -1,52 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="448dee9a-ad04-458b-a930-061757266f74" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/commands/AddArenaVariable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/commands/CenterPosition.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/games/PVPLives.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/vartypes/GameVariableInt.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/vartypes/GameVariableQueueSign.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/vartypes/GameVariableSign.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_errorprone_error_prone_annotations_2_7_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_failureaccess_1_0_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_listenablefuture_9999_0_empty_to_avoid_conflict_with_guava.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_j2objc_j2objc_annotations_1_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_ibm_icu_icu4j_61_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_sk89q_worldedit_worldedit_bukkit_7_2_8_SNAPSHOT.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_abego_treelayout_org_abego_treelayout_core_1_0_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_antlr_ST4_4_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_antlr_antlr4_4_9_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_antlr_antlr_runtime_3_5_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_bstats_bstats_base_2_1_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_checkerframework_checker_qual_3_12_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_javax_json_1_0_4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mozilla_rhino_runtime_1_7_13.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/games/SurvivalGames.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/vartypes/GameVariableChatColor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/CVGames.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CVGames.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_findbugs_annotations_3_0_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_findbugs_jsr305_1_3_9.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_findbugs_jsr305_3_0_2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_gson_gson_2_8_0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_gson_gson_2_8_8.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_21_0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_31_0_1_jre.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_googlecode_json_simple_json_simple_1_1_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_sk89q_commandbook_2_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_sk89q_worldedit_worldedit_bukkit_7_1_0_SNAPSHOT.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_sk89q_worldedit_worldedit_core_7_1_0_SNAPSHOT.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_sk89q_worldedit_worldedit_core_7_2_8_SNAPSHOT.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_sk89q_worldedit_worldedit_libs_bukkit_7_1_0_SNAPSHOT.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_sk89q_worldedit_worldedit_libs_bukkit_7_2_8_SNAPSHOT.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_sk89q_worldedit_worldedit_libs_core_7_1_0_SNAPSHOT.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_sk89q_worldedit_worldedit_libs_core_7_2_8_SNAPSHOT.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_sk89q_worldguard_worldguard_bukkit_7_0_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_sk89q_worldguard_worldguard_bukkit_7_0_6.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_sk89q_worldguard_worldguard_core_7_0_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_sk89q_worldguard_worldguard_core_7_0_6.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_sk89q_worldguard_worldguard_libs_core_7_0_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_sk89q_worldguard_worldguard_libs_core_7_0_6.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__de_schlichtherle_truezip_6_8_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_papermc_paperlib_1_0_2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__io_papermc_paperlib_1_0_7.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__it_unimi_dsi_fastutil_8_2_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__it_unimi_dsi_fastutil_8_5_6.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__javax_inject_javax_inject_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_dev_jna_jna_4_1_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truecommons_truecommons_annotations_2_5_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truecommons_truecommons_cio_2_5_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truecommons_truecommons_io_2_5_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truecommons_truecommons_key_console_2_5_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truecommons_truecommons_key_default_2_5_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truecommons_truecommons_key_macosx_2_5_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truecommons_truecommons_key_spec_2_5_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truecommons_truecommons_key_swing_2_5_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truecommons_truecommons_logging_2_5_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truecommons_truecommons_services_2_5_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truecommons_truecommons_shed_2_5_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_access_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_access_swing_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_comp_ibm437_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_comp_tardriver_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_comp_zip_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_comp_zipdriver_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_driver_file_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_driver_http_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_driver_jar_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_driver_odf_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_driver_tar_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_driver_tar_bzip2_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_driver_tar_gzip_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_driver_tar_xz_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_driver_zip_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_driver_zip_raes_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_kernel_impl_2_13_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_kernel_spec_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_profile_base_2_13_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_truevfs_truevfs_profile_default_2_13_0_12_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_md_5_bungeecord_chat_1_16_R0_3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_md_5_bungeecord_chat_1_16_R0_4.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_antlr_antlr4_runtime_4_7_2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_antlr_antlr4_runtime_4_9_1.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_compress_1_19.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpclient_4_5_10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpcore_4_4_12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_api_2_8_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_api_2_14_1.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_slf4j_impl_2_8_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_bouncycastle_bcprov_jdk15on_1_63.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_bstats_bstats_bukkit_1_7.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_bstats_bstats_bukkit_2_1_0.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_bukkit_bukkit_1_13_2_R0_1_SNAPSHOT.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_cubeville_CVTools_0_5.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_cubeville_CVTools_1_18.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mozilla_rhino_1_7_11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_scala_lang_scala_library_2_13_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_jcl_over_slf4j_1_7_28.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_26.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_spigotmc_spigot_api_1_16_4_R0_1_SNAPSHOT.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_spigotmc_spigot_api_1_18_R0_1_SNAPSHOT.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_tukaani_xz_1_8.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_yaml_snakeyaml_1_26.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_yaml_snakeyaml_1_28.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/Arena.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/Arena.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/ArenaCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/ArenaManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/ArenaManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/CVGames.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/CVGames.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/ConfigImportManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/ConfigImportManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/EventHandlers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/EventHandlers.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/GameManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/GameManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/GameQueue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/GameQueue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/GameUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/GameUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/PlayerContainer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/PlayerContainer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/PlayerLogoutManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/PlayerLogoutManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/QueueSign.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/QueueSign.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/SignManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/SignManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/commands/AddArenaSign.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/commands/CreateArena.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/commands/CreateArena.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/commands/DeleteArena.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/commands/DeleteArena.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/commands/SetArenaGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/commands/SetArenaGame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/commands/SetArenaVariable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/commands/SetArenaVariable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/commands/VerifyArena.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/commands/VerifyArena.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/games/TestGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/games/TestGame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/types/GameVariable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/vartypes/GameVariable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/types/GameVariableBlockLocation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/vartypes/GameVariableBlock.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/types/GameVariableList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/vartypes/GameVariableList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/types/GameVariableMaterial.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/vartypes/GameVariableMaterial.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/types/GameVariablePlayerLocation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/vartypes/GameVariableLocation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/types/GameVariableString.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/vartypes/GameVariableString.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/games/Paintball.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/games/Paintball.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/vartypes/GameVariableInt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/vartypes/GameVariableInt.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/CVGames-0.1.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/CVGames-0.1.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/CVGames.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/CVGames.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/GameQueue$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/GameQueue$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/GameQueue.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/GameQueue.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/GameUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/GameUtils.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/Paintball.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/commands/AddArenaSpawn.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/commands/ConnectArena.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/commands/CreateArena.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/commands/CreateArena.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/commands/DeleteArena.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/commands/DeleteArena.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/commands/DisconnectArena.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/managers/ArenaManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/managers/ArenaManager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/queues/FFAGameQueue.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/queues/FFAGameQueue.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/queues/GameQueueOld.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/queues/GameQueueOld.class" afterDir="false" />
@@ -55,11 +116,7 @@
       <change beforePath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/queues/QueueableTeamGame.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/queues/QueueableTeamGame.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/queues/TeamGameQueue.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/cubeville/cvgames/queues/TeamGameQueue.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/out/" />
-    <ignored path="$PROJECT_DIR$/target/" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -67,123 +124,6 @@
   </component>
   <component name="DefaultGradleProjectSettings">
     <option name="isMigrated" value="true" />
-  </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/Game.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="38" column="30" selection-start-line="38" selection-start-column="20" selection-end-line="38" selection-end-column="30" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/games/TestGame.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="38" column="17" selection-start-line="38" selection-start-column="17" selection-end-line="38" selection-end-column="17" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/GameUtils.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="595">
-              <caret line="41" column="9" selection-start-line="41" selection-start-column="9" selection-end-line="41" selection-end-column="9" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1412#1413#0" expanded="true" />
-                <element signature="e#1460#1461#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/PlayerContainer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="30" selection-start-column="30" selection-end-column="30" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/GameQueue.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1173">
-              <caret line="78" column="16" selection-start-line="78" selection-start-column="16" selection-end-line="78" selection-end-column="75" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/commands/VerifyArena.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="12" selection-start-line="12" selection-end-line="12" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/games/PVPLives.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="421">
-              <caret line="39" column="9" lean-forward="true" selection-start-line="39" selection-start-column="9" selection-end-line="39" selection-end-column="9" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/vartypes/GameVariable.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="9" column="22" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/EventHandlers.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="578">
-              <caret line="41" column="65" selection-start-line="41" selection-start-column="65" selection-end-line="41" selection-end-column="65" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/Arena.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="595">
-              <caret line="45" column="49" selection-start-line="45" selection-start-column="49" selection-end-line="45" selection-end-column="49" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -264,13 +204,6 @@
         <option value="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/commands/VerifyArena.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/cubeville/cvgames/games/PVPLives.java" />
       </list>
-    </option>
-  </component>
-  <component name="MavenImportPreferences">
-    <option name="importingSettings">
-      <MavenImportingSettings>
-        <option name="importAutomatically" value="true" />
-      </MavenImportingSettings>
     </option>
   </component>
   <component name="MavenProjectNavigator">
@@ -373,7 +306,7 @@
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="project.structure.last.edited" value="Project" />
-    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.0" />
   </component>
   <component name="RecentsManager">
@@ -384,18 +317,6 @@
       <recent name="org.cubeville.cvgames.arena" />
       <recent name="org.cubeville.cvgames.queues" />
     </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
