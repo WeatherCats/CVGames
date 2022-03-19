@@ -124,7 +124,7 @@ public class Paintball extends Game {
 			hitState.health -= 1;
 
 			attacker.sendMessage("§aYou have hit " + hit.getName() + "!");
-			attacker.playSound(attacker.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, );
+			attacker.playSound(attacker.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 0.7F);
 			hit.sendMessage("§cYou have been hit by " + attacker.getName() + "!");
 
 			Color damagedColor = hex2Color((String) getVariable(hitState.team + "-armor-color-damaged"));
