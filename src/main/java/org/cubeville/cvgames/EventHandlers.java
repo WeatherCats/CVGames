@@ -14,7 +14,7 @@ public class EventHandlers implements Listener {
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (event.getClickedBlock() != null &&
-			event.getAction() == Action.RIGHT_CLICK_BLOCK &&
+			(event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) &&
 			SignManager.signMaterials.contains(event.getClickedBlock().getType())
 		) {
 			QueueSign sign = SignManager.getSign(event.getClickedBlock().getLocation());

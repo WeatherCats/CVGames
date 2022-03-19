@@ -131,7 +131,7 @@ public class GameQueue implements PlayerContainer {
 	}
 
 	public ItemStack queueLeaveItem() {
-		return customItem(Material.BARRIER, "§c§lLeave Queue");
+		return customItem(Material.RED_BED, "§c§lLeave Queue");
 	}
 
 	private ItemStack customItem(Material material, String name, Enchantment enchantment, int level) {

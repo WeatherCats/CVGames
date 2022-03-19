@@ -118,12 +118,13 @@ public class Paintball extends Game {
 			// if the player isn't shooting themselves
 			if (hit.equals(attacker)) { return; }
 
-			hit.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, hit.getLocation(), 30, .1, .1, .1, .1);
+			//hit.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, hit.getLocation(), 30, .1, .1, .1, .1);
 			PlayerInventory inv = hit.getInventory();
 
 			hitState.health -= 1;
 
 			attacker.sendMessage("§aYou have hit " + hit.getName() + "!");
+			attacker.playSound(attacker.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, );
 			hit.sendMessage("§cYou have been hit by " + attacker.getName() + "!");
 
 			Color damagedColor = hex2Color((String) getVariable(hitState.team + "-armor-color-damaged"));
