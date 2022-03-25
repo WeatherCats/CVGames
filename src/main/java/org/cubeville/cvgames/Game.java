@@ -23,7 +23,6 @@ abstract public class Game implements PlayerContainer, Listener {
 		PlayerLogoutManager.removePlayer(p);
 		p.teleport((Location) a.getGame().getVariable("exit"));
 		p.getInventory().clear();
-		SignManager.updateArenaSignsFill(a.getName());
 		onPlayerLogout(p);
 	}
 

@@ -142,9 +142,7 @@ public class Paintball extends Game {
 				default:
 					// remove players armor, they dead!
 					inv.setArmorContents(null);
-					if (remainingTeams().size() <= 1) {
-						finishGame(new ArrayList<>(state.keySet()));
-					} else {
+					if (!testGameEnd()) {
 						hit.sendMessage("§4§lYou have been eliminated!");
 						hit.teleport((Location) getVariable("spectate-lobby"));
 					}
@@ -153,23 +151,29 @@ public class Paintball extends Game {
 		}
 	}
 
+	private boolean testGameEnd() {
+		if (remainingTeams().size() <= 1) {
+			finishGame(new ArrayList<>(state.keySet()));
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public void onPlayerLogout(Player p) {
 		state.remove(p);
-		if (remainingTeams().size() <= 1) {
-			finishGame(new ArrayList<>(state.keySet()));
-		}
+		testGameEnd();
 	}
 
 	@Override
 	public void onGameFinish(List<Player> players) {
-		state.clear();
 		String remainingTeam = "";
 		for (String rt : remainingTeams()) { remainingTeam = rt; }
 		if (remainingTeam.isEmpty()) { return; }
 		String teamName = (String) getVariable(remainingTeam + "-name");
 		ChatColor chatColor = (ChatColor) getVariable(remainingTeam + "-chat-color");
 		GameUtils.messagePlayerList(players, chatColor + "§l" + teamName + " won the game!");
+		state.clear();
 	}
 }
 

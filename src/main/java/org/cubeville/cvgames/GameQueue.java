@@ -10,6 +10,7 @@ import org.cubeville.cvgames.vartypes.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GameQueue implements PlayerContainer {
 
@@ -77,16 +78,22 @@ public class GameQueue implements PlayerContainer {
 
 	private void removePlayerFromLobby(Player p) {
 		p.teleport((Location) arena.getGame().getVariable("exit"));
-		p.getInventory().remove(Material.BARRIER);
-		GameUtils.messagePlayerList(players, "§b" + p.getName() + " has left the queue.", Sound.BLOCK_DISPENSER_DISPENSE);
+		p.getInventory().forEach(itemStack -> {
+			if (Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName()
+				.equals(Objects.requireNonNull(queueLeaveItem().getItemMeta()).getDisplayName())) {
+				p.getInventory().remove(itemStack);
+			}
+		});
+ 		GameUtils.messagePlayerList(players, "§b" + p.getName() + " has left the queue.", Sound.BLOCK_DISPENSER_DISPENSE);
 	}
 
 	public void leave( Player p ) {
 		players.remove(p);
+		SignManager.updateArenaSignsFill(arena.getName());
+		if (arena.getStatus() != ArenaStatus.OPEN) { return; }
 		p.sendMessage("§bYou have left the queue.");
 		PlayerLogoutManager.removePlayer(p);
 		removePlayerFromLobby(p);
-		SignManager.updateArenaSignsFill(arena.getName());
 		if (players.size() == (((Integer) arena.getGame().getVariable("queue-min")) - 1)) {
 			GameUtils.messagePlayerList(players, "§cCountdown cancelled -- Not enough players!");
 			endCountdown();

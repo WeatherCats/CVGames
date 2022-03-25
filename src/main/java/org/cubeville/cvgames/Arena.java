@@ -42,9 +42,8 @@ public class Arena {
 	}
 
 	public void playerLogoutCleanup(Player p) {
-		if (status == ArenaStatus.OPEN) {
-			queue.whenPlayerLogout(p, this);
-		} else {
+		queue.whenPlayerLogout(p, this);
+		if (status != ArenaStatus.OPEN) {
 			game.whenPlayerLogout(p, this);
 		}
 	}
