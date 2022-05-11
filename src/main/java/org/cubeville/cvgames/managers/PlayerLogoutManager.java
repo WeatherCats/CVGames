@@ -1,6 +1,7 @@
-package org.cubeville.cvgames;
+package org.cubeville.cvgames.managers;
 
 import org.bukkit.entity.Player;
+import org.cubeville.cvgames.models.Arena;
 
 import java.util.HashMap;
 import java.util.UUID;

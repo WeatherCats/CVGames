@@ -5,8 +5,10 @@ import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
-import org.cubeville.cvgames.ArenaManager;
-import org.cubeville.cvgames.Game;
+import org.cubeville.cvgames.managers.ArenaManager;
+import org.cubeville.cvgames.managers.EditingManager;
+import org.cubeville.cvgames.models.Game;
+import org.cubeville.cvgames.vartypes.GameVariableObject;
 
 import java.util.List;
 import java.util.Map;
@@ -29,12 +31,17 @@ public class SetArenaVariable extends Command {
 		Game arenaGame = ArenaManager.getArena(arenaName).getGame();
 		if (arenaGame == null) throw new CommandExecutionException("You need to set the game for the arena " + arenaName);
 		String variable = ((String) baseParameters.get(1)).toLowerCase();
-		if (!arenaGame.hasVariable(variable)) throw new CommandExecutionException("That variable does not exist for the game " + arenaGame.getId());
 
 		String input = null;
 		if (baseParameters.size() > 2) input = (String) baseParameters.get(2);
 
-		arenaGame.getGamesVariable(variable).setVariable(arenaName, variable, player, input);
+		GameVariableObject gameVariableObject = EditingManager.getEditObject(ArenaManager.getArena(arenaName), player);
+		if (gameVariableObject != null) {
+			gameVariableObject.setField(arenaName, variable, player, input);
+		} else {
+			if (!arenaGame.hasVariable(variable)) throw new CommandExecutionException("That variable does not exist for the game " + arenaGame.getId());
+			arenaGame.getGameVariable(variable).setVariable(arenaName, variable, player, input);
+		}
 		return new CommandResponse("Successfully set variable " + variable + " for " + arenaName);
 	}
 }

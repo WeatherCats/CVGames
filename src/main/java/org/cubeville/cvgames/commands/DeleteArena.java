@@ -1,14 +1,11 @@
 package org.cubeville.cvgames.commands;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.cubeville.commons.commands.BaseCommand;
 import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
-import org.cubeville.cvgames.Arena;
-import org.cubeville.cvgames.ArenaManager;
+import org.cubeville.cvgames.managers.ArenaManager;
 
 import java.util.List;
 import java.util.Map;

@@ -11,7 +11,7 @@ public class GameVariableString extends GameVariable {
 
 	@Override
 	public void setItem(Player player, String input, String arenaName) throws CommandExecutionException {
-		item = input;
+		item = input.replaceAll("&", "§");
 	}
 
 	@Override

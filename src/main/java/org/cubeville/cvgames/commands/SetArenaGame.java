@@ -2,7 +2,7 @@ package org.cubeville.cvgames.commands;
 
 import org.bukkit.command.CommandSender;
 import org.cubeville.commons.commands.*;
-import org.cubeville.cvgames.ArenaManager;
+import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.CVGames;
 
 import java.util.List;

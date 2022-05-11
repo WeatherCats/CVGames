@@ -1,4 +1,4 @@
-package org.cubeville.cvgames;
+package org.cubeville.cvgames.enums;
 
 public enum ArenaStatus {
 	OPEN,

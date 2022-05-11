@@ -26,8 +26,8 @@ public abstract class GameVariable {
 		storeItem(arenaName, variableName);
 	}
 
-	public void storeItem(String arenaName, String variableName) {
-		getInstance().getConfig().set("arenas." + arenaName + ".variables." + variableName, itemString());
+	public void storeItem(String arenaName, String path) {
+		getInstance().getConfig().set("arenas." + arenaName + ".variables." + path, itemString());
 		getInstance().saveConfig();
 	}
 

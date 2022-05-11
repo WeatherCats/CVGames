@@ -1,8 +1,10 @@
-package org.cubeville.cvgames;
+package org.cubeville.cvgames.managers;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.cubeville.cvgames.models.QueueSign;
+import org.cubeville.cvgames.enums.ArenaStatus;
 
 import java.util.*;
 

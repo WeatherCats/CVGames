@@ -1,21 +1,17 @@
 package org.cubeville.cvgames;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.commons.commands.CommandParser;
 import org.cubeville.cvgames.commands.*;
 import org.cubeville.cvgames.games.Paintball;
 import org.cubeville.cvgames.games.TestGame;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.cubeville.cvgames.managers.ConfigImportManager;
+import org.cubeville.cvgames.managers.GameManager;
 
 public class CVGames extends JavaPlugin implements Listener {
 
@@ -37,6 +33,9 @@ public class CVGames extends JavaPlugin implements Listener {
         commandParser.addCommand(new VerifyArena());
         commandParser.addCommand(new CenterPosition());
         commandParser.addCommand(new AddArenaVariable());
+        commandParser.addCommand(new ClearEditingObjectVariable());
+        commandParser.addCommand(new SetEditingObjectVariable());
+
 
         games.registerGame("paintball", Paintball.class);
         games.registerGame("test", TestGame.class);

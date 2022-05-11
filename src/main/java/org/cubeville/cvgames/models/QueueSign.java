@@ -1,7 +1,10 @@
-package org.cubeville.cvgames;
+package org.cubeville.cvgames.models;
 
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.cubeville.cvgames.enums.ArenaStatus;
+import org.cubeville.cvgames.managers.SignManager;
+import org.cubeville.cvgames.models.Arena;
 
 public class QueueSign {
 

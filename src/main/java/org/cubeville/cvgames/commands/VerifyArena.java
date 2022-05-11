@@ -5,8 +5,8 @@ import org.cubeville.commons.commands.BaseCommand;
 import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
-import org.cubeville.cvgames.ArenaManager;
-import org.cubeville.cvgames.Game;
+import org.cubeville.cvgames.managers.ArenaManager;
+import org.cubeville.cvgames.models.Game;
 import org.cubeville.cvgames.vartypes.GameVariable;
 
 import java.util.*;
@@ -33,7 +33,8 @@ public class VerifyArena extends BaseCommand {
 		Collections.sort(varKeys);
 
 		for (String key : varKeys) {
-			GameVariable gv = arenaGame.getGamesVariable(key);
+			GameVariable gv = arenaGame.getGameVariable(key);
+			if (gv == null) { continue; }
 			if (gv.itemString() instanceof List) {
 				cr.addMessage(addGameVarString(key + " [" + gv.displayString() + "]: ", gv.isValid()));
 				for (Object item : (List) gv.itemString()) {

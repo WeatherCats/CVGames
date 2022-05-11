@@ -1,11 +1,16 @@
-package org.cubeville.cvgames;
+package org.cubeville.cvgames.models;
 
 import org.bukkit.*;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.cubeville.cvgames.CVGames;
+import org.cubeville.cvgames.GameUtils;
+import org.cubeville.cvgames.enums.ArenaStatus;
+import org.cubeville.cvgames.managers.PlayerLogoutManager;
+import org.cubeville.cvgames.managers.SignManager;
+import org.cubeville.cvgames.models.Arena;
+import org.cubeville.cvgames.models.PlayerContainer;
 import org.cubeville.cvgames.vartypes.*;
 
 import java.util.ArrayList;
@@ -19,13 +24,13 @@ public class GameQueue implements PlayerContainer {
 	private int countdownTimer;
 	private int counter;
 
-	GameQueue(Arena arena) {
+	public GameQueue(Arena arena) {
 		this.arena = arena;
-		arena.getGame().addGamesVariable("queue-min", new GameVariableInt(), 0);
-		arena.getGame().addGamesVariable("queue-max", new GameVariableInt(), 0);
-		arena.getGame().addGamesVariable("lobby", new GameVariableLocation());
-		arena.getGame().addGamesVariable("exit", new GameVariableLocation());
-		arena.getGame().addGamesVariable("signs", new GameVariableList<>(GameVariableQueueSign.class));
+		arena.getGame().addGameVariable("queue-min", new GameVariableInt(), 0);
+		arena.getGame().addGameVariable("queue-max", new GameVariableInt(), 0);
+		arena.getGame().addGameVariable("lobby", new GameVariableLocation());
+		arena.getGame().addGameVariable("exit", new GameVariableLocation());
+		arena.getGame().addGameVariable("signs", new GameVariableList<>(GameVariableQueueSign.class));
 	}
 
 	private boolean canJoinQueue(Player p) {
@@ -48,7 +53,7 @@ public class GameQueue implements PlayerContainer {
 		return true;
 	}
 
-	void join(Player p) {
+	public void join(Player p) {
 		if (!canJoinQueue(p)) {
 			return;
 		}
@@ -138,21 +143,7 @@ public class GameQueue implements PlayerContainer {
 	}
 
 	public ItemStack queueLeaveItem() {
-		return customItem(Material.RED_BED, "§c§lLeave Queue");
-	}
-
-	private ItemStack customItem(Material material, String name, Enchantment enchantment, int level) {
-		ItemStack item = customItem(material, name);
-		item.addEnchantment(enchantment, level);
-		return item;
-	}
-
-	private ItemStack customItem(Material material, String name) {
-		ItemStack item = new ItemStack(material);
-		ItemMeta im = item.getItemMeta();
-		im.setDisplayName(name);
-		item.setItemMeta(im);
-		return item;
+		return GameUtils.customItem(Material.RED_BED, "§c§lLeave Queue");
 	}
 
 	public void clear() {

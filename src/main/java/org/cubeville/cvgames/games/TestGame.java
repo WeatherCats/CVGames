@@ -2,7 +2,7 @@ package org.cubeville.cvgames.games;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.cubeville.cvgames.Game;
+import org.cubeville.cvgames.models.Game;
 import org.cubeville.cvgames.GameUtils;
 import org.cubeville.cvgames.vartypes.*;
 
@@ -14,9 +14,9 @@ public class TestGame extends Game {
 
 	public TestGame(String id) {
 		super(id);
-		addGamesVariable("flag", new GameVariableBlock());
-		addGamesVariable("red-tp", new GameVariableLocation());
-		addGamesVariable("blue-tp", new GameVariableLocation());
+		addGameVariable("flag", new GameVariableBlock());
+		addGameVariable("red-tp", new GameVariableLocation());
+		addGameVariable("blue-tp", new GameVariableLocation());
 		setDefaultQueueMinMax(1, 2);
 	}
 

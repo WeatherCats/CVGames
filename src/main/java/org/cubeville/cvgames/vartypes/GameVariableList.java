@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.vartypes;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.CommandExecutionException;
 
@@ -8,6 +9,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.cubeville.cvgames.CVGames.getInstance;
 
 public class GameVariableList<GV extends GameVariable> extends GameVariable {
 
@@ -66,6 +69,19 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 		}
 	}
 
+	public GameVariable addBlankGameVariable() {
+		try {
+			if (maximumSize != null && currentValue.size() >= maximumSize) throw new Error("This list is at max capacity.");
+			GV variable = variableClass.getDeclaredConstructor().newInstance();
+			this.currentValue.add(variable);
+			return variable;
+		}
+		catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+			e.printStackTrace();
+			throw new Error("Could not create list variable properly, please contact a system administrator.");
+		}
+	}
+
 	@Override
 	public String displayString() {
 		try {
@@ -89,6 +105,11 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 		return this.currentValue.stream().map(GameVariable::getItem).collect(Collectors.toList());
 	}
 
+	public GameVariable getVariableAtIndex(int index) {
+		if (index >= this.currentValue.size() || index < 0) { return null; }
+		return this.currentValue.get(index);
+	}
+
 	@Override
 	public List<Object> itemString() {
 		return this.currentValue.stream().map(GameVariable::itemString).collect(Collectors.toList());
@@ -103,6 +124,17 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 	@Override
 	public boolean isValid() {
 		return currentValue.size() >= minimumSize && (maximumSize == null || currentValue.size() <= maximumSize);
+	}
+
+	@Override public void storeItem(String arenaName, String path) {
+		final String fullPath = "arenas." + arenaName + ".variables." + path;
+		// clear the full path
+		getInstance().getConfig().set("arenas." + arenaName + ".variables." + path, null);
+		// for each item in the list, store the child item under <path>.<i>
+		for (int i = 0; i < currentValue.size(); i++) {
+			currentValue.get(i).storeItem(arenaName, path + "." + i);
+		}
+		getInstance().saveConfig();
 	}
 
 }

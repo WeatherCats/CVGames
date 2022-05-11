@@ -1,6 +1,8 @@
-package org.cubeville.cvgames;
+package org.cubeville.cvgames.models;
 
 import org.bukkit.entity.Player;
+import org.cubeville.cvgames.managers.SignManager;
+import org.cubeville.cvgames.enums.ArenaStatus;
 
 public class Arena {
 

@@ -2,7 +2,7 @@ package org.cubeville.cvgames.games;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.cubeville.cvgames.Game;
+import org.cubeville.cvgames.models.Game;
 import org.cubeville.cvgames.GameUtils;
 import org.cubeville.cvgames.vartypes.GameVariableInt;
 import org.cubeville.cvgames.vartypes.GameVariableLocation;
@@ -17,9 +17,9 @@ public class PVPLives extends Game {
 	public PVPLives(String id) {
 		super(id);
 		setDefaultQueueMinMax(2, 4);
-		addGamesVariable("lives", new GameVariableInt(), 3);
-		addGamesVariable("spawn-red", new GameVariableLocation());
-		addGamesVariable("spawn-blue", new GameVariableLocation());
+		addGameVariable("lives", new GameVariableInt(), 3);
+		addGameVariable("spawn-red", new GameVariableLocation());
+		addGameVariable("spawn-blue", new GameVariableLocation());
 	}
 
 	@Override

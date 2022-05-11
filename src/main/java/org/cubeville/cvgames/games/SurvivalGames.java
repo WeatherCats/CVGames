@@ -1,7 +1,7 @@
 package org.cubeville.cvgames.games;
 
 import org.bukkit.entity.Player;
-import org.cubeville.cvgames.Game;
+import org.cubeville.cvgames.models.Game;
 
 import java.util.List;
 

@@ -1,6 +1,7 @@
-package org.cubeville.cvgames;
+package org.cubeville.cvgames.managers;
 
 import org.cubeville.commons.commands.CommandExecutionException;
+import org.cubeville.cvgames.models.Game;
 
 import java.util.HashMap;
 

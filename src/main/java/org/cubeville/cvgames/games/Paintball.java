@@ -8,97 +8,113 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.cubeville.cvgames.Game;
+import org.cubeville.cvgames.CVGames;
+import org.cubeville.cvgames.models.Game;
 import org.cubeville.cvgames.GameUtils;
-import org.cubeville.cvgames.vartypes.GameVariableChatColor;
-import org.cubeville.cvgames.vartypes.GameVariableList;
-import org.cubeville.cvgames.vartypes.GameVariableLocation;
-import org.cubeville.cvgames.vartypes.GameVariableString;
+import org.cubeville.cvgames.models.GameRegion;
+import org.cubeville.cvgames.vartypes.*;
 
 import java.util.*;
 
 public class Paintball extends Game {
 
+	int rechargeZoneChecker;
 	private final HashMap<Player, PaintballState> state = new HashMap<>();
+	private List<HashMap<String, Object>> teams;
 
 	public Paintball(String id) {
 		super(id);
-		addGamesVariable("spectate-lobby", new GameVariableLocation());
-		addGamesVariable("team1-tps", new GameVariableList<>(GameVariableLocation.class));
-		addGamesVariable("team1-name", new GameVariableString(), "Red Team");
-		addGamesVariable("team1-chat-color", new GameVariableChatColor(), String.valueOf(ChatColor.RED.getChar()));
-		addGamesVariable("team1-armor-color", new GameVariableString(), "#FF0000");
-		addGamesVariable("team1-armor-color-damaged", new GameVariableString(), "#440000");
-
-		addGamesVariable("team2-tps", new GameVariableList<>(GameVariableLocation.class));
-		addGamesVariable("team2-name", new GameVariableString(), "Blue Team");
-		addGamesVariable("team2-chat-color", new GameVariableChatColor(), String.valueOf(ChatColor.BLUE.getChar()));
-		addGamesVariable("team2-armor-color", new GameVariableString(), "#0000FF");
-		addGamesVariable("team2-armor-color-damaged", new GameVariableString(), "#000044");
+		addGameVariable("spectate-lobby", new GameVariableLocation());
+		addGameVariable("ammo", new GameVariableInt(), 16);
+		addGameVariable("recharge-zones", new GameVariableList<>(GameVariableRegion.class));
+		addGameVariable("recharge-cooldown", new GameVariableInt(), 15);
+		addGameVariable("teams", new GameVariableList<>(PaintballTeam.class));
 		setDefaultQueueMinMax(2, 4);
 
 	}
 
-	private ItemStack createColoredLeatherArmor(Material armorType, Color color) {
-		ItemStack armorItem = new ItemStack(armorType);
-		if (armorItem.getItemMeta() instanceof LeatherArmorMeta) {
-			LeatherArmorMeta meta = (LeatherArmorMeta) armorItem.getItemMeta();
-			meta.setColor(color);
-			armorItem.setItemMeta(meta);
-		}
-		return armorItem;
-	}
-
-	private Color hex2Color(String colorStr) {
-		return Color.fromRGB(
-				Integer.valueOf(colorStr.substring(1, 3), 16),
-				Integer.valueOf(colorStr.substring(3, 5), 16),
-				Integer.valueOf(colorStr.substring(5, 7), 16)
-		);
-	}
-
 	@Override
 	public void onGameStart(List<Player> players) {
-		Map<String, List<Player>> teamsMap = GameUtils.divideTeams(players, List.of("team1", "team2"), Arrays.asList(.5F, .5F));
-		for (String key : teamsMap.keySet()) {
-			if (teamsMap.get(key) == null) continue;
+		teams = (List<HashMap<String, Object>>) getVariable("teams");
+		List<Float> percentages = new ArrayList<>();
+		List<String> teamKeys = new ArrayList<>();
+		for (int i = 0; i < teams.size(); i++) {
+			teamKeys.add(Integer.toString(i));
+			percentages.add(1.0F / ((float) teams.size()));
+		}
 
-			List<Player> teamPlayers = teamsMap.get(key);
-			Color teamColor = hex2Color((String) getVariable(key + "-armor-color"));
-			String teamName = (String) getVariable(key + "-name");
-			ChatColor chatColor = (ChatColor) getVariable(key + "-chat-color");
-			List<Location> tps = (List<Location>) getVariable(key + "-tps");
+		Map<String, List<Player>> teamsMap = GameUtils.divideTeams(players, teamKeys, percentages);
 
-			int i = 0;
+		for (int i = 0; i < teams.size(); i++) {
+			HashMap<String, Object> team = teams.get(i);
+			List<Player> teamPlayers = teamsMap.get(Integer.toString(i));
+
+			String teamName = (String) team.get("name");
+			ChatColor chatColor = (ChatColor) team.get("chat-color");
+			List<Location> tps = (List<Location>) team.get("tps");
+
+			int j = 0;
 			for (Player player : teamPlayers) {
-				state.put(player, new PaintballState(key));
-				PlayerInventory inv = player.getInventory();
-				inv.setHelmet(createColoredLeatherArmor(Material.LEATHER_HELMET, teamColor));
-				inv.setChestplate(createColoredLeatherArmor(Material.LEATHER_CHESTPLATE, teamColor));
-				inv.setLeggings(createColoredLeatherArmor(Material.LEATHER_LEGGINGS, teamColor));
-				inv.setBoots(createColoredLeatherArmor(Material.LEATHER_BOOTS, teamColor));
+				state.put(player, new PaintballState(i));
 
-				inv.addItem(new ItemStack(Material.SNOWBALL, 128));
-
-				Location tpLoc = tps.get(i);
+				resetInventory(player);
+				Location tpLoc = tps.get(j);
 				if (!tpLoc.getChunk().isLoaded()) {
 					tpLoc.getChunk().load();
 				}
 				player.teleport(tpLoc);
 				player.sendMessage(chatColor + "You are on §l" + teamName + chatColor + "!");
-				i++;
+				j++;
 			}
 		}
+
+		List<GameRegion> rechargeZones = (List<GameRegion>) getVariable("recharge-zones");
+		int cooldown = (int) getVariable("recharge-cooldown");
+		rechargeZoneChecker = Bukkit.getScheduler().scheduleSyncRepeatingTask(CVGames.getInstance(), () -> {
+			for (GameRegion rechargeZone : rechargeZones) {
+				for (Player player : state.keySet()) {
+					if (rechargeZone.containsPlayer(player)) {
+						Long lastRecharge = state.get(player).lastRecharge;
+						if (lastRecharge == null || System.currentTimeMillis() - lastRecharge > (cooldown * 1000L)) {
+							state.get(player).lastRecharge = System.currentTimeMillis();
+							player.sendMessage("§b§lAmmo Recharged! §f§o(Cooldown: " + cooldown + " seconds)");
+							resetInventory(player);
+						}
+					}
+				}
+			}
+		}, 0L, 2L);
 	}
 
-	private Set<String> remainingTeams() {
-		Set<String> stillInGame = new HashSet<>();
+	private Set<Integer> remainingTeams() {
+		Set<Integer> stillInGame = new HashSet<>();
 		for (PaintballState ps : state.values()) {
 			if (ps.health == 0 || stillInGame.contains(ps.team)) { continue; }
 			stillInGame.add(ps.team);
 		}
 		return stillInGame;
+	}
+
+	private void resetInventory(Player player) {
+		HashMap<String, Object> team = teams.get(state.get(player).team);
+
+		Color healthyColor = GameUtils.hex2Color((String) team.get("armor-color"));
+		Color damagedColor = GameUtils.hex2Color((String) team.get("armor-color-damaged"));
+
+		int health = state.get(player).health;
+
+		PlayerInventory inv = player.getInventory();
+		inv.clear();
+		inv.setHelmet(GameUtils.createColoredLeatherArmor(Material.LEATHER_HELMET, health >= 4 ? healthyColor : damagedColor));
+		inv.setChestplate(GameUtils.createColoredLeatherArmor(Material.LEATHER_CHESTPLATE, health >= 3 ? healthyColor : damagedColor));
+		inv.setLeggings(GameUtils.createColoredLeatherArmor(Material.LEATHER_LEGGINGS, health >= 2 ? healthyColor : damagedColor));
+		inv.setBoots(GameUtils.createColoredLeatherArmor(Material.LEATHER_BOOTS, health >= 1 ? healthyColor : damagedColor));
+
+		inv.addItem(GameUtils.customItem(
+				Material.SNOWBALL,
+				(String) team.get("snowball-name"),
+				(int) getVariable("ammo")
+		));
 	}
 
 	@EventHandler
@@ -118,7 +134,6 @@ public class Paintball extends Game {
 			// if the player isn't shooting themselves
 			if (hit.equals(attacker)) { return; }
 
-			//hit.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, hit.getLocation(), 30, .1, .1, .1, .1);
 			PlayerInventory inv = hit.getInventory();
 
 			hitState.health -= 1;
@@ -127,21 +142,21 @@ public class Paintball extends Game {
 			attacker.playSound(attacker.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 0.7F);
 			hit.sendMessage("§cYou have been hit by " + attacker.getName() + "!");
 
-			Color damagedColor = hex2Color((String) getVariable(hitState.team + "-armor-color-damaged"));
+			Color damagedColor = GameUtils.hex2Color((String) teams.get(hitState.team).get("armor-color-damaged"));
 
 			switch (hitState.health) {
 				case 3:
-					inv.setHelmet(createColoredLeatherArmor(Material.LEATHER_HELMET, damagedColor));
+					inv.setHelmet(GameUtils.createColoredLeatherArmor(Material.LEATHER_HELMET, damagedColor));
 					break;
 				case 2:
-					inv.setChestplate(createColoredLeatherArmor(Material.LEATHER_CHESTPLATE, damagedColor));
+					inv.setChestplate(GameUtils.createColoredLeatherArmor(Material.LEATHER_CHESTPLATE, damagedColor));
 					break;
 				case 1:
-					inv.setLeggings(createColoredLeatherArmor(Material.LEATHER_LEGGINGS, damagedColor));
+					inv.setLeggings(GameUtils.createColoredLeatherArmor(Material.LEATHER_LEGGINGS, damagedColor));
 					break;
 				default:
 					// remove players armor, they dead!
-					inv.setArmorContents(null);
+					inv.clear();
 					if (!testGameEnd()) {
 						hit.sendMessage("§4§lYou have been eliminated!");
 						hit.teleport((Location) getVariable("spectate-lobby"));
@@ -167,11 +182,14 @@ public class Paintball extends Game {
 
 	@Override
 	public void onGameFinish(List<Player> players) {
-		String remainingTeam = "";
-		for (String rt : remainingTeams()) { remainingTeam = rt; }
-		if (remainingTeam.isEmpty()) { return; }
-		String teamName = (String) getVariable(remainingTeam + "-name");
-		ChatColor chatColor = (ChatColor) getVariable(remainingTeam + "-chat-color");
+		Bukkit.getScheduler().cancelTask(rechargeZoneChecker);
+		rechargeZoneChecker = 0;
+		int remainingTeam = -1;
+		for (int rt : remainingTeams()) { remainingTeam = rt; }
+		if (remainingTeam < 0) { return; }
+
+		String teamName = (String) teams.get(remainingTeam).get("name");
+		ChatColor chatColor = (ChatColor) teams.get(remainingTeam).get("chat-color");
 		GameUtils.messagePlayerList(players, chatColor + "§l" + teamName + " won the game!");
 		state.clear();
 	}
@@ -180,9 +198,11 @@ public class Paintball extends Game {
 class PaintballState {
 
 	int health = 4;
-	String team;
+	int team;
+	Long lastRecharge = null;
 
-	 public PaintballState(String team) {
+	 public PaintballState(int team) {
 		 this.team = team;
 	 }
 }
+
