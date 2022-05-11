@@ -29,7 +29,8 @@
       <groupId>org.cubeville</groupId>
       <artifactId>CVTools</artifactId>
       <version>1.18</version>
-      <scope>compile</scope>
+      <scope>system</scope>
+      <systemPath>${basedir}/dependencies/CVTools-1.18.jar</systemPath>
     </dependency>
   </dependencies>
   <build>
