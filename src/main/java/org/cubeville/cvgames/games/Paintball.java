@@ -6,11 +6,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.cubeville.cvgames.CVGames;
 import org.cubeville.cvgames.models.Game;
-import org.cubeville.cvgames.GameUtils;
+import org.cubeville.cvgames.utils.GameUtils;
 import org.cubeville.cvgames.models.GameRegion;
 import org.cubeville.cvgames.vartypes.*;
 

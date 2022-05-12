@@ -1,7 +1,6 @@
 package org.cubeville.cvgames.vartypes;
 
 import org.bukkit.entity.Player;
-import org.cubeville.commons.commands.CommandExecutionException;
 
 import javax.annotation.Nullable;
 
@@ -9,7 +8,7 @@ import static org.cubeville.cvgames.CVGames.getInstance;
 
 public abstract class GameVariable {
 
-	public abstract void setItem(Player player, String input, String arenaName) throws CommandExecutionException;
+	public abstract void setItem(Player player, String input, String arenaName) throws Error;
 
 	public abstract Object getItem();
 
@@ -21,7 +20,7 @@ public abstract class GameVariable {
 
 	public abstract String displayString();
 
-	public void setVariable(String arenaName, String variableName, Player player, String input) throws CommandExecutionException {
+	public void setVariable(String arenaName, String variableName, Player player, String input) throws Error {
 		setItem(player, input, arenaName);
 		storeItem(arenaName, variableName);
 	}
@@ -31,11 +30,11 @@ public abstract class GameVariable {
 		getInstance().saveConfig();
 	}
 
-	public void addVariable(String arenaName, String variableName, Player player, String input) throws CommandExecutionException {
-		throw new CommandExecutionException("Cannot add an item to a variable that is not a list. Use set instead.");
+	public void addVariable(String arenaName, String variableName, Player player, String input) throws Error {
+		throw new Error("Cannot add an item to a variable that is not a list. Use set instead.");
 	}
 
-	public void addItem(Player player, String input, String arenaName) throws CommandExecutionException {
-		throw new CommandExecutionException("Cannot add an item to a variable that is not a list. Use set instead.");
+	public void addItem(Player player, String input, String arenaName) throws Error {
+		throw new Error("Cannot add an item to a variable that is not a list. Use set instead.");
 	}
 }

@@ -5,12 +5,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.cubeville.cvgames.CVGames;
-import org.cubeville.cvgames.GameUtils;
+import org.cubeville.cvgames.utils.GameUtils;
 import org.cubeville.cvgames.enums.ArenaStatus;
 import org.cubeville.cvgames.managers.PlayerLogoutManager;
 import org.cubeville.cvgames.managers.SignManager;
-import org.cubeville.cvgames.models.Arena;
-import org.cubeville.cvgames.models.PlayerContainer;
 import org.cubeville.cvgames.vartypes.*;
 
 import java.util.ArrayList;

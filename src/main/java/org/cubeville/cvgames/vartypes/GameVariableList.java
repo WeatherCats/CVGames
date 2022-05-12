@@ -2,7 +2,6 @@ package org.cubeville.cvgames.vartypes;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.cubeville.commons.commands.CommandExecutionException;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
@@ -30,9 +29,9 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 	}
 
 	@Override
-	public void addItem(Player player, String input, String arenaName) throws CommandExecutionException {
+	public void addItem(Player player, String input, String arenaName) throws Error {
 		try {
-			if (maximumSize != null && currentValue.size() >= maximumSize) throw new CommandExecutionException("This list is at max capacity.");
+			if (maximumSize != null && currentValue.size() >= maximumSize) throw new Error("This list is at max capacity.");
 
 			GV variable = variableClass.getDeclaredConstructor().newInstance();
 			variable.setItem(player, input, arenaName);
@@ -40,14 +39,14 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 		}
 		catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
 			e.printStackTrace();
-			throw new CommandExecutionException("Could not create list variable properly, please contact a system administrator.");
+			throw new Error("Could not create list variable properly, please contact a system administrator.");
 		}
 	}
 
 	@Override
-	public void setItem(Player player, String input, String arenaName) throws CommandExecutionException
+	public void setItem(Player player, String input, String arenaName) throws Error
 	{
-		throw new CommandExecutionException("Cannot set a list variable, must use add or remove");
+		throw new Error("Cannot set a list variable, must use add or remove");
 	}
 
 	@Override
@@ -116,7 +115,7 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 	}
 
 	@Override
-	public void addVariable(String arenaName, String variableName, Player player, String input) throws CommandExecutionException {
+	public void addVariable(String arenaName, String variableName, Player player, String input) throws Error {
 		addItem(player, input, arenaName);
 		storeItem(arenaName, variableName);
 	}

@@ -1,8 +1,6 @@
 package org.cubeville.cvgames.vartypes;
 
 import org.bukkit.entity.Player;
-import org.cubeville.commons.commands.CommandExecutionException;
-
 import javax.annotation.Nullable;
 
 public class GameVariableString extends GameVariable {
@@ -10,7 +8,7 @@ public class GameVariableString extends GameVariable {
 	String item;
 
 	@Override
-	public void setItem(Player player, String input, String arenaName) throws CommandExecutionException {
+	public void setItem(Player player, String input, String arenaName) throws Error {
 		item = input.replaceAll("&", "§");
 	}
 

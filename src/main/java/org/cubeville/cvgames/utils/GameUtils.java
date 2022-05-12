@@ -1,4 +1,4 @@
-package org.cubeville.cvgames;
+package org.cubeville.cvgames.utils;
 
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;

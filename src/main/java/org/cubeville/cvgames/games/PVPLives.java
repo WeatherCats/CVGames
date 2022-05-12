@@ -3,7 +3,7 @@ package org.cubeville.cvgames.games;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.models.Game;
-import org.cubeville.cvgames.GameUtils;
+import org.cubeville.cvgames.utils.GameUtils;
 import org.cubeville.cvgames.vartypes.GameVariableInt;
 import org.cubeville.cvgames.vartypes.GameVariableLocation;
 

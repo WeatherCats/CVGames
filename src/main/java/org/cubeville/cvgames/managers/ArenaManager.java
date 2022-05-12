@@ -1,6 +1,5 @@
 package org.cubeville.cvgames.managers;
 
-import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.cvgames.models.Arena;
 import org.cubeville.cvgames.CVGames;
 import org.cubeville.cvgames.models.Game;
@@ -58,10 +57,10 @@ public class ArenaManager {
 		return arenas.containsKey(name) || getInstance().getConfig().contains("arenas." + name);
 	}
 
-	public static String filterArenaInput(String name) throws CommandExecutionException {
+	public static String filterArenaInput(String name) throws Error {
 		String arenaName = name.toLowerCase();
 		if (!hasArena(arenaName)) {
-			throw new CommandExecutionException("Arena with name " + arenaName + " does not exist!");
+			throw new Error("Arena with name " + arenaName + " does not exist!");
 		}
 		return arenaName;
 	}

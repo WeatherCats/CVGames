@@ -2,7 +2,6 @@ package org.cubeville.cvgames.vartypes;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.cubeville.commons.commands.CommandExecutionException;
 
 import javax.annotation.Nullable;
 
@@ -11,8 +10,8 @@ public class GameVariableChatColor extends GameVariable {
 	private ChatColor color;
 
 	@Override
-	public void setItem(Player player, String input, String arenaName) throws CommandExecutionException {
-		if (ChatColor.getByChar(input) == null) { throw new CommandExecutionException("That is not a valid color."); }
+	public void setItem(Player player, String input, String arenaName) throws Error {
+		if (ChatColor.getByChar(input) == null) { throw new Error("That is not a valid color."); }
 		color = ChatColor.getByChar(input);
 	}
 

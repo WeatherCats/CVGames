@@ -1,7 +1,7 @@
 package org.cubeville.cvgames.commands;
 
 import org.bukkit.command.CommandSender;
-import org.cubeville.commons.commands.*;
+import org.bukkit.entity.Player;
 import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.CVGames;
 
@@ -9,26 +9,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SetArenaGame extends BaseCommand {
-
-	public SetArenaGame() {
-		super("setgame");
-		addBaseParameter(new CommandParameterString()); // arena name
-		addBaseParameter(new CommandParameterString()); // game name
-		setPermission("cvgames.arenas.setgame");
-	}
+public class SetArenaGame extends RunnableCommand {
 
 	@Override
-	public CommandResponse execute(CommandSender commandSender, Set<String> set, Map<String, Object> map, List<Object> baseParameters)
-		throws CommandExecutionException {
-		String arenaName = ArenaManager.filterArenaInput((String) baseParameters.get(0));
-		String gameName = CVGames.gameManager().filterGameInput((String) baseParameters.get(1));
+	public String execute(Player player, List<Object> parameters)
+		throws Error {
+		String arenaName = (String) parameters.get(0);
+		String gameName = CVGames.gameManager().filterGameInput((String) parameters.get(1));
+		ArenaManager.setArenaGame(arenaName, gameName);
 
-		try {
-			ArenaManager.setArenaGame(arenaName, gameName);
-		} catch (Error e) {
-			throw new CommandExecutionException("Could not set arena game properly, please contact a system administrator.");
-		}
-		return new CommandResponse("&aSet the game to " + gameName + " for arena " + arenaName + "!");
+		return "&aSet the game to " + gameName + " for arena " + arenaName + "!";
 	}
 }

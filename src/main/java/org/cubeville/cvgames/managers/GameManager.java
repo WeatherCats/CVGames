@@ -1,6 +1,5 @@
 package org.cubeville.cvgames.managers;
 
-import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.cvgames.models.Game;
 
 import java.util.HashMap;
@@ -22,10 +21,10 @@ public class GameManager<T extends Game> {
 		return games.containsKey(name);
 	}
 
-	public String filterGameInput(String gameInput) throws CommandExecutionException {
+	public String filterGameInput(String gameInput) throws Error {
 		String gameName = gameInput.toLowerCase();
 		if (!hasGame(gameName)) {
-			throw new CommandExecutionException("Game with name " + gameName + " does not exist!");
+			throw new Error("Game with name " + gameName + " does not exist!");
 		}
 		return gameInput;
 	}

@@ -2,9 +2,8 @@ package org.cubeville.cvgames.vartypes;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.cubeville.commons.commands.CommandExecutionException;
-import org.cubeville.commons.utils.BlockUtils;
-import org.cubeville.cvgames.GameUtils;
+import org.cubeville.cvgames.utils.BlockUtils;
+import org.cubeville.cvgames.utils.GameUtils;
 import org.cubeville.cvgames.models.GameRegion;
 
 import javax.annotation.Nullable;
@@ -13,14 +12,14 @@ public class GameVariableRegion extends GameVariable {
     GameRegion region;
 
     @Override
-    public void setItem(Player player, String input, String arenaName) throws CommandExecutionException {
+    public void setItem(Player player, String input, String arenaName) throws Error {
         try {
             Location min = BlockUtils.getWESelectionMin(player);
             Location max = BlockUtils.getWESelectionMax(player).add(1.0, 1.0, 1.0);
             region = new GameRegion(min, max);
         }
         catch(IllegalArgumentException e) {
-            throw new CommandExecutionException("Please make a cuboid worldedit selection before running this command.");
+            throw new Error("Please make a cuboid worldedit selection before running this command.");
         }
     }
 

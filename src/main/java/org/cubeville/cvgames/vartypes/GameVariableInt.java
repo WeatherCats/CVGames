@@ -1,7 +1,6 @@
 package org.cubeville.cvgames.vartypes;
 
 import org.bukkit.entity.Player;
-import org.cubeville.commons.commands.CommandExecutionException;
 
 import javax.annotation.Nullable;
 
@@ -10,7 +9,7 @@ public class GameVariableInt extends GameVariable {
 	private Integer number;
 
 	@Override
-	public void setItem(Player player, String input, String arenaName) throws CommandExecutionException {
+	public void setItem(Player player, String input, String arenaName) throws Error {
 		number = Integer.valueOf(input);
 	}
 

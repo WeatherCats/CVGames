@@ -1,7 +1,6 @@
 package org.cubeville.cvgames.vartypes;
 
 import org.bukkit.entity.Player;
-import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.cvgames.managers.SignManager;
 
 import javax.annotation.Nullable;
@@ -10,7 +9,7 @@ public class GameVariableQueueSign extends GameVariableSign {
 
 	@Override
 	public void setItem(Player player, String input, String arenaName)
-		throws CommandExecutionException {
+		throws Error {
 		super.setItem(player, input, arenaName);
 		SignManager.addSign(sign, arenaName);
 	}

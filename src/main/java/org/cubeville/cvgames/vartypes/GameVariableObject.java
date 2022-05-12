@@ -1,7 +1,6 @@
 package org.cubeville.cvgames.vartypes;
 
 import org.bukkit.entity.Player;
-import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.cvgames.managers.EditingManager;
 
 import javax.annotation.Nullable;
@@ -52,7 +51,7 @@ public abstract class GameVariableObject extends GameVariable {
     }
 
     @Override
-    public void setItem(Player player, String input, String arenaName) throws CommandExecutionException {
+    public void setItem(Player player, String input, String arenaName) throws Error {
         // add presets later pls
     }
 
@@ -61,8 +60,8 @@ public abstract class GameVariableObject extends GameVariable {
         // lol ignoring this too
     }
 
-    public void addToField(String arenaName, String fieldName, Player player, String input) throws CommandExecutionException {
-        if (!fields.containsKey(fieldName)) throw new CommandExecutionException("Field " + fieldName + " does not exist for object " + name);
+    public void addToField(String arenaName, String fieldName, Player player, String input) throws Error {
+        if (!fields.containsKey(fieldName)) throw new Error("Field " + fieldName + " does not exist for object " + name);
         String path = EditingManager.getEditPath(arenaName, player) + "." + fieldName;
         fields.get(fieldName).addVariable(arenaName, path, player, input);
     }
@@ -71,8 +70,8 @@ public abstract class GameVariableObject extends GameVariable {
         fields.put(fieldName, gameVariable);
     }
 
-    public void setField(String arenaName, String fieldName, Player player, String input) throws CommandExecutionException {
-        if (!fields.containsKey(fieldName)) throw new CommandExecutionException("Field " + fieldName + " does not exist for object " + name);
+    public void setField(String arenaName, String fieldName, Player player, String input) throws Error {
+        if (!fields.containsKey(fieldName)) throw new Error("Field " + fieldName + " does not exist for object " + name);
         String path = EditingManager.getEditPath(arenaName, player) + "." + fieldName;
         fields.get(fieldName).setVariable(arenaName, path, player, input);
     }

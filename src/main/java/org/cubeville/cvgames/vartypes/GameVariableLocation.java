@@ -2,7 +2,7 @@ package org.cubeville.cvgames.vartypes;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.cubeville.cvgames.GameUtils;
+import org.cubeville.cvgames.utils.GameUtils;
 
 import javax.annotation.Nullable;
 

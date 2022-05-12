@@ -1,10 +1,8 @@
 package org.cubeville.cvgames.vartypes;
 
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.cubeville.commons.commands.CommandExecutionException;
-import org.cubeville.cvgames.GameUtils;
+import org.cubeville.cvgames.utils.GameUtils;
 
 import javax.annotation.Nullable;
 
@@ -13,9 +11,9 @@ public class GameVariableBlock extends GameVariable {
 	private Block block;
 
 	@Override
-	public void setItem(Player player, String input, String arenaName) throws CommandExecutionException {
+	public void setItem(Player player, String input, String arenaName) throws Error {
 		Block b = player.getTargetBlock(null, 20);
-		if (b.isEmpty()) throw new CommandExecutionException("You need to be looking at a block to execute this command");
+		if (b.isEmpty()) throw new Error("You need to be looking at a block to execute this command");
 		block = b;
 	}
 

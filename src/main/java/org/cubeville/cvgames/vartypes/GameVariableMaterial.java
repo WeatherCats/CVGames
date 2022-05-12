@@ -2,7 +2,6 @@ package org.cubeville.cvgames.vartypes;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.cubeville.commons.commands.CommandExecutionException;
 
 import javax.annotation.Nullable;
 
@@ -11,14 +10,14 @@ public class GameVariableMaterial extends GameVariable {
 	private Material blockMaterial;
 
 	@Override
-	public void setItem(Player player, String input, String arenaName) throws CommandExecutionException {
+	public void setItem(Player player, String input, String arenaName) throws Error {
 		Material mat;
 		if (input != null) {
 			mat = Material.valueOf(input.toUpperCase());
 		} else {
 			mat = player.getInventory().getItemInMainHand().getType();
 		}
-		if (!mat.isBlock()) throw new CommandExecutionException(input + " is not a block.");
+		if (!mat.isBlock()) throw new Error(input + " is not a block.");
 		blockMaterial = mat;
 	}
 
