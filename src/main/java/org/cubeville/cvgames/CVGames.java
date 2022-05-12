@@ -14,8 +14,6 @@ public class CVGames extends JavaPlugin implements Listener {
     private static CVGames instance;
     private static GameManager games;
 
-    private final String[] arenaBlockList = new String[]{"create" , "delete"};
-
     public void onEnable() {
         instance = this;
         games = new GameManager<>();
