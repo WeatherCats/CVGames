@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class ConfigImportManager {
 
-	public static void importConfiguration() {
+	public static void importConfiguration(String gameName) {
 		FileConfiguration config = CVGames.getInstance().getConfig();
 		if (config.getConfigurationSection("arenas") == null) {
 			return;
@@ -21,7 +21,7 @@ public class ConfigImportManager {
 			ConfigurationSection arenaConfig = config.getConfigurationSection("arenas." + arenaName);
 
 			String game = arenaConfig.getString("game");
-			if (game != null) { ArenaManager.setArenaGame(arenaName, game); }
+			if (game != null && game.equals(gameName)) { ArenaManager.setArenaGame(arenaName, game); }
 			else continue;
 
 
