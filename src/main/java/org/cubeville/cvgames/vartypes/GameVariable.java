@@ -16,9 +16,13 @@ public abstract class GameVariable {
 
 	public abstract boolean isValid();
 
-	public abstract void setItem(@Nullable String string, String arenaName);
+	public abstract void setItem(@Nullable Object item, String arenaName);
 
-	public abstract String displayString();
+	public abstract String typeString();
+
+	public Object displayString() {
+		return (String) this.itemString();
+	}
 
 	public void setVariable(String arenaName, String variableName, Player player, String input) throws Error {
 		setItem(player, input, arenaName);
@@ -36,5 +40,13 @@ public abstract class GameVariable {
 
 	public void addItem(Player player, String input, String arenaName) throws Error {
 		throw new Error("Cannot add an item to a variable that is not a list. Use set instead.");
+	}
+
+	public void clearItem() {
+		return;
+	}
+
+	public Object getFromPath(String path) {
+		return getInstance().getConfig().getString(path);
 	}
 }

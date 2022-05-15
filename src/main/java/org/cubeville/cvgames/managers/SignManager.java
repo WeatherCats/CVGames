@@ -36,7 +36,6 @@ public class SignManager {
 	public static QueueSign addSign(Sign sign, String arenaName) {
 		QueueSign queueSign = new QueueSign(sign, ArenaManager.getArena(arenaName));
 		signs.put(createKey(sign.getLocation()), queueSign);
-		System.out.println("Added sign for " + arenaName);
 		return queueSign;
 	}
 
@@ -65,9 +64,10 @@ public class SignManager {
 		}
 	}
 
-	public static void updateArenaSigns(String arenaName, ArenaStatus status) {
+	public static void updateSigns() {
 		for (QueueSign sign : signs.values()) {
-			if (sign.getArenaName().equals(arenaName)) sign.displayStatus(status); sign.displayFill();
+			sign.displayFill();
+			sign.displayStatus( ArenaManager.getArena(sign.getArenaName()).getStatus() );
 		}
 	}
 }

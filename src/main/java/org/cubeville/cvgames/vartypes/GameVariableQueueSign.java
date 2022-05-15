@@ -15,8 +15,13 @@ public class GameVariableQueueSign extends GameVariableSign {
 	}
 
 	@Override
-	public void setItem(@Nullable String string, String arenaName) {
-		super.setItem(string, arenaName);
+	public void setItem(@Nullable Object object, String arenaName) {
+		super.setItem(object, arenaName);
 		SignManager.addSign(sign, arenaName);
+	}
+
+	@Override
+	public void clearItem () {
+		SignManager.deleteSign(super.sign.getLocation());
 	}
 }

@@ -21,7 +21,7 @@ public class GameVariableLocation extends GameVariable {
 	}
 
 	@Override
-	public String displayString() {
+	public String typeString() {
 		return "Location";
 	}
 
@@ -34,11 +34,11 @@ public class GameVariableLocation extends GameVariable {
 	}
 
 	@Override
-	public void setItem(@Nullable String string, String arenaName) {
-		if (string == null) {
+	public void setItem(@Nullable Object string, String arenaName) {
+		if (!(string instanceof String)) {
 			tpLoc = null;
 		} else {
-			tpLoc = GameUtils.parsePlayerLocation(string);
+			tpLoc = GameUtils.parsePlayerLocation((String) string);
 		}
 	}
 

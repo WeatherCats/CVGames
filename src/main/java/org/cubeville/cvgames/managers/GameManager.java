@@ -9,9 +9,9 @@ public class GameManager<T extends Game> {
 	private HashMap<String, Class<T>> games = new HashMap<>();
 
 	public void registerGame(String name, Class<T> game) {
-		System.out.println("registered: " + game.toString() + " as " + name);
 		games.put(name, game);
 		ConfigImportManager.importConfiguration(name);
+		SignManager.updateSigns();
 	}
 
 	public Class<T> getGame(String id) {

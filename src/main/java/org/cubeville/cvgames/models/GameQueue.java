@@ -81,12 +81,17 @@ public class GameQueue implements PlayerContainer {
 
 	private void removePlayerFromLobby(Player p) {
 		p.teleport((Location) arena.getGame().getVariable("exit"));
-		p.getInventory().forEach(itemStack -> {
-			if (Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName()
-				.equals(Objects.requireNonNull(queueLeaveItem().getItemMeta()).getDisplayName())) {
-				p.getInventory().remove(itemStack);
-			}
-		});
+		p.getInventory().clear();
+//		ItemStack[] invContents = p.getInventory().getContents();
+//		// clear the leave queue item
+//		for (int i = 0; i < invContents.length; i++) {
+//			if (invContents[i] != null &&
+//					invContents[i].hasItemMeta() &&
+//					Objects.requireNonNull(invContents[i].getItemMeta()).getDisplayName().equals(Objects.requireNonNull(queueLeaveItem().getItemMeta()).getDisplayName())
+//			) {
+//				p.getInventory().setItem(i, null);
+//			}
+//		}
  		GameUtils.messagePlayerList(players, "§b" + p.getName() + " has left the queue.", Sound.BLOCK_DISPENSER_DISPENSE);
 	}
 
@@ -97,7 +102,7 @@ public class GameQueue implements PlayerContainer {
 		p.sendMessage("§bYou have left the queue.");
 		PlayerLogoutManager.removePlayer(p);
 		removePlayerFromLobby(p);
-		if (players.size() == (((Integer) arena.getGame().getVariable("queue-min")) - 1)) {
+		if (players.size() == (getMinPlayers() - 1)) {
 			GameUtils.messagePlayerList(players, "§cCountdown cancelled -- Not enough players!");
 			endCountdown();
 		}
@@ -110,6 +115,11 @@ public class GameQueue implements PlayerContainer {
 	public int getMaxPlayers() {
 		return (Integer) arena.getGame().getVariable("queue-max");
 	}
+
+	public int getMinPlayers() {
+		return (Integer) arena.getGame().getVariable("queue-min");
+	}
+
 
 	private void startCountdown(int startCount) {
 		counter = startCount;
@@ -141,7 +151,7 @@ public class GameQueue implements PlayerContainer {
 	}
 
 	public ItemStack queueLeaveItem() {
-		return GameUtils.customItem(Material.RED_BED, "§c§lLeave Queue");
+		return GameUtils.customItem(Material.RED_BED, "§c§l§oLeave Queue §7§o(Right Click)");
 	}
 
 	public void clear() {

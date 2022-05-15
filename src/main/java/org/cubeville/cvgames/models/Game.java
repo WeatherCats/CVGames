@@ -110,8 +110,8 @@ abstract public class Game implements PlayerContainer, Listener {
 	public void addGameVariable(String varName, GameVariable variable, @Nullable Object defaultValue) {
 		if (defaultValue != null) {
 			if (defaultValue instanceof List && variable instanceof GameVariableList) {
-				((GameVariableList) variable).setItems((List<String>) defaultValue, "");
-			} else if ((defaultValue instanceof String) || (defaultValue instanceof Integer)) {
+				((GameVariableList) variable).setItems((List<Object>) defaultValue, "");
+			} else if ((defaultValue instanceof String) || (defaultValue instanceof Integer) || (defaultValue instanceof Long)) {
 				variable.setItem(defaultValue.toString(), "");
 			} else {
 				throw new Error("Error on defaultValue setup for variable " + varName + " on game " + id);
@@ -120,9 +120,8 @@ abstract public class Game implements PlayerContainer, Listener {
 		verificationMap.put(varName.toLowerCase(), variable);
 	}
 
-	public void setVarFromValue(String path, String arenaName, String value) {
-		System.out.println("Set var with path: " + path + " for " + arenaName);
-
+	public void setVarFromValue(String path, String arenaName) {
+		String fullPath = "arenas." + arenaName + "." + path;
 		path = path.replace("variables", "");
 		if (!path.equals("") && path.charAt(0) == '.') {
 			path = path.substring(1);
@@ -130,15 +129,10 @@ abstract public class Game implements PlayerContainer, Listener {
 
 		GameVariable gv = getGameVariable(path);
 		if (gv == null) return;
-		gv.setItem(value, arenaName);
+		gv.setItem(gv.getFromPath(fullPath), arenaName);
 	}
 
 	public Set<String> getVariables() {
 		return this.verificationMap.keySet();
-	}
-
-	public void setDefaultQueueMinMax(int min, int max) {
-		this.setVarFromValue("queue-min", "", Integer.toString(min));
-		this.setVarFromValue("queue-max", "", Integer.toString(max));
 	}
 }

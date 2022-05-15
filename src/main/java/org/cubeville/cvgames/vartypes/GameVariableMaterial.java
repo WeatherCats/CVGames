@@ -5,6 +5,8 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
 
+import static org.cubeville.cvgames.CVGames.getInstance;
+
 public class GameVariableMaterial extends GameVariable {
 
 	private Material blockMaterial;
@@ -22,16 +24,16 @@ public class GameVariableMaterial extends GameVariable {
 	}
 
 	@Override
-	public String displayString() {
+	public String typeString() {
 		return "Material";
 	}
 
 	@Override
-	public void setItem(@Nullable String string, String arenaName) {
-		if (string == null) {
+	public void setItem(@Nullable Object object, String arenaName) {
+		if (!(object instanceof String)) {
 			blockMaterial = null;
 		} else {
-			blockMaterial = Material.valueOf(string.toUpperCase());
+			blockMaterial = Material.valueOf(((String) object).toUpperCase());
 		}
 	}
 

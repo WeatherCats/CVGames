@@ -16,13 +16,13 @@ public class GameVariableChatColor extends GameVariable {
 	}
 
 	@Override
-	public void setItem(@Nullable String string, String arenaName) {
-		if (string == null) color = null;
-		else color = ChatColor.getByChar(string);
+	public void setItem(@Nullable Object string, String arenaName) {
+		if (!(string instanceof String)) color = null;
+		else color = ChatColor.getByChar((String) string);
 	}
 
 	@Override
-	public String displayString() {
+	public String typeString() {
 		return "Chat Color";
 	}
 

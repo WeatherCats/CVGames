@@ -22,22 +22,22 @@ public class GameVariableSign extends GameVariable {
 	}
 
 	@Override
-	public void setItem(@Nullable String string, String arenaName) {
-		if (string == null) {
+	public void setItem(@Nullable Object object, String arenaName) {
+		if (!(object instanceof String)) {
 			sign = null;
 		} else {
-			Location signLoc = GameUtils.parseBlockLocation(string);
+			Location signLoc = GameUtils.parseBlockLocation((String) object);
 			if (!SignManager.signMaterials.contains(signLoc.getBlock().getType())) {
 				sign = null;
 				throw new Error(
-					"Error with game variable sign -- Sign variable pointing to location " + string
+					"Error with game variable sign -- Sign variable pointing to location " + object
 						+ " is not a sign.");
 			}
 			sign = (Sign) signLoc.getBlock().getState();
 		}
 	}
 
-	public String displayString() {
+	public String typeString() {
 		return "Sign";
 	}
 

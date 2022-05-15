@@ -16,12 +16,14 @@ public class ConfigImportManager {
 		}
 
 		for (String arenaName : Objects.requireNonNull(config.getConfigurationSection("arenas")).getKeys(false)) {
-			ArenaManager.addArena(arenaName);
 
 			ConfigurationSection arenaConfig = config.getConfigurationSection("arenas." + arenaName);
-
 			String game = arenaConfig.getString("game");
-			if (game != null && game.equals(gameName)) { ArenaManager.setArenaGame(arenaName, game); }
+			if (game != null && game.equals(gameName)) {
+				// now we know the game is set up properly, we can add the arena and set its game
+				ArenaManager.addArena(arenaName);
+				ArenaManager.setArenaGame(arenaName, game);
+			}
 			else continue;
 
 
@@ -40,7 +42,7 @@ public class ConfigImportManager {
 			if (config.isConfigurationSection(var)) {
 				parseArenaVariables(path, arenaConfig, arenaName);
 			} else {
-				ArenaManager.getArena(arenaName).getGame().setVarFromValue(path, arenaName, config.getString(var));
+				ArenaManager.getArena(arenaName).getGame().setVarFromValue(path, arenaName);
 			}
 		}
 	}

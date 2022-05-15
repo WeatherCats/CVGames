@@ -13,13 +13,17 @@ public class GameVariableString extends GameVariable {
 	}
 
 	@Override
-	public String displayString() {
+	public String typeString() {
 		return "String";
 	}
 
 	@Override
-	public void setItem(@Nullable String string, String arenaName) {
-		item = string;
+	public void setItem(@Nullable Object object, String arenaName) {
+		if (!(object instanceof String)) {
+			item = null;
+		} else {
+			item = (String) object;
+		}
 	}
 
 	@Override

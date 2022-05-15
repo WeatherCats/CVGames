@@ -4,6 +4,8 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
 
+import static org.cubeville.cvgames.CVGames.getInstance;
+
 public class GameVariableLong extends GameVariable {
 
     private Long number;
@@ -14,17 +16,13 @@ public class GameVariableLong extends GameVariable {
     }
 
     @Override
-    public void setItem(@Nullable String string, String arenaName) {
-        try {
-            if (string == null) number = null;
-            else number = Long.valueOf(string);
-        } catch (NumberFormatException e) {
-            throw new Error(string + " is not a decimal number!");
-        }
+    public void setItem(@Nullable Object object, String arenaName) {
+        if (!(object instanceof Long)) number = null;
+        else number = (Long) object;
     }
 
     @Override
-    public String displayString() {
+    public String typeString() {
         return "Decimal";
     }
 
@@ -41,5 +39,10 @@ public class GameVariableLong extends GameVariable {
     @Override
     public boolean isValid() {
         return number != null;
+    }
+
+    @Override
+    public Long getFromPath(String path) {
+        return getInstance().getConfig().getLong(path);
     }
 }

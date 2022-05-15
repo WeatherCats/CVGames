@@ -39,11 +39,11 @@ public class GameVariableRegion extends GameVariable {
     }
 
     @Override
-    public void setItem(@Nullable String string, String arenaName) {
-        if (string == null) {
+    public void setItem(@Nullable Object object, String arenaName) {
+        if (!(object instanceof String)) {
             region = null;
         } else {
-            String[] locations = string.split(" ~ ");
+            String[] locations = ((String) object).split(" ~ ");
             if (locations.length != 2) {
                 region = null;
             } else {
@@ -56,7 +56,7 @@ public class GameVariableRegion extends GameVariable {
     }
 
     @Override
-    public String displayString() {
+    public String typeString() {
         return "Region";
     }
 }

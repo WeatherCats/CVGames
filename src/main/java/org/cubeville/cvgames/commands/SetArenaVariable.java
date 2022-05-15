@@ -1,8 +1,10 @@
 package org.cubeville.cvgames.commands;
 
+import org.bukkit.block.data.type.Sign;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.managers.EditingManager;
+import org.cubeville.cvgames.managers.SignManager;
 import org.cubeville.cvgames.models.Game;
 import org.cubeville.cvgames.vartypes.GameVariableObject;
 
@@ -27,6 +29,9 @@ public class SetArenaVariable extends RunnableCommand {
 		} else {
 			if (!arenaGame.hasVariable(variable)) throw new Error("That variable does not exist for the game " + arenaGame.getId());
 			arenaGame.getGameVariable(variable).setVariable(arenaName, variable, player, input);
+			if (variable.equalsIgnoreCase("queue-max")) {
+				SignManager.updateArenaSignsFill(arenaName);
+			}
 		}
 		return "&bSuccessfully set variable " + variable + " for " + arenaName;
 	}

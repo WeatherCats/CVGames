@@ -4,6 +4,8 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
 
+import static org.cubeville.cvgames.CVGames.getInstance;
+
 public class GameVariableInt extends GameVariable {
 
 	private Integer number;
@@ -14,13 +16,18 @@ public class GameVariableInt extends GameVariable {
 	}
 
 	@Override
-	public void setItem(@Nullable String string, String arenaName) {
-		if (string == null) number = null;
-		else number = Integer.valueOf(string);
+	public void setItem(@Nullable Object num, String arenaName) {
+		if (!(num instanceof Integer)) number = null;
+		else number = (Integer) num;
 	}
 
 	@Override
-	public String displayString() {
+	public Integer getFromPath(String path) {
+		return getInstance().getConfig().getInt(path);
+	}
+
+	@Override
+	public String typeString() {
 		return "Integer";
 	}
 

@@ -20,6 +20,8 @@ public class CommandManager {
         put("addvar", new AddArenaVariable());
         put("setvar", new SetArenaVariable());
         put("setedit", new SetEditingObjectVariable());
+        put("removevar", new RemoveArenaVariable());
+        put("giveitem", new GiveItem());
     }};
 
     public static boolean parse(CommandSender sender, String[] argsIn) {
@@ -48,13 +50,16 @@ public class CommandManager {
         switch (args[0].toLowerCase()) {
             case "center":
                 return runCommand("center", player, new ArrayList<>());
+            case "giveitem":
+                if (args.length != 2) return sendErrorMessage(player, "Error: invalid parameter size. Did you mean \"/cvgames giveitem <path>\" ?");
+                return runCommand("giveitem", player, List.of(args[1].toLowerCase()));
             case "arena":
                 if (args.length < 3) return sendErrorMessage(player, DEFAULT_ERROR);
                 // GAMES ARENA COMMANDS
                 switch (args[1].toLowerCase()) {
                     case "create":
                     case "delete":
-                        if (args.length != 3) return sendErrorMessage(player, "Error, invalid parameter size. Did you mean \"/cvgames arena " + args[1].toLowerCase() + " <arena_name>\" ?");
+                        if (args.length != 3) return sendErrorMessage(player, "Error: invalid parameter size. Did you mean \"/cvgames arena " + args[1].toLowerCase() + " <arena_name>\" ?");
                         return runCommand(args[1].toLowerCase() + "arena", player, List.of(args[2].toLowerCase()));
                     default:
                         String arenaName = args[1].toLowerCase();
@@ -67,22 +72,24 @@ public class CommandManager {
                             case "clearedit":
                                 return runCommand("clearedit", player, List.of(arenaName));
                             case "setgame":
-                                if (args.length != 4) return sendErrorMessage(player, "Error, invalid parameter size. Did you mean \"/cvgames arena <arena_name> setgame <game_name>\" ?");
+                                if (args.length != 4) return sendErrorMessage(player, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> setgame <game_name>\" ?");
                                 return runCommand("setgame", player, List.of(arenaName, args[3].toLowerCase()));
                             case "addvar":
                             case "setvar":
-                                if (args.length > 5 || args.length < 4) return sendErrorMessage(player, "Error, invalid parameter size. Did you mean \"/cvgames arena <arena_name> " + args[2].toLowerCase() + " <var_name> [input]\" ?");
+                                if (args.length > 5 || args.length < 4) return sendErrorMessage(player, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> " + args[2].toLowerCase() + " <var_name> [input]\" ?");
                                 List<Object> params = new ArrayList<>(List.of(arenaName, args[3].toLowerCase()));
                                 if (args.length == 5) params.add(args[4]);
                                 return runCommand(args[2].toLowerCase(), player, params);
                             case "setedit":
-                                if (args.length != 5) return sendErrorMessage(player, "Error, invalid parameter size. Did you mean \"/cvgames arena <arena_name> setedit <var_name> <index>\" ?");
-                                return runCommand(args[2].toLowerCase(), player, List.of(arenaName, args[3].toLowerCase(), args[4].toLowerCase()));
-
+                                if (args.length != 5) return sendErrorMessage(player, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> setedit <var_name> <index>\" ?");
+                                return runCommand("setedit", player, List.of(arenaName, args[3].toLowerCase(), args[4]));
+                            case "removevar":
+                                if (args.length != 5) return sendErrorMessage(player, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> removevar <var_name> <index>\" ?");
+                                return runCommand("removevar", player, List.of(arenaName, args[3].toLowerCase(), args[4]));
                         }
                 }
             default:
-                return sendErrorMessage(player, "That command does not exist. Enter \"/cvgames help\" to view all commands for this plugin.");
+                return sendErrorMessage(player, DEFAULT_ERROR);
         }
     }
 

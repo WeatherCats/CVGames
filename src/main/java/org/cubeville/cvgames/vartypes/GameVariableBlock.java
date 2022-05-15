@@ -18,15 +18,15 @@ public class GameVariableBlock extends GameVariable {
 	}
 
 	@Override
-	public void setItem(@Nullable String string, String arenaName) {
-		if (string == null) {
+	public void setItem(@Nullable Object string, String arenaName) {
+		if (!(string instanceof String)) {
 			block = null;
 		} else {
-			block = GameUtils.parseBlockLocation(string).getBlock();
+			block = GameUtils.parseBlockLocation((String) string).getBlock();
 		}
 	}
 
-	public final String displayString() {
+	public final String typeString() {
 		return "Block";
 	}
 

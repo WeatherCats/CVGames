@@ -1,6 +1,5 @@
 package org.cubeville.cvgames.vartypes;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -22,7 +21,7 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 		this.minimumSize = 1;
 	}
 
-	public GameVariableList(Class<GV> variableClass, int minimumSize, int maximumSize) {
+	public GameVariableList(Class<GV> variableClass, int minimumSize, @Nullable int maximumSize) {
 		this.variableClass = variableClass;
 		this.minimumSize = minimumSize;
 		this.maximumSize = maximumSize;
@@ -43,6 +42,12 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 		}
 	}
 
+	public void removeVariable(String arenaName, String path, int index) {
+		this.currentValue.get(index).clearItem();
+		this.currentValue.remove(index);
+		storeItem(arenaName, path);
+	}
+
 	@Override
 	public void setItem(Player player, String input, String arenaName) throws Error
 	{
@@ -50,16 +55,16 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 	}
 
 	@Override
-	public void setItem(String string, String arenaName) {
+	public void setItem(Object obj, String arenaName) {
 		throw new Error("Can't do setItem with string on list var");
 	}
 
-	private void addItem(String string, String arenaName) {
+	private void addItem(Object object, String arenaName) {
 		try {
 			if (maximumSize != null && currentValue.size() >= maximumSize) throw new Error("This list is at max capacity.");
 
 			GV variable = variableClass.getDeclaredConstructor().newInstance();
-			variable.setItem(string, arenaName);
+			variable.setItem(object, arenaName);
 			this.currentValue.add(variable);
 		}
 		catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
@@ -82,9 +87,9 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 	}
 
 	@Override
-	public String displayString() {
+	public String typeString() {
 		try {
-			return "List of " + variableClass.getDeclaredConstructor().newInstance().displayString() + "s";
+			return "List of " + variableClass.getDeclaredConstructor().newInstance().typeString() + "s";
 		}
 		catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
 			e.printStackTrace();
@@ -93,10 +98,10 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 	}
 
 
-	public void setItems(List<String> strings, String arenaName) {
+	public void setItems(List<Object> objects, String arenaName) {
 		currentValue.clear();
-		for (String string : strings) {
-			addItem(string, arenaName);
+		for (Object obj : objects) {
+			addItem(obj, arenaName);
 		}
 	}
 
@@ -136,4 +141,9 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 		getInstance().saveConfig();
 	}
 
+	@Override
+	public String displayString() {
+		// list doesn't use this
+		return "";
+	}
 }

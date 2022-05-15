@@ -32,9 +32,12 @@ public class EventHandlers implements Listener {
 		Arena arena = PlayerLogoutManager.getPlayerArena(event.getPlayer());
 		if (arena != null && arena.getQueue() != null && arena.getStatus().equals(ArenaStatus.OPEN)) {
 			// If the player is holding the item to leave the queue
-			if (event.getPlayer().getInventory().getItemInMainHand().equals(arena.getQueue().queueLeaveItem())) {
-				event.setCancelled(true);
-				arena.getQueue().leave(event.getPlayer());
+			if (event.getItem() != null) {
+				String mainHandDisplayName = event.getItem().getItemMeta().getDisplayName();
+				if (arena.getQueue().queueLeaveItem().getItemMeta().getDisplayName().equals(mainHandDisplayName)) {
+					event.setCancelled(true);
+					arena.getQueue().leave(event.getPlayer());
+				}
 			}
 		}
 	}

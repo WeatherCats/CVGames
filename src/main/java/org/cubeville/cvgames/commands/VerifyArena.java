@@ -26,12 +26,12 @@ public class VerifyArena extends RunnableCommand {
 			GameVariable gv = arenaGame.getGameVariable(key);
 			if (gv == null) { continue; }
 			if (gv.itemString() instanceof List) {
-				response.append(addGameVarString(key + " [" + gv.displayString() + "]: ", gv.isValid()));
+				response.append(addGameVarString(key + " [" + gv.typeString() + "]: §f", gv.isValid()));
 				for (Object item : (List) gv.itemString()) {
-					response.append(addGameVarString("- " + item, gv.isValid()));
+					response.append(addGameVarString("§f- " + item, gv.isValid()));
 				}
 			} else {
-				response.append(addGameVarString(key + " [" + gv.displayString() + "]: " + gv.itemString(), gv.isValid()));
+				response.append(addGameVarString(key + " [" + gv.typeString() + "]: §f" + gv.displayString(), gv.isValid()));
 			}
 		}
 

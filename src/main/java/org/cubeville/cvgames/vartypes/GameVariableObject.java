@@ -33,8 +33,8 @@ public abstract class GameVariableObject extends GameVariable {
                     .append(fields.get(key).isValid() ? "&a" : "&c")
                     .append(key)
                     .append(" [")
-                    .append(fields.get(key).displayString())
-                    .append("]: ")
+                    .append(fields.get(key).typeString())
+                    .append("]: &f")
                     .append(fields.get(key).itemString())
                     .append("&r\n");
         }
@@ -56,7 +56,7 @@ public abstract class GameVariableObject extends GameVariable {
     }
 
     @Override
-    public void setItem(@Nullable String string, String arenaName) {
+    public void setItem(@Nullable Object object, String arenaName) {
         // lol ignoring this too
     }
 
@@ -81,7 +81,7 @@ public abstract class GameVariableObject extends GameVariable {
     }
 
     @Override
-    public String displayString() {
+    public String typeString() {
         return name;
     }
 
