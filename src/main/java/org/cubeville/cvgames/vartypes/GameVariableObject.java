@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.vartypes;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.managers.EditingManager;
 
@@ -25,21 +26,16 @@ public abstract class GameVariableObject extends GameVariable {
     }
 
     @Override
-    public Object itemString() {
-        StringBuilder items = new StringBuilder();
-        items.append("&f{\n");
+    public TextComponent displayString() {
+        TextComponent out = new TextComponent("§f{");
         for (String key : fields.keySet()) {
-            items.append("  ")
-                    .append(fields.get(key).isValid() ? "&a" : "&c")
-                    .append(key)
-                    .append(" [")
-                    .append(fields.get(key).typeString())
-                    .append("]: &f")
-                    .append(fields.get(key).itemString())
-                    .append("&r\n");
+            out.addExtra("\n  ");
+            out.addExtra((fields.get(key).isValid() ? "§a" : "§c") + key + " [" + fields.get(key).typeString() + "]: §f");
+            out.addExtra(fields.get(key).displayString());
+            out.addExtra("§r");
         }
-        items.append("&f}");
-        return items.toString();
+        out.addExtra("§f\n}");
+        return out;
     }
 
     @Override

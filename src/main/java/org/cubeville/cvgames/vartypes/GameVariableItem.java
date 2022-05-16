@@ -7,6 +7,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.cubeville.cvgames.models.EditingState;
 
 import javax.annotation.Nullable;
 import static org.cubeville.cvgames.CVGames.getInstance;
@@ -58,7 +59,7 @@ public class GameVariableItem extends GameVariable {
 
     @Override
     public TextComponent displayString() {
-        if (item == null) { return null; }
+        if (item == null) { return new TextComponent("null"); }
         TextComponent tc = new TextComponent("[Get Item]");
         tc.setBold(true);
         tc.setColor(ChatColor.AQUA);

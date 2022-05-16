@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.vartypes;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -116,7 +117,7 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 
 	@Override
 	public List<Object> itemString() {
-		return this.currentValue.stream().map(GameVariable::itemString).collect(Collectors.toList());
+		return this.currentValue.stream().map(GameVariable::displayString).collect(Collectors.toList());
 	}
 
 	@Override
@@ -142,8 +143,15 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 	}
 
 	@Override
-	public String displayString() {
-		// list doesn't use this
-		return "";
+	public TextComponent displayString() {
+		if (this.currentValue.size() == 0) { return new TextComponent("[]"); }
+		TextComponent out = new TextComponent();
+		for (GameVariable var : this.currentValue) {
+			out.addExtra("\n§f  - ");
+			out.addExtra(var.isValid() ? "§a" : "§c");
+			out.addExtra(var.displayString());
+			out.addExtra("§r");
+		}
+		return out;
 	}
 }

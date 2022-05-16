@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.commands;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -8,7 +9,7 @@ import java.util.List;
 public class CenterPosition extends RunnableCommand {
 
 	@Override
-	public String execute(Player player, List<Object> parameters)
+	public TextComponent execute(Player player, List<Object> parameters)
 		throws Error {
 		Location newLoc = player.getLocation();
 		newLoc.setX(Math.round(newLoc.getX() * 2.0) / 2.0);
@@ -16,6 +17,6 @@ public class CenterPosition extends RunnableCommand {
 		newLoc.setPitch((float)(Math.round(newLoc.getPitch() / 45.0) * 45.0));
 		newLoc.setYaw((float)(Math.round(newLoc.getYaw() / 45.0) * 45.0));
 		player.teleport(newLoc);
-		return "&eCentered your position in the block";
+		return new TextComponent("§eCentered your position in the block");
 	}
 }

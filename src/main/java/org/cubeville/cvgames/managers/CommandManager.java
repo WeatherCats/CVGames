@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.managers;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.commands.*;
@@ -95,8 +96,8 @@ public class CommandManager {
 
     private static boolean runCommand(String commandName, Player player, List<Object> parameters) {
         try {
-            String response = commands.get(commandName).execute(player, parameters);
-            player.sendMessage(response.replace("&", "§"));
+            TextComponent response = commands.get(commandName).execute(player, parameters);
+            player.spigot().sendMessage(response);
             return true;
         } catch (Error e) {
             return sendErrorMessage(player, e.getMessage());

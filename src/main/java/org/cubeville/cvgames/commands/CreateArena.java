@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.commands;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.managers.ArenaManager;
 
@@ -8,7 +9,7 @@ import java.util.List;
 public class CreateArena extends RunnableCommand {
 
 	@Override
-	public String execute(Player player, List<Object> parameters) throws Error {
+	public TextComponent execute(Player player, List<Object> parameters) throws Error {
 		String arenaName = ((String) parameters.get(0)).toLowerCase();
 
 		if (ArenaManager.hasArena(arenaName)) {
@@ -16,6 +17,6 @@ public class CreateArena extends RunnableCommand {
 		}
 
 		ArenaManager.createArena(arenaName);
-		return "&aCreated the arena " + arenaName + "!";
+		return new TextComponent("§aCreated the arena " + arenaName + "!");
 	}
 }

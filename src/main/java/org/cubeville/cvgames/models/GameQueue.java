@@ -24,8 +24,8 @@ public class GameQueue implements PlayerContainer {
 
 	public GameQueue(Arena arena) {
 		this.arena = arena;
-		arena.getGame().addGameVariable("queue-min", new GameVariableInt(), 0);
-		arena.getGame().addGameVariable("queue-max", new GameVariableInt(), 0);
+		arena.getGame().addGameVariable("queue-min", new GameVariableInt());
+		arena.getGame().addGameVariable("queue-max", new GameVariableInt());
 		arena.getGame().addGameVariable("lobby", new GameVariableLocation());
 		arena.getGame().addGameVariable("exit", new GameVariableLocation());
 		arena.getGame().addGameVariable("signs", new GameVariableList<>(GameVariableQueueSign.class));
@@ -113,11 +113,15 @@ public class GameQueue implements PlayerContainer {
 	}
 
 	public int getMaxPlayers() {
-		return (Integer) arena.getGame().getVariable("queue-max");
+		Integer max = (Integer) arena.getGame().getVariable("queue-max");
+		if (max == null) { return 0; }
+		return max;
 	}
 
 	public int getMinPlayers() {
-		return (Integer) arena.getGame().getVariable("queue-min");
+		Integer min = (Integer) arena.getGame().getVariable("queue-min");
+		if (min == null) { return 0; }
+		return min;
 	}
 
 

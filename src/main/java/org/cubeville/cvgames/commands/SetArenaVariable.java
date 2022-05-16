@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.commands;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.block.data.type.Sign;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.managers.ArenaManager;
@@ -13,7 +14,7 @@ import java.util.List;
 public class SetArenaVariable extends RunnableCommand {
 
 	@Override
-	public String execute(Player player, List<Object> baseParameters)
+	public TextComponent execute(Player player, List<Object> baseParameters)
 		throws Error {
 		String arenaName = (String) baseParameters.get(0);
 		Game arenaGame = ArenaManager.getArena(arenaName).getGame();
@@ -33,6 +34,6 @@ public class SetArenaVariable extends RunnableCommand {
 				SignManager.updateArenaSignsFill(arenaName);
 			}
 		}
-		return "&bSuccessfully set variable " + variable + " for " + arenaName;
+		return new TextComponent("§bSuccessfully set variable " + variable + " for " + arenaName);
 	}
 }

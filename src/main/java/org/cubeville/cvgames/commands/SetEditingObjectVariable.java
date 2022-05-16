@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.commands;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.managers.EditingManager;
@@ -13,7 +14,7 @@ import java.util.List;
 public class SetEditingObjectVariable extends RunnableCommand {
 
     @Override
-    public String execute(Player player, List<Object> baseParameters)
+    public TextComponent execute(Player player, List<Object> baseParameters)
             throws Error {
         String arenaName = (String) baseParameters.get(0);
         Game arenaGame = ArenaManager.getArena(arenaName).getGame();
@@ -34,7 +35,7 @@ public class SetEditingObjectVariable extends RunnableCommand {
 
         String path = variable + "." + (index - 1);
         EditingManager.setEditObject(ArenaManager.getArena(arenaName), player, (GameVariableObject) editingVar, path);
-        return "&aEditing object number " + index + " in list " + variable + " for arena " + arenaName;
+        return new TextComponent("§aEditing object number " + index + " in list " + variable + " for arena " + arenaName);
     }
 
 }

@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.commands;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.managers.EditingManager;
@@ -14,7 +15,7 @@ import java.util.List;
 public class RemoveArenaVariable extends RunnableCommand {
 
 	@Override
-	public String execute(Player player, List<Object> baseParameters)
+	public TextComponent execute(Player player, List<Object> baseParameters)
 		throws Error {
 		String arenaName = (String) baseParameters.get(0);
 		Game arenaGame = ArenaManager.getArena(arenaName).getGame();
@@ -41,6 +42,6 @@ public class RemoveArenaVariable extends RunnableCommand {
 		if (list.getVariableAtIndex(index - 1) == null) throw new Error("The list " + variable +" does not have an index of " + index);
 
 		list.removeVariable(arenaName, gameVariableObject == null ? variable : EditingManager.getEditPath(arenaName, player) + "." + variable, index - 1);
-		return "&bSuccessfully removed index " + index + " from variable " + variable;
+		return new TextComponent("§bSuccessfully removed index " + index + " from variable " + variable);
 	}
 }

@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.vartypes;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -20,8 +21,9 @@ public abstract class GameVariable {
 
 	public abstract String typeString();
 
-	public Object displayString() {
-		return (String) this.itemString();
+	public TextComponent displayString() {
+		if (this.itemString() == null) return new TextComponent("null");
+		return new TextComponent(this.itemString().toString());
 	}
 
 	public void setVariable(String arenaName, String variableName, Player player, String input) throws Error {

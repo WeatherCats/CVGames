@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.commands;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.managers.EditingManager;
@@ -13,7 +14,7 @@ import java.util.Set;
 public class AddArenaVariable extends RunnableCommand {
 
 	@Override
-	public String execute(Player player, List<Object> baseParameters)
+	public TextComponent execute(Player player, List<Object> baseParameters)
 		throws Error {
 		String arenaName = (String) baseParameters.get(0);
 		Game arenaGame = ArenaManager.getArena(arenaName).getGame();
@@ -30,6 +31,6 @@ public class AddArenaVariable extends RunnableCommand {
 			if (!arenaGame.hasVariable(variable)) throw new Error("That variable does not exist for the game " + arenaGame.getId());
 			arenaGame.getGameVariable(variable).addVariable(arenaName, variable, player, input);
 		}
-		return "&bSuccessfully added item to variable " + variable + " for " + arenaName;
+		return new TextComponent("§bSuccessfully added item to variable " + variable + " for " + arenaName);
 	}
 }

@@ -111,10 +111,8 @@ abstract public class Game implements PlayerContainer, Listener {
 		if (defaultValue != null) {
 			if (defaultValue instanceof List && variable instanceof GameVariableList) {
 				((GameVariableList) variable).setItems((List<Object>) defaultValue, "");
-			} else if ((defaultValue instanceof String) || (defaultValue instanceof Integer) || (defaultValue instanceof Long)) {
-				variable.setItem(defaultValue.toString(), "");
 			} else {
-				throw new Error("Error on defaultValue setup for variable " + varName + " on game " + id);
+				variable.setItem(defaultValue, "");
 			}
 		}
 		verificationMap.put(varName.toLowerCase(), variable);
