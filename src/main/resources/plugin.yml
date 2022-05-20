@@ -2,10 +2,43 @@ name: CVGames
 main: org.cubeville.cvgames.CVGames
 authors: [Ptown16]
 version: 0.1
-api-version: 1.16
-depend: [CVTools]
+api-version: 1.18
+depend: []
 
 commands:
   cvgames:
     description: CVGames Base Command
 
+cvgames.setup.center:
+  description: Allow a user to center themselves in a block
+  default: op
+cvgames.setup.giveitem:
+  description: Allow a user to give themselves an item used for a specific var
+  default: op
+cvgames.setup.create:
+  description: Allow a user to create an arena
+  default: op
+cvgames.setup.delete:
+  description: Allow a user to delete an arena
+  default: op
+cvgames.setup.verify:
+  description: Allow a user to see the defined values of an arena
+  default: op
+cvgames.setup.setedit:
+  description: Allow a user to set an object to edit
+  default: op
+cvgames.setup.clearedit:
+  description: Allow a user to go back to editing the default object
+  default: op
+cvgames.setup.setgame:
+  description: Allow a user to set the game for an arena
+  default: op
+cvgames.setup.setvar:
+  description: Allow a user to set the value of a variable
+  default: op
+cvgames.setup.addvar:
+  description: Allow a user to add a variable to a list of variables
+  default: op
+cvgames.setup.removevar:
+  description: Allow a user to remove a variable to a list of variables
+  default: op
