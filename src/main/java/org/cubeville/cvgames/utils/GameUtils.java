@@ -123,7 +123,7 @@ public class GameUtils {
 		return armorItem;
 	}
 
-	private Scoreboard createScoreboard(Arena arena, String title, List<String> items) {
+	public static Scoreboard createScoreboard(Arena arena, String title, List<String> items) {
 		ScoreboardManager manager = Bukkit.getScoreboardManager();
 		Scoreboard scoreboard = manager.getNewScoreboard();
 		String objName = "cvgames-" + arena.getName();
