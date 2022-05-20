@@ -7,6 +7,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.cubeville.cvgames.models.Arena;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -118,12 +123,17 @@ public class GameUtils {
 		return armorItem;
 	}
 
-	public static Color hex2Color(String colorStr) {
-		return Color.fromRGB(
-				Integer.valueOf(colorStr.substring(1, 3), 16),
-				Integer.valueOf(colorStr.substring(3, 5), 16),
-				Integer.valueOf(colorStr.substring(5, 7), 16)
-		);
+	private Scoreboard createScoreboard(Arena arena, String title, List<String> items) {
+		ScoreboardManager manager = Bukkit.getScoreboardManager();
+		Scoreboard scoreboard = manager.getNewScoreboard();
+		String objName = "cvgames-" + arena.getName();
+		objName = objName.substring(0, Math.min(objName.length(), 16));
+		Objective pbObjective = scoreboard.registerNewObjective(objName, "dummy", title);
+		pbObjective.setDisplaySlot(DisplaySlot.SIDEBAR);
+		for (int i = 0; i < items.size(); i++) {
+			pbObjective.getScore(items.get(i)).setScore(items.size() - i);
+		}
+		return scoreboard;
 	}
 
 	public static final Pattern HEX_PATTERN = Pattern.compile("&#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})");

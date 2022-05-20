@@ -47,7 +47,7 @@ public class GameVariableArmorColor extends GameVariable {
 
     @Override
     public org.bukkit.Color getItem() {
-        return org.bukkit.Color.fromRGB(color.getRGB());
+        return org.bukkit.Color.fromRGB(color.getRed(), color.getGreen(), color.getBlue());
     }
 
     @Override
