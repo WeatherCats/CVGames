@@ -86,4 +86,9 @@ public abstract class GameVariableObject extends GameVariable {
             fields.get(key).storeItem(arenaName, path + "." + key);
         }
     }
+
+    @Override
+    public Object itemString() {
+        return null;
+    }
 }

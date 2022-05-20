@@ -1,6 +1,7 @@
 package org.cubeville.cvgames.vartypes;
 
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -11,14 +12,28 @@ public class GameVariableChatColor extends GameVariable {
 
 	@Override
 	public void setItem(Player player, String input, String arenaName) throws Error {
-		if (ChatColor.getByChar(input) == null) { throw new Error("That is not a valid color."); }
-		color = ChatColor.getByChar(input);
+		ChatColor newColor = colorFromString(input);
+		if (newColor == null) {
+			throw new Error("Error setting color!");
+		}
+		color = newColor;
+	}
+
+	private ChatColor colorFromString(String input) {
+		if (input == null || input.length() == 0) { return null; }
+		if (input.length() == 1) {
+			return ChatColor.getByChar(input.toLowerCase().charAt(0));
+		} else if (input.matches("^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$")) {
+			return ChatColor.of(input);
+		} else {
+			return null;
+		}
 	}
 
 	@Override
 	public void setItem(@Nullable Object string, String arenaName) {
 		if (!(string instanceof String)) color = null;
-		else color = ChatColor.getByChar((String) string);
+		else color = colorFromString((String) string);
 	}
 
 	@Override
@@ -33,11 +48,20 @@ public class GameVariableChatColor extends GameVariable {
 
 	@Override
 	public String itemString() {
-		return color == null ? null : String.valueOf(color.getChar());
+		return color == null ? null : color.getName();
 	}
 
 	@Override
 	public boolean isValid() {
 		return color != null;
 	}
+
+	@Override
+	public TextComponent displayString() {
+		if (color == null) return new TextComponent("null");
+		TextComponent tc = new TextComponent(color.getName());
+		tc.setColor(color);
+		return tc;
+	}
+
 }

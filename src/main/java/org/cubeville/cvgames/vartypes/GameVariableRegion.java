@@ -30,6 +30,7 @@ public class GameVariableRegion extends GameVariable {
 
     @Override
     public Object itemString() {
+        if (region == null) return null;
         return GameUtils.blockLocToString(region.getMin()) + " ~ " + GameUtils.blockLocToString(region.getMax());
     }
 

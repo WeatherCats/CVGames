@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.utils;
 
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -9,6 +10,8 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GameUtils {
 
@@ -122,6 +125,8 @@ public class GameUtils {
 				Integer.valueOf(colorStr.substring(5, 7), 16)
 		);
 	}
+
+	public static final Pattern HEX_PATTERN = Pattern.compile("&#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})");
 
 	public static ItemStack customItem(Material material, String name) {
 		return customItem(material, name, null);

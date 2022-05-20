@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.vartypes;
 
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
@@ -21,7 +22,7 @@ public abstract class GameVariable {
 
 	public abstract String typeString();
 
-	public TextComponent displayString() {
+	public BaseComponent displayString() {
 		if (this.itemString() == null) return new TextComponent("null");
 		return new TextComponent(this.itemString().toString());
 	}
