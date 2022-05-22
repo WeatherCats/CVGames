@@ -23,10 +23,8 @@ public class GameVariableChatColor extends GameVariable {
 		if (input == null || input.length() == 0) { return null; }
 		if (input.length() == 1) {
 			return ChatColor.getByChar(input.toLowerCase().charAt(0));
-		} else if (input.matches("^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$")) {
-			return ChatColor.of(input);
 		} else {
-			return null;
+			return ChatColor.of(input);
 		}
 	}
 
