@@ -28,6 +28,7 @@ public class CommandManager {
         put("giveitem", new GiveItem());
         put("queuejoin", new QueueJoin());
         put("queueleave", new QueueLeave());
+        put("help", new Help());
     }};
 
     public static boolean parse(CommandSender sender, String[] argsIn) {
@@ -48,6 +49,9 @@ public class CommandManager {
         if (args.length == 0) return sendErrorMessage(sender, DEFAULT_ERROR);
 
         switch (args[0].toLowerCase()) {
+            case "help":
+                if (!sender.hasPermission("cvgames.setup.help")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                return runCommand("help", sender, new ArrayList<>());
             case "queue":
                 if (args.length != 4) return sendErrorMessage(sender, DEFAULT_ERROR);
                 String leaveOrJoin = args[1].toLowerCase();

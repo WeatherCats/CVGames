@@ -75,7 +75,7 @@ public class GameQueue implements PlayerContainer {
 		PlayerInventory inv = p.getInventory();
 		inv.clear();
 		Bukkit.getScheduler().scheduleSyncDelayedTask(CVGames.getInstance(), () -> {
-			inv.setItem(0, queueLeaveItem());
+			inv.setItem(8, queueLeaveItem());
 		}, 20L);
 		GameUtils.messagePlayerList(players, "§b" + p.getName() + " has joined the queue!", Sound.BLOCK_DISPENSER_DISPENSE);
 	}

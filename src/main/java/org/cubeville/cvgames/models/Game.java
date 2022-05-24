@@ -44,12 +44,12 @@ abstract public class Game implements PlayerContainer, Listener {
 	public void finishGame(List<Player> players) {
 		arena.setStatus(ArenaStatus.OPEN);
 		arena.getQueue().clear();
+		onGameFinish(players);
 		players.forEach(p -> {
 			PlayerLogoutManager.removePlayer(p);
 			p.teleport((Location) getVariable("exit"));
 			p.getInventory().clear();
 		});
-		onGameFinish(players);
 	};
 
 	public abstract void onGameStart(List<Player> players);
