@@ -1,8 +1,12 @@
 package org.cubeville.cvgames.vartypes;
 
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.managers.EditingManager;
+import org.cubeville.cvgames.utils.GameUtils;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -26,12 +30,12 @@ public abstract class GameVariableObject extends GameVariable {
     }
 
     @Override
-    public TextComponent displayString() {
+    public TextComponent displayString(String arenaName) {
         TextComponent out = new TextComponent("§f{");
         for (String key : fields.keySet()) {
             out.addExtra("\n  ");
-            out.addExtra((fields.get(key).isValid() ? "§a" : "§c") + key + " [" + fields.get(key).typeString() + "]: §f");
-            out.addExtra(fields.get(key).displayString());
+            out.addExtra(GameUtils.addGameVarString(key + " [" + fields.get(key).typeString() + "]: §f", fields.get(key), arenaName, key));
+            out.addExtra(fields.get(key).displayString(arenaName));
             out.addExtra("§r");
         }
         out.addExtra("§f\n}");
@@ -68,8 +72,8 @@ public abstract class GameVariableObject extends GameVariable {
 
     public void setField(String arenaName, String fieldName, Player player, String input) throws Error {
         if (!fields.containsKey(fieldName)) throw new Error("Field " + fieldName + " does not exist for object " + name);
-        String path = EditingManager.getEditPath(arenaName, player) + "." + fieldName;
-        fields.get(fieldName).setVariable(arenaName, path, player, input);
+        String fieldPath = EditingManager.getEditPath(arenaName, player) + "." + fieldName;
+        fields.get(fieldName).setVariable(arenaName, fieldPath, player, input);
     }
 
     public GameVariable getVariableAtField(String field) {

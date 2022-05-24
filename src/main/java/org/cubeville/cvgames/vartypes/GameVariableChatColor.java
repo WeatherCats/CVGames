@@ -55,7 +55,7 @@ public class GameVariableChatColor extends GameVariable {
 	}
 
 	@Override
-	public TextComponent displayString() {
+	public TextComponent displayString(String arenaName) {
 		if (color == null) return new TextComponent("null");
 		TextComponent tc = new TextComponent(color.getName());
 		tc.setColor(color);

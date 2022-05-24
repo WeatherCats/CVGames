@@ -25,8 +25,8 @@ abstract public class Game implements PlayerContainer, Listener {
 	public void whenPlayerLogout(Player p, Arena a) {
 		PlayerLogoutManager.removePlayer(p);
 		p.teleport((Location) a.getGame().getVariable("exit"));
-		p.getInventory().clear();
 		onPlayerLogout(p);
+		p.getInventory().clear();
 	}
 
 	public abstract void onPlayerLogout(Player p);
@@ -90,6 +90,7 @@ abstract public class Game implements PlayerContainer, Listener {
 		GameVariable gv = verificationMap.get(firstVar);
 		if (gv instanceof GameVariableList || gv instanceof GameVariableObject) {
 			// fuck
+			gv.path = firstVar;
 			return getGameVariable(var.replaceFirst(firstVar, ""), gv);
 		}
 		return gv;
@@ -127,6 +128,7 @@ abstract public class Game implements PlayerContainer, Listener {
 
 		GameVariable gv = getGameVariable(path);
 		if (gv == null) return;
+		gv.path = path;
 		gv.setItem(gv.getFromPath(fullPath), arenaName);
 	}
 

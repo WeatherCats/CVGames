@@ -1,6 +1,7 @@
 package org.cubeville.cvgames.managers;
 
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.commands.*;
@@ -25,15 +26,11 @@ public class CommandManager {
         put("setedit", new SetEditingObjectVariable());
         put("removevar", new RemoveArenaVariable());
         put("giveitem", new GiveItem());
+        put("queuejoin", new QueueJoin());
+        put("queueleave", new QueueLeave());
     }};
 
     public static boolean parse(CommandSender sender, String[] argsIn) {
-
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("You are not allowed to run CVGames commands from the console!");
-            return false;
-        }
-        Player player = (Player) sender;
 
         StringBuilder full = new StringBuilder();
         for (String arg : argsIn) {
@@ -45,73 +42,90 @@ public class CommandManager {
         try {
             args = smartSplit(full.toString()).toArray(new String[0]);
         } catch (IllegalArgumentException e) {
-            return sendErrorMessage(player, e.getMessage());
+            return sendErrorMessage(sender, e.getMessage());
         }
 
-        if (args.length == 0) return sendErrorMessage(player, DEFAULT_ERROR);
+        if (args.length == 0) return sendErrorMessage(sender, DEFAULT_ERROR);
 
         switch (args[0].toLowerCase()) {
+            case "queue":
+                if (args.length != 4) return sendErrorMessage(sender, DEFAULT_ERROR);
+                String leaveOrJoin = args[1].toLowerCase();
+                switch (leaveOrJoin) {
+                    case "join":
+                    case "leave":
+                        String arenaName = args[2].toLowerCase();
+                        if (!ArenaManager.hasArena(arenaName)) {
+                            return sendErrorMessage(sender, "Arena with name " + arenaName + " does not exist!");
+                        }
+
+                        Player player = Bukkit.getPlayer(args[3]);
+                        if (player == null) return sendErrorMessage(sender, "Player with name " + args[3] + " is not online!");
+                        if (!sender.hasPermission("cvgames.queue." + leaveOrJoin)) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                        return runCommand("queue" + leaveOrJoin, sender, List.of(arenaName, player));
+
+                }
             case "center":
-                if (!player.hasPermission("cvgames.setup.center")) { return sendErrorMessage(player, DEFAULT_PERMISSIONS_ERROR); }
-                return runCommand("center", player, new ArrayList<>());
+                if (!sender.hasPermission("cvgames.setup.center")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                return runCommand("center", sender, new ArrayList<>());
             case "giveitem":
-                if (!player.hasPermission("cvgames.setup.giveitem")) { return sendErrorMessage(player, DEFAULT_PERMISSIONS_ERROR); }
-                if (args.length != 2) return sendErrorMessage(player, "Error: invalid parameter size. Did you mean \"/cvgames giveitem <path>\" ?");
-                return runCommand("giveitem", player, List.of(args[1].toLowerCase()));
+                if (!sender.hasPermission("cvgames.setup.giveitem")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                if (args.length != 2) return sendErrorMessage(sender, "Error: invalid parameter size. Did you mean \"/cvgames giveitem <path>\" ?");
+                return runCommand("giveitem", sender, List.of(args[1].toLowerCase()));
             case "arena":
-                if (args.length < 3) return sendErrorMessage(player, DEFAULT_ERROR);
+                if (args.length < 3) return sendErrorMessage(sender, DEFAULT_ERROR);
                 // GAMES ARENA COMMANDS
                 switch (args[1].toLowerCase()) {
                     case "create":
                     case "delete":
-                        if (!player.hasPermission("cvgames.setup." + args[1].toLowerCase())) { return sendErrorMessage(player, DEFAULT_PERMISSIONS_ERROR); }
-                        if (args.length != 3) return sendErrorMessage(player, "Error: invalid parameter size. Did you mean \"/cvgames arena " + args[1].toLowerCase() + " <arena_name>\" ?");
-                        return runCommand(args[1].toLowerCase() + "arena", player, List.of(args[2].toLowerCase()));
+                        if (!sender.hasPermission("cvgames.setup." + args[1].toLowerCase())) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                        if (args.length != 3) return sendErrorMessage(sender, "Error: invalid parameter size. Did you mean \"/cvgames arena " + args[1].toLowerCase() + " <arena_name>\" ?");
+                        return runCommand(args[1].toLowerCase() + "arena", sender, List.of(args[2].toLowerCase()));
                     default:
                         String arenaName = args[1].toLowerCase();
                         if (!ArenaManager.hasArena(arenaName)) {
-                            return sendErrorMessage(player, "Arena with name " + arenaName + " does not exist!");
+                            return sendErrorMessage(sender, "Arena with name " + arenaName + " does not exist!");
                         }
                         switch (args[2].toLowerCase()) {
                             case "verify":
-                                if (!player.hasPermission("cvgames.setup.verify")) { return sendErrorMessage(player, DEFAULT_PERMISSIONS_ERROR); }
-                                return runCommand("verify", player, List.of(arenaName));
+                                if (!sender.hasPermission("cvgames.setup.verify")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                                return runCommand("verify", sender, List.of(arenaName));
                             case "clearedit":
-                                if (!player.hasPermission("cvgames.setup.clearedit")) { return sendErrorMessage(player, DEFAULT_PERMISSIONS_ERROR); }
-                                return runCommand("clearedit", player, List.of(arenaName));
+                                if (!sender.hasPermission("cvgames.setup.clearedit")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                                return runCommand("clearedit", sender, List.of(arenaName));
                             case "setgame":
-                                if (!player.hasPermission("cvgames.setup.setgame")) { return sendErrorMessage(player, DEFAULT_PERMISSIONS_ERROR); }
-                                if (args.length != 4) return sendErrorMessage(player, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> setgame <game_name>\" ?");
-                                return runCommand("setgame", player, List.of(arenaName, args[3].toLowerCase()));
+                                if (!sender.hasPermission("cvgames.setup.setgame")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                                if (args.length != 4) return sendErrorMessage(sender, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> setgame <game_name>\" ?");
+                                return runCommand("setgame", sender, List.of(arenaName, args[3].toLowerCase()));
                             case "addvar":
                             case "setvar":
-                                if (!player.hasPermission("cvgames.setup." + args[2].toLowerCase())) { return sendErrorMessage(player, DEFAULT_PERMISSIONS_ERROR); }
-                                if (args.length > 5 || args.length < 4) return sendErrorMessage(player, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> " + args[2].toLowerCase() + " <var_name> [input]\" ?");
+                                if (!sender.hasPermission("cvgames.setup." + args[2].toLowerCase())) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                                if (args.length > 5 || args.length < 4) return sendErrorMessage(sender, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> " + args[2].toLowerCase() + " <var_name> [input]\" ?");
                                 List<Object> params = new ArrayList<>(List.of(arenaName, args[3].toLowerCase()));
                                 if (args.length == 5) params.add(args[4]);
-                                return runCommand(args[2].toLowerCase(), player, params);
+                                return runCommand(args[2].toLowerCase(), sender, params);
                             case "setedit":
-                                if (!player.hasPermission("cvgames.setup.setedit")) { return sendErrorMessage(player, DEFAULT_PERMISSIONS_ERROR); }
-                                if (args.length != 5) return sendErrorMessage(player, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> setedit <var_name> <index>\" ?");
-                                return runCommand("setedit", player, List.of(arenaName, args[3].toLowerCase(), args[4]));
+                                if (!sender.hasPermission("cvgames.setup.setedit")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                                if (args.length != 5) return sendErrorMessage(sender, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> setedit <var_name> <index>\" ?");
+                                return runCommand("setedit", sender, List.of(arenaName, args[3].toLowerCase(), args[4]));
                             case "removevar":
-                                if (!player.hasPermission("cvgames.setup.removevar")) { return sendErrorMessage(player, DEFAULT_PERMISSIONS_ERROR); }
-                                if (args.length != 5) return sendErrorMessage(player, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> removevar <var_name> <index>\" ?");
-                                return runCommand("removevar", player, List.of(arenaName, args[3].toLowerCase(), args[4]));
+                                if (!sender.hasPermission("cvgames.setup.removevar")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                                if (args.length != 5) return sendErrorMessage(sender, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> removevar <var_name> <index>\" ?");
+                                return runCommand("removevar", sender, List.of(arenaName, args[3].toLowerCase(), args[4]));
                         }
                 }
             default:
-                return sendErrorMessage(player, DEFAULT_ERROR);
+                return sendErrorMessage(sender, DEFAULT_ERROR);
         }
     }
 
-    private static boolean runCommand(String commandName, Player player, List<Object> parameters) {
+    private static boolean runCommand(String commandName, CommandSender sender, List<Object> parameters) {
         try {
-            TextComponent response = commands.get(commandName).execute(player, parameters);
-            player.spigot().sendMessage(response);
+            TextComponent response = commands.get(commandName).execute(sender, parameters);
+            if (response != null) sender.spigot().sendMessage(response);
             return true;
         } catch (Error e) {
-            return sendErrorMessage(player, e.getMessage());
+            return sendErrorMessage(sender, e.getMessage());
         }
     }
 
@@ -147,8 +161,8 @@ public class CommandManager {
         return ret;
     }
 
-    private static boolean sendErrorMessage(Player p, String message) {
-        p.sendMessage("§c" + message);
+    private static boolean sendErrorMessage(CommandSender sender, String message) {
+        sender.sendMessage("§c" + message);
         return false;
     }
 }

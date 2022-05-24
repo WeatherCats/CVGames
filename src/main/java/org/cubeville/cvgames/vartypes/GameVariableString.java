@@ -70,7 +70,7 @@ public class GameVariableString extends GameVariable {
 	}
 
 	@Override
-	public TextComponent displayString() {
+	public TextComponent displayString(String arenaName) {
 		return item == null ? new TextComponent("null") : createColorTextComponent(item);
 	}
 

@@ -14,7 +14,6 @@ import static org.cubeville.cvgames.CVGames.getInstance;
 
 public class GameVariableItem extends GameVariable {
     ItemStack item;
-    String path;
 
     @Override
     public void setItem(Player player, String input, String arenaName) throws Error {
@@ -58,7 +57,7 @@ public class GameVariableItem extends GameVariable {
     }
 
     @Override
-    public TextComponent displayString() {
+    public TextComponent displayString(String arenaName) {
         if (item == null) { return new TextComponent("null"); }
         TextComponent tc = new TextComponent("[Get Item]");
         tc.setBold(true);

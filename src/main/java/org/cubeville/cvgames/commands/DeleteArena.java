@@ -12,7 +12,7 @@ import java.util.Set;
 public class DeleteArena extends RunnableCommand {
 
 	@Override
-	public TextComponent execute(Player player, List<Object> parameters) throws Error {
+	public TextComponent execute(CommandSender sender, List<Object> parameters) throws Error {
 
 		String arenaName = ArenaManager.filterArenaInput((String) parameters.get(0));
 		ArenaManager.deleteArena(arenaName);

@@ -10,6 +10,8 @@ import static org.cubeville.cvgames.CVGames.getInstance;
 
 public abstract class GameVariable {
 
+	public String path = "";
+
 	public abstract void setItem(Player player, String input, String arenaName) throws Error;
 
 	public abstract Object getItem();
@@ -22,12 +24,13 @@ public abstract class GameVariable {
 
 	public abstract String typeString();
 
-	public BaseComponent displayString() {
+	public BaseComponent displayString(String arenaName) {
 		if (this.itemString() == null) return new TextComponent("null");
 		return new TextComponent(this.itemString().toString());
 	}
 
 	public void setVariable(String arenaName, String variableName, Player player, String input) throws Error {
+		path = variableName;
 		setItem(player, input, arenaName);
 		storeItem(arenaName, variableName);
 	}

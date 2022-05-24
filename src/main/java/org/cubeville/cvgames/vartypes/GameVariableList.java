@@ -1,6 +1,9 @@
 package org.cubeville.cvgames.vartypes;
 
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -35,6 +38,7 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 
 			GV variable = variableClass.getDeclaredConstructor().newInstance();
 			variable.setItem(player, input, arenaName);
+			variable.path = path + "." + currentValue.size();
 			this.currentValue.add(variable);
 		}
 		catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
@@ -66,6 +70,7 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 
 			GV variable = variableClass.getDeclaredConstructor().newInstance();
 			variable.setItem(object, arenaName);
+			variable.path = path + "." + currentValue.size();
 			this.currentValue.add(variable);
 		}
 		catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
@@ -78,6 +83,7 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 		try {
 			if (maximumSize != null && currentValue.size() >= maximumSize) throw new Error("This list is at max capacity.");
 			GV variable = variableClass.getDeclaredConstructor().newInstance();
+			variable.path = path + "." + currentValue.size();
 			this.currentValue.add(variable);
 			return variable;
 		}
@@ -117,7 +123,11 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 
 	@Override
 	public List<Object> itemString() {
-		return this.currentValue.stream().map(GameVariable::displayString).collect(Collectors.toList());
+		List<Object> out = new ArrayList<>();
+		for (GameVariable var : this.currentValue) {
+			out.add(var.itemString());
+		}
+		return out;
 	}
 
 	@Override
@@ -143,13 +153,26 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 	}
 
 	@Override
-	public TextComponent displayString() {
+	public TextComponent displayString(String arenaName) {
 		if (this.currentValue.size() == 0) { return new TextComponent("[]"); }
 		TextComponent out = new TextComponent();
 		for (GameVariable var : this.currentValue) {
-			out.addExtra("\n§f  - ");
+			out.addExtra("\n  ");
+			if (var instanceof GameVariableObject) {
+				TextComponent tc = new TextComponent("§f- ");
+				String[] splitPath =  var.path.split("\\.");
+				if (splitPath.length == 2) {
+					try {
+						tc.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/cvgames arena " + arenaName + " setedit " + splitPath[0] + " " + (Integer.parseInt(splitPath[1]) + 1)));
+						tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Set editing item to this object")));
+					} catch (NumberFormatException e) { /* then just dont suggest the command */ }
+				}
+				out.addExtra(tc);
+			} else {
+				out.addExtra("§f- ");
+			}
 			out.addExtra(var.isValid() ? "§a" : "§c");
-			out.addExtra(var.displayString());
+			out.addExtra(var.displayString(arenaName));
 			out.addExtra("§r");
 		}
 		return out;

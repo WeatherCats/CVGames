@@ -13,7 +13,7 @@ import java.util.Set;
 public class SetArenaGame extends RunnableCommand {
 
 	@Override
-	public TextComponent execute(Player player, List<Object> parameters)
+	public TextComponent execute(CommandSender sender, List<Object> parameters)
 		throws Error {
 		String arenaName = (String) parameters.get(0);
 		String gameName = CVGames.gameManager().filterGameInput((String) parameters.get(1));

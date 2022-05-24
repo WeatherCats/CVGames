@@ -51,9 +51,9 @@ public class GameQueue implements PlayerContainer {
 		return true;
 	}
 
-	public void join(Player p) {
+	public boolean join(Player p) {
 		if (!canJoinQueue(p)) {
-			return;
+			return false;
 		}
 		players.add(p);
 		setPlayerToLobby(p);
@@ -67,6 +67,7 @@ public class GameQueue implements PlayerContainer {
 			GameUtils.messagePlayerList(players, "§bQueue has been filled, starting game.", Sound.BLOCK_DISPENSER_DISPENSE);
 			startCountdown(SPEED_COUNTDOWN);
 		}
+		return true;
 	}
 
 	private void setPlayerToLobby(Player p) {
@@ -82,25 +83,16 @@ public class GameQueue implements PlayerContainer {
 	private void removePlayerFromLobby(Player p) {
 		p.teleport((Location) arena.getGame().getVariable("exit"));
 		p.getInventory().clear();
-//		ItemStack[] invContents = p.getInventory().getContents();
-//		// clear the leave queue item
-//		for (int i = 0; i < invContents.length; i++) {
-//			if (invContents[i] != null &&
-//					invContents[i].hasItemMeta() &&
-//					Objects.requireNonNull(invContents[i].getItemMeta()).getDisplayName().equals(Objects.requireNonNull(queueLeaveItem().getItemMeta()).getDisplayName())
-//			) {
-//				p.getInventory().setItem(i, null);
-//			}
-//		}
  		GameUtils.messagePlayerList(players, "§b" + p.getName() + " has left the queue.", Sound.BLOCK_DISPENSER_DISPENSE);
 	}
 
 	public void leave( Player p ) {
+		if (!players.contains(p)) { return; }
 		players.remove(p);
 		SignManager.updateArenaSignsFill(arena.getName());
+		PlayerLogoutManager.removePlayer(p);
 		if (arena.getStatus() != ArenaStatus.OPEN) { return; }
 		p.sendMessage("§bYou have left the queue.");
-		PlayerLogoutManager.removePlayer(p);
 		removePlayerFromLobby(p);
 		if (players.size() == (getMinPlayers() - 1)) {
 			GameUtils.messagePlayerList(players, "§cCountdown cancelled -- Not enough players!");

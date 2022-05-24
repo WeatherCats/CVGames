@@ -1,10 +1,15 @@
 package org.cubeville.cvgames.utils;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -12,6 +17,9 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.cubeville.cvgames.models.Arena;
+import org.cubeville.cvgames.vartypes.GameVariable;
+import org.cubeville.cvgames.vartypes.GameVariableList;
+import org.cubeville.cvgames.vartypes.GameVariableObject;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -149,6 +157,44 @@ public class GameUtils {
 		im.setDisplayName(name);
 		item.setItemMeta(im);
 		return item;
+	}
+
+	public static TextComponent addGameVarString(String message, GameVariable gv, String arenaName, String key) {
+		String prefix;
+		if (gv.isValid()) {
+			prefix = "§a";
+		} else {
+			prefix = "§c";
+		}
+		TextComponent tc = new TextComponent(prefix + message);
+		String suggestedCommand;
+		String hover;
+		if (gv instanceof GameVariableObject) {
+			return tc;
+		} else if (gv instanceof GameVariableList) {
+			suggestedCommand = "/cvgames arena " + arenaName + " addvar " + key + " ";
+			hover = "Click to add an item to this list";
+		} else {
+			suggestedCommand = "/cvgames arena " + arenaName + " setvar " + key + " ";
+			hover = "Click to set this variable";
+
+		}
+		tc.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggestedCommand));
+		tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hover)));
+		return tc;
+	}
+
+	public static void clearItemsFromInventory(PlayerInventory inv, List<ItemStack> items) {
+		ItemStack[] invContents = inv.getContents();
+		for (int i = 0; i < invContents.length; i++) {
+			ItemStack checkingItem = invContents[i];
+			if (checkingItem == null) continue;
+			for (ItemStack item : items) {
+				if (checkingItem.isSimilar(item)) {
+					inv.setItem(i, null);
+				}
+			}
+		}
 	}
 
 }
