@@ -14,7 +14,7 @@ public class Help extends RunnableCommand {
                 "§3/cvgames arena create <arena>§f - Create Arena",
                 "§3/cvgames arena delete <arena>§f - Delete Arena",
                 "§3/cvgames arena <arena> setgame <game>§f - Set Arena Game",
-                "§3/cvgames arena <arena> verify§f - Verify Arena",
+                "§3/cvgames arena <arena> verify [path]§f - Verify Arena",
                 "§3/cvgames arena <arena> setvar [input]§f - Set Arena Variable",
                 "§3/cvgames arena <arena> addvar [input]§f - Add Arena Variable",
                 "§3/cvgames arena <arena> setedit <variable> <index>§f - Set Editing Object",

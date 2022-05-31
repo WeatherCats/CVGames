@@ -92,8 +92,11 @@ public class CommandManager {
                         }
                         switch (args[2].toLowerCase()) {
                             case "verify":
+                                if (args.length > 4) return sendErrorMessage(sender, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> verify [path]\" ?");
                                 if (!sender.hasPermission("cvgames.setup.verify")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
-                                return runCommand("verify", sender, List.of(arenaName));
+                                ArrayList<Object> verifyParams = new ArrayList<>(List.of(arenaName));
+                                if (args.length == 4) { verifyParams.add(args[3].toLowerCase());}
+                                return runCommand("verify", sender, verifyParams);
                             case "clearedit":
                                 if (!sender.hasPermission("cvgames.setup.clearedit")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
                                 return runCommand("clearedit", sender, List.of(arenaName));

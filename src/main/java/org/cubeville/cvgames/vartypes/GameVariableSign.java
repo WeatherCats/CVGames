@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.vartypes;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -8,6 +9,7 @@ import org.cubeville.cvgames.utils.GameUtils;
 import org.cubeville.cvgames.managers.SignManager;
 
 import javax.annotation.Nullable;
+import java.util.logging.Level;
 
 public class GameVariableSign extends GameVariable {
 
@@ -29,11 +31,12 @@ public class GameVariableSign extends GameVariable {
 			Location signLoc = GameUtils.parseBlockLocation((String) object);
 			if (!SignManager.signMaterials.contains(signLoc.getBlock().getType())) {
 				sign = null;
-				throw new Error(
-					"Error with game variable sign -- Sign variable pointing to location " + object
-						+ " is not a sign.");
+				Bukkit.getLogger().log(Level.WARNING,
+					"Sign variable for arena " + arenaName + " pointing to location " + object
+						+ " is not a sign. Please remove this variable from the configuration for " + arenaName + ".");
+			} else {
+				sign = (Sign) signLoc.getBlock().getState();
 			}
-			sign = (Sign) signLoc.getBlock().getState();
 		}
 	}
 

@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.vartypes;
 
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -35,7 +36,16 @@ public abstract class GameVariableObject extends GameVariable {
         for (String key : fields.keySet()) {
             out.addExtra("\n  ");
             out.addExtra(GameUtils.addGameVarString(key + " [" + fields.get(key).typeString() + "]: §f", fields.get(key), arenaName, key));
-            out.addExtra(fields.get(key).displayString(arenaName));
+            if (fields.get(key) instanceof GameVariableList) {
+                TextComponent tc = new TextComponent("[Show Contents]");
+                tc.setBold(true);
+                tc.setColor(ChatColor.AQUA);
+                tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cvgames arena " + arenaName + " verify " + path + "." + key));
+                tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to view the contents of this list")));
+                out.addExtra(tc);
+            } else {
+                out.addExtra(fields.get(key).displayString(arenaName));
+            }
             out.addExtra("§r");
         }
         out.addExtra("§f\n}");

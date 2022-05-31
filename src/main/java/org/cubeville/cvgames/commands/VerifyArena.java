@@ -7,6 +7,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.checkerframework.checker.units.qual.A;
 import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.models.Game;
 import org.cubeville.cvgames.utils.GameUtils;
@@ -27,15 +28,38 @@ public class VerifyArena extends RunnableCommand {
 
 		TextComponent out = new TextComponent("Variables for the arena " + arenaName + ":\n");
 
+		ArrayList<String> varKeys = new ArrayList<>();
+		String path = null;
+		if (parameters.size() == 1) {
+			varKeys.addAll(arenaGame.getVariables());
+		} else {
+			path = (String) parameters.get(1);
+			varKeys.add(path);
+		}
 		// Sort the variables alphabetically
-		List<String> varKeys = new ArrayList<>(arenaGame.getVariables());
 		Collections.sort(varKeys);
 
 		for (String key : varKeys) {
+			String[] splitKey = key.split("\\.");
+			String varName = splitKey[splitKey.length - 1];
 			GameVariable gv = arenaGame.getGameVariable(key);
-			if (gv == null) { continue; }
-			out.addExtra(GameUtils.addGameVarString(key + " [" + gv.typeString() + "]: ", gv, arenaName, key));
-			out.addExtra(gv.displayString(arenaName));
+			if (gv == null) {
+				TextComponent tc = new TextComponent("Could not find game variable \"" + key + "\"");
+				tc.setColor(ChatColor.RED);
+				out.addExtra("Could not find ");
+				continue;
+			}
+			out.addExtra(GameUtils.addGameVarString(varName + " [" + gv.typeString() + "]: ", gv, arenaName, varName));
+			if (gv instanceof GameVariableList && path == null) {
+				TextComponent tc = new TextComponent("[Show Contents]");
+				tc.setBold(true);
+				tc.setColor(ChatColor.AQUA);
+				tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cvgames arena " + arenaName + " verify " + key));
+				tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to view the contents of this list")));
+				out.addExtra(tc);
+			} else {
+				out.addExtra(gv.displayString(arenaName));
+			}
 			out.addExtra("\n");
 		}
 
