@@ -17,7 +17,7 @@ public class GiveItem extends RunnableCommand {
         Player player = (Player) sender;
         String path = (String) parameters.get(0);
         ItemStack item =  CVGames.getInstance().getConfig().getItemStack(path);
-        if (item == null) throw new Error("Can't get this item due to developer laziness, wait for server reboot or do /cvgames giveitem <path>");
+        if (item == null) throw new Error("Could not find an item at the path " + path);
         player.getInventory().addItem(item);
         return new TextComponent("§bItem Get!");
     }

@@ -3,11 +3,12 @@ package org.cubeville.cvgames.models;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.managers.SignManager;
 import org.cubeville.cvgames.enums.ArenaStatus;
+import org.cubeville.cvgames.utils.GameUtils;
 
 public class Arena {
 
 	private String name;
-	private Game game;
+	private BaseGame game;
 	private GameQueue queue;
 	private ArenaStatus status;
 
@@ -16,13 +17,13 @@ public class Arena {
 		this.name = name;
 	}
 
-	public void setGame(Game game) {
+	public void setGame(BaseGame game) {
 		this.game = game;
 		this.queue = new GameQueue(this);
 		this.status = ArenaStatus.OPEN;
 	}
 
-	public Game getGame() {
+	public BaseGame getGame() {
 		return game;
 	}
 
@@ -48,5 +49,9 @@ public class Arena {
 		if (status != ArenaStatus.OPEN) {
 			game.whenPlayerLogout(p, this);
 		}
+	}
+
+	public String teamSelectorInventoryName() {
+		return GameUtils.teamSelectorPrefix + name;
 	}
 }

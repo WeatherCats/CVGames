@@ -6,14 +6,11 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.checkerframework.checker.units.qual.A;
 import org.cubeville.cvgames.managers.ArenaManager;
-import org.cubeville.cvgames.models.Game;
+import org.cubeville.cvgames.models.BaseGame;
 import org.cubeville.cvgames.utils.GameUtils;
 import org.cubeville.cvgames.vartypes.GameVariable;
 import org.cubeville.cvgames.vartypes.GameVariableList;
-import org.cubeville.cvgames.vartypes.GameVariableObject;
 
 import java.util.*;
 
@@ -23,7 +20,7 @@ public class VerifyArena extends RunnableCommand {
 	public TextComponent execute(CommandSender sender, List<Object> parameters)
 		throws Error {
 		String arenaName = ((String) parameters.get(0)).toLowerCase();
-		Game arenaGame = ArenaManager.getArena(arenaName).getGame();
+		BaseGame arenaGame = ArenaManager.getArena(arenaName).getGame();
 		if (arenaGame == null) throw new Error("You need to set the game for the arena " + arenaName);
 
 		TextComponent out = new TextComponent("Variables for the arena " + arenaName + ":\n");

@@ -3,7 +3,7 @@ package org.cubeville.cvgames.managers;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.cubeville.cvgames.CVGames;
-import org.cubeville.cvgames.models.Game;
+import org.cubeville.cvgames.models.BaseGame;
 
 import java.util.Objects;
 
@@ -28,7 +28,7 @@ public class ConfigImportManager {
 
 
 			if (!arenaConfig.contains("variables")) continue;
-			Game arenaGame = ArenaManager.getArena(arenaName).getGame();
+			BaseGame arenaGame = ArenaManager.getArena(arenaName).getGame();
 			parseArenaVariables("variables", arenaConfig, arenaName);
 		}
 	}

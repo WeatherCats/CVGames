@@ -72,8 +72,9 @@ public abstract class GameVariableObject extends GameVariable {
 
     public void addToField(String arenaName, String fieldName, Player player, String input) throws Error {
         if (!fields.containsKey(fieldName)) throw new Error("Field " + fieldName + " does not exist for object " + name);
-        String path = EditingManager.getEditPath(arenaName, player) + "." + fieldName;
-        fields.get(fieldName).addVariable(arenaName, path, player, input);
+        String fieldPath = EditingManager.getEditPath(arenaName, player) + "." + fieldName;
+        fields.get(fieldName).path = fieldPath;
+        fields.get(fieldName).addVariable(arenaName, fieldPath, player, input);
     }
 
     public void addField(String fieldName, GameVariable gameVariable) {
@@ -83,6 +84,7 @@ public abstract class GameVariableObject extends GameVariable {
     public void setField(String arenaName, String fieldName, Player player, String input) throws Error {
         if (!fields.containsKey(fieldName)) throw new Error("Field " + fieldName + " does not exist for object " + name);
         String fieldPath = EditingManager.getEditPath(arenaName, player) + "." + fieldName;
+        fields.get(fieldName).path = fieldPath;
         fields.get(fieldName).setVariable(arenaName, fieldPath, player, input);
     }
 

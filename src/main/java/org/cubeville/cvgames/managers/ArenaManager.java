@@ -2,7 +2,7 @@ package org.cubeville.cvgames.managers;
 
 import org.cubeville.cvgames.models.Arena;
 import org.cubeville.cvgames.CVGames;
-import org.cubeville.cvgames.models.Game;
+import org.cubeville.cvgames.models.BaseGame;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -38,7 +38,7 @@ public class ArenaManager {
 		try {
 			Class[] cArgs = new Class[1];
 			cArgs[0] = String.class;
-			Game arenaGame = (Game) gameManager().getGame(game).getDeclaredConstructor(cArgs).newInstance(name);
+			BaseGame arenaGame = (BaseGame) gameManager().getGame(game).getDeclaredConstructor(cArgs).newInstance(name);
 			getServer().getPluginManager().registerEvents(arenaGame, CVGames.getInstance());
 
 			arenas.get(name).setGame(arenaGame);

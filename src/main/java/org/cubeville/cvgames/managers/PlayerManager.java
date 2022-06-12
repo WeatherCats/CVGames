@@ -6,7 +6,7 @@ import org.cubeville.cvgames.models.Arena;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class PlayerLogoutManager {
+public class PlayerManager {
 
 	private static HashMap<UUID, String> uuidToArenaName = new HashMap<>();
 

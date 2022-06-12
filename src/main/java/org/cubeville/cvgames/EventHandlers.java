@@ -8,10 +8,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.cubeville.cvgames.enums.ArenaStatus;
-import org.cubeville.cvgames.managers.PlayerLogoutManager;
+import org.cubeville.cvgames.managers.PlayerManager;
 import org.cubeville.cvgames.managers.SignManager;
 import org.cubeville.cvgames.models.Arena;
 import org.cubeville.cvgames.models.QueueSign;
+import org.cubeville.cvgames.utils.GameUtils;
 
 public class EventHandlers implements Listener {
 
@@ -29,14 +30,17 @@ public class EventHandlers implements Listener {
 		}
 
 		// Is the player in a queue for an arena
-		Arena arena = PlayerLogoutManager.getPlayerArena(event.getPlayer());
+		Arena arena = PlayerManager.getPlayerArena(event.getPlayer());
 		if (arena != null && arena.getQueue() != null && arena.getStatus().equals(ArenaStatus.OPEN)) {
-			// If the player is holding the item to leave the queue
 			if (event.getItem() != null) {
-				String mainHandDisplayName = event.getItem().getItemMeta().getDisplayName();
-				if (arena.getQueue().queueLeaveItem().getItemMeta().getDisplayName().equals(mainHandDisplayName)) {
+				// If the player is holding the item to leave the queue, have them leave it
+				if (arena.getQueue().queueLeaveItem().isSimilar(event.getItem())) {
 					event.setCancelled(true);
 					arena.getQueue().leave(event.getPlayer());
+				// If the player is holding the team selector item, open the team selector
+				} else if (arena.getQueue().teamSelectorItem().isSimilar(event.getItem())) {
+					event.setCancelled(true);
+					arena.getQueue().openTeamSelector(event.getPlayer());
 				}
 			}
 		}
@@ -44,18 +48,27 @@ public class EventHandlers implements Listener {
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e) {
-		Arena arena = PlayerLogoutManager.getPlayerArena(e.getPlayer());
+		Arena arena = PlayerManager.getPlayerArena(e.getPlayer());
 		if (arena != null) {
 			arena.playerLogoutCleanup(e.getPlayer());
-			PlayerLogoutManager.removePlayer(e.getPlayer());
+			PlayerManager.removePlayer(e.getPlayer());
 		}
 	}
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
+		if (event.getView().getTitle().contains(GameUtils.teamSelectorPrefix)) {
+			if (event.getWhoClicked() instanceof Player && event.getClick().isLeftClick() && event.getSlot() >= 0) {
+				Arena arena = PlayerManager.getPlayerArena((Player) event.getWhoClicked());
+				if (arena != null && arena.getQueue() != null && arena.getStatus().equals(ArenaStatus.OPEN)) {
+					arena.getQueue().setSelectedTeam((Player) event.getWhoClicked(), event.getSlot());
+				}
+			}
+		}
+
 		if (event.getViewers().size() == 0) return;
 		// Is the player in a queue for an arena
-		Arena arena = PlayerLogoutManager.getPlayerArena((Player) event.getViewers().get(0));
+		Arena arena = PlayerManager.getPlayerArena((Player) event.getViewers().get(0));
 		if (arena != null && arena.getQueue() != null && arena.getStatus().equals(ArenaStatus.OPEN)) {
 			// If the player is moving the item to leave the queue
 			if (event.getCurrentItem() != null && event.getCurrentItem().equals(arena.getQueue().queueLeaveItem())) {

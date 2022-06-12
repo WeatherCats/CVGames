@@ -28,6 +28,8 @@ import java.util.regex.Pattern;
 
 public class GameUtils {
 
+	public static final String teamSelectorPrefix = "Select team on ";
+
 	public static Map<String, List<Player>> divideTeams(List<Player> players, List<String> teamNames) {
 		List<Float> percentages = new ArrayList<>();
 		for (String ignored : teamNames) {
@@ -60,11 +62,11 @@ public class GameUtils {
 	}
 
 
-	public static void messagePlayerList(List<Player> players, String message) {
+	public static void messagePlayerList(Iterable<Player> players, String message) {
 		messagePlayerList(players, message, null);
 	}
 
-	public static void messagePlayerList(List<Player> players, String message, @Nullable Sound sound) {
+	public static void messagePlayerList(Iterable<Player> players, String message, @Nullable Sound sound) {
 		for (Player player : players) {
 			player.sendMessage(message);
 			if (sound != null) {
@@ -196,5 +198,4 @@ public class GameUtils {
 			}
 		}
 	}
-
 }

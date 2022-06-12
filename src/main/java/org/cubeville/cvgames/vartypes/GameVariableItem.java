@@ -46,7 +46,6 @@ public class GameVariableItem extends GameVariable {
 
     @Override
     public ItemStack getFromPath(String path) {
-        this.path = path;
         return getInstance().getConfig().getItemStack(path);
     }
 
@@ -61,6 +60,7 @@ public class GameVariableItem extends GameVariable {
         TextComponent tc = new TextComponent("[Get Item]");
         tc.setBold(true);
         tc.setColor(ChatColor.AQUA);
+        System.out.println(path);
         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cvgames giveitem " + path));
         tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to get this item")));
         return tc;

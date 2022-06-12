@@ -1,10 +1,10 @@
 package org.cubeville.cvgames.managers;
 
-import org.cubeville.cvgames.models.Game;
+import org.cubeville.cvgames.models.BaseGame;
 
 import java.util.HashMap;
 
-public class GameManager<T extends Game> {
+public class GameManager<T extends BaseGame> {
 
 	private HashMap<String, Class<T>> games = new HashMap<>();
 
