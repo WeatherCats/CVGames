@@ -18,7 +18,7 @@ import java.util.*;
 abstract public class BaseGame implements PlayerContainer, Listener {
 	private final String id;
 	protected Arena arena;
-	protected HashMap<Player, ?> state;
+	protected HashMap<Player, ?> state = new HashMap<>();
 	private int arenaRegionTask;
 	private final Map<String, GameVariable> verificationMap = new HashMap<>();
 
