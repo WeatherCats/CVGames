@@ -25,7 +25,10 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	public BaseGame(String id) {
 		this.id = id;
 		addGameVariable("region", new GameVariableRegion());
+		state = defineEmptyStateObject();
 	}
+
+	public abstract HashMap<Player, ?> defineEmptyStateObject();
 
 	@Override
 	public void whenPlayerLogout(Player p, Arena a) {
