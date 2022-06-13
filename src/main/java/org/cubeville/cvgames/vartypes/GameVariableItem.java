@@ -12,10 +12,12 @@ import javax.annotation.Nullable;
 import static org.cubeville.cvgames.CVGames.getInstance;
 
 public class GameVariableItem extends GameVariable {
+    String arenaName;
     ItemStack item;
 
     @Override
     public void setItem(Player player, String input, String arenaName) throws Error {
+        this.arenaName = arenaName;
         item = player.getInventory().getItemInMainHand();
         item.setAmount(1);
     }
@@ -37,6 +39,7 @@ public class GameVariableItem extends GameVariable {
 
     @Override
     public void setItem(@Nullable Object object, String arenaName) {
+        this.arenaName = arenaName;
         if (!(object instanceof ItemStack)) {
             item = null;
         } else {
@@ -60,8 +63,8 @@ public class GameVariableItem extends GameVariable {
         TextComponent tc = new TextComponent("[Get Item]");
         tc.setBold(true);
         tc.setColor(ChatColor.AQUA);
-        System.out.println(path);
-        tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cvgames giveitem " + path));
+        String fullPath = "arenas." + arenaName + ".variables." + path;
+        tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cvgames giveitem " + fullPath));
         tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to get this item")));
         return tc;
     }

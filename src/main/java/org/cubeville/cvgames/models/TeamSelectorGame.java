@@ -25,6 +25,8 @@ public abstract class TeamSelectorGame extends BaseGame {
         }
 
         List<Player> unselectedPlayers = playerTeamMap.get(-1);
+        Collections.shuffle(unselectedPlayers);
+
         for (Player player : unselectedPlayers) {
             // find the smallest team and add the unselected players to the smallest teams
             int smallestTeamSize = Integer.MAX_VALUE;

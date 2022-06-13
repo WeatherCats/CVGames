@@ -138,6 +138,9 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 
 	@Override
 	public boolean isValid() {
+		for (GameVariable var : this.currentValue) {
+			if (!var.isValid()) return false;
+		}
 		return currentValue.size() >= minimumSize && (maximumSize == null || currentValue.size() <= maximumSize);
 	}
 

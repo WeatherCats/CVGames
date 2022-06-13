@@ -66,14 +66,19 @@ public class GameQueue implements PlayerContainer {
 	}
 
 	public boolean join(Player p) {
-		Set<Player> players = getPlayerSet();
 		if (!canJoinQueue(p)) {
 			return false;
 		}
-		if (!playerTeams.containsKey(-1)) playerTeams.put(-1, new ArrayList<>());
+		if (!playerTeams.containsKey(-1)) {
+			int numberOfTeams = ((TeamSelectorGame) arena.getGame()).getTeamVariable().size();
+			for (int i = -1; i < numberOfTeams; i++) {
+				playerTeams.put(i, new ArrayList<>());
+			}
+		}
 		playerTeams.get(-1).add(p);
 		setPlayerToLobby(p);
 		PlayerManager.setPlayer(p, arena.getName());
+		Set<Player> players = getPlayerSet();
 		if (players.size() == getMinPlayers()) {
 			startCountdown(20);
 		}
@@ -205,18 +210,28 @@ public class GameQueue implements PlayerContainer {
 		if (index >= numberOfTeams && index % 9 != 8) return;
 		// when a player is selecting one of the teams
 		if (index < numberOfTeams) {
-			int maxTeamSize = (getPlayerSet().size() / numberOfTeams) + 1;
-			if (!playerTeams.containsKey(index)) playerTeams.put(index, new ArrayList<>());
-			if (playerTeams.get(index).size() >= maxTeamSize) {
-				player.sendMessage("§cYou cannot join that team, it is full!");
-				player.playSound(player.getLocation(),Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, 1.0F);
+			int maxTeamSize = (int) Math.ceil((double) getPlayerSet().size() / numberOfTeams);
+			if (playerTeams.get(index).contains(player)) {
+				player.sendMessage("§cYou are already on that team!");
+				player.playSound(player.getLocation(),Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, .7F);
 				return;
 			}
+			if (playerTeams.get(index).size() >= maxTeamSize) {
+				player.sendMessage("§cYou cannot join that team, it is full!");
+				player.playSound(player.getLocation(),Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, .7F);
+				return;
+			}
+			HashMap<String, Object> team = ((TeamSelectorGame) arena.getGame()).getTeamVariable().get(index);
 			playerTeams.values().forEach(playerSet -> playerSet.remove(player));
 			playerTeams.get(index).add(player);
+			ChatColor chatColor = (ChatColor) team.get("chat-color");
+			player.sendMessage(chatColor + "You have joined " + team.get("name"));
+			player.playSound(player.getLocation(),Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 0.8F, 0.5F);
 		} else {
 			playerTeams.values().forEach(playerSet -> playerSet.remove(player));
 			playerTeams.get(-1).add(player);
+			player.sendMessage("§eYou are no longer selecting a team");
+			player.playSound(player.getLocation(),Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 0.8F, 0.5F);
 		}
 	}
 

@@ -62,6 +62,8 @@ public class EventHandlers implements Listener {
 				Arena arena = PlayerManager.getPlayerArena((Player) event.getWhoClicked());
 				if (arena != null && arena.getQueue() != null && arena.getStatus().equals(ArenaStatus.OPEN)) {
 					arena.getQueue().setSelectedTeam((Player) event.getWhoClicked(), event.getSlot());
+					event.setCancelled(true);
+					event.getWhoClicked().closeInventory();
 				}
 			}
 		}
