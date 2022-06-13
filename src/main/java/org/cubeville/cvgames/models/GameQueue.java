@@ -100,7 +100,7 @@ public class GameQueue implements PlayerContainer {
 			if (arena.getGame() instanceof TeamSelectorGame) {
 				numberOfTeams = ((TeamSelectorGame) arena.getGame()).getTeamVariable().size();
 			}
-			if (numberOfTeams > 1) inv.setItem(7, teamSelectorItem());
+			if (numberOfTeams > 1 && (Boolean) arena.getGame().getVariable("team-selector")) inv.setItem(7, teamSelectorItem());
 			inv.setItem(8, queueLeaveItem());
 		}, 20L);
 		GameUtils.messagePlayerList(getPlayerSet(), "§b" + p.getName() + " has joined the queue!", Sound.BLOCK_DISPENSER_DISPENSE);
@@ -113,9 +113,9 @@ public class GameQueue implements PlayerContainer {
 	}
 
 	public void leave( Player p ) {
-		Set<Player> players = getPlayerSet();
-		if (!players.contains(p)) { return; }
+		if (!getPlayerSet().contains(p)) { return; }
 		playerTeams.values().forEach(playerSet -> playerSet.remove(p));
+		Set<Player> players = getPlayerSet();
 		SignManager.updateArenaSignsFill(arena.getName());
 		PlayerManager.removePlayer(p);
 		if (arena.getStatus() != ArenaStatus.OPEN) { return; }
