@@ -70,9 +70,13 @@ public class GameQueue implements PlayerContainer {
 			return false;
 		}
 		if (!playerTeams.containsKey(-1)) {
-			int numberOfTeams = ((TeamSelectorGame) arena.getGame()).getTeamVariable().size();
-			for (int i = -1; i < numberOfTeams; i++) {
-				playerTeams.put(i, new ArrayList<>());
+			if (arena.getGame() instanceof TeamSelectorGame) {
+				int numberOfTeams = ((TeamSelectorGame) arena.getGame()).getTeamVariable().size();
+				for (int i = -1; i < numberOfTeams; i++) {
+					playerTeams.put(i, new ArrayList<>());
+				}
+			} else {
+				playerTeams.put(-1, new ArrayList<>());
 			}
 		}
 		playerTeams.get(-1).add(p);
