@@ -34,20 +34,28 @@ public class ArenaManager {
 		arenas.remove(name);
 	}
 
-	public static void setArenaGame(String name, String game) throws Error {
+	public static void addArenaGame(String name, String game) throws Error {
 		try {
 			Class[] cArgs = new Class[1];
 			cArgs[0] = String.class;
 			BaseGame arenaGame = (BaseGame) gameManager().getGame(game).getDeclaredConstructor(cArgs).newInstance(name);
 			getServer().getPluginManager().registerEvents(arenaGame, CVGames.getInstance());
 
-			arenas.get(name).setGame(arenaGame);
+			arenas.get(name).addGame(arenaGame);
 		}
 		catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
 			e.printStackTrace();
-			throw new Error("Could not set game properly for arena " + name + " and game " + game + "!");
+			throw new Error("Could not add game properly for arena " + name + " and game " + game + "!");
 		}
-		getInstance().getConfig().set("arenas." + name + ".game", game);
+		getInstance().getConfig().set("arenas." + name + ".game", arenas.get(name).getGameNames());
+		getInstance().saveConfig();
+	}
+
+	public static void removeArenaGame(String name, String game) {
+		if (!arenas.containsKey(name)) return;
+		arenas.get(name).removeGameWithName(game);
+
+		getInstance().getConfig().set("arenas." + name + ".game", arenas.get(name).getGameNames());
 		getInstance().saveConfig();
 	}
 
@@ -55,13 +63,5 @@ public class ArenaManager {
 
 	public static boolean hasArena(String name) {
 		return arenas.containsKey(name) || getInstance().getConfig().contains("arenas." + name);
-	}
-
-	public static String filterArenaInput(String name) throws Error {
-		String arenaName = name.toLowerCase();
-		if (!hasArena(arenaName)) {
-			throw new Error("Arena with name " + arenaName + " does not exist!");
-		}
-		return arenaName;
 	}
 }

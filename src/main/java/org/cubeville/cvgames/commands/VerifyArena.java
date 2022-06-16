@@ -6,7 +6,10 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.command.CommandSender;
+import org.checkerframework.checker.units.qual.A;
+import org.checkerframework.checker.units.qual.C;
 import org.cubeville.cvgames.managers.ArenaManager;
+import org.cubeville.cvgames.models.Arena;
 import org.cubeville.cvgames.models.BaseGame;
 import org.cubeville.cvgames.utils.GameUtils;
 import org.cubeville.cvgames.vartypes.GameVariable;
@@ -19,16 +22,22 @@ public class VerifyArena extends RunnableCommand {
 	@Override
 	public TextComponent execute(CommandSender sender, List<Object> parameters)
 		throws Error {
-		String arenaName = ((String) parameters.get(0)).toLowerCase();
-		BaseGame arenaGame = ArenaManager.getArena(arenaName).getGame();
-		if (arenaGame == null) throw new Error("You need to set the game for the arena " + arenaName);
+		Arena arena = (Arena) parameters.get(0);
 
-		TextComponent out = new TextComponent("Variables for the arena " + arenaName + ":\n");
+		TextComponent out = new TextComponent("[Variables for the arena " + arena.getName() + "]\n");
+		out.setBold(true);
+		out.setColor(ChatColor.AQUA);
+		out.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cvgames arena " + arena.getName() + " verify"));
+
+		TextComponent clearEdit = new TextComponent("[Edit Main Object]");
+		clearEdit.setBold(true);
+		clearEdit.setColor(ChatColor.AQUA);
+		out.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cvgames arena " + arena.getName() + " clearedit"));
 
 		ArrayList<String> varKeys = new ArrayList<>();
 		String path = null;
 		if (parameters.size() == 1) {
-			varKeys.addAll(arenaGame.getVariables());
+			varKeys.addAll(arena.getVariables());
 		} else {
 			path = (String) parameters.get(1);
 			varKeys.add(path);
@@ -39,23 +48,23 @@ public class VerifyArena extends RunnableCommand {
 		for (String key : varKeys) {
 			String[] splitKey = key.split("\\.");
 			String varName = splitKey[splitKey.length - 1];
-			GameVariable gv = arenaGame.getGameVariable(key);
+			GameVariable gv = arena.getGameVariable(key);
 			if (gv == null) {
 				TextComponent tc = new TextComponent("Could not find game variable \"" + key + "\"");
 				tc.setColor(ChatColor.RED);
-				out.addExtra("Could not find ");
+				out.addExtra(tc);
 				continue;
 			}
-			out.addExtra(GameUtils.addGameVarString(varName + " [" + gv.typeString() + "]: ", gv, arenaName, varName));
+			out.addExtra(GameUtils.addGameVarString(varName + " [" + gv.typeString() + "]: ", gv, arena.getName(), varName));
 			if (gv instanceof GameVariableList && path == null) {
 				TextComponent tc = new TextComponent("[Show Contents]");
 				tc.setBold(true);
 				tc.setColor(ChatColor.AQUA);
-				tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cvgames arena " + arenaName + " verify " + key));
+				tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cvgames arena " + arena.getName() + " verify " + key));
 				tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to view the contents of this list")));
 				out.addExtra(tc);
 			} else {
-				out.addExtra(gv.displayString(arenaName));
+				out.addExtra(gv.displayString(arena.getName()));
 			}
 			out.addExtra("\n");
 		}

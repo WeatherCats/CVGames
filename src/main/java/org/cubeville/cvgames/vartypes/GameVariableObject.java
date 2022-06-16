@@ -6,13 +6,16 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.entity.Player;
+import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.managers.EditingManager;
+import org.cubeville.cvgames.models.Arena;
 import org.cubeville.cvgames.utils.GameUtils;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.Map;
 
-public abstract class GameVariableObject extends GameVariable {
+public class GameVariableObject extends GameVariable {
 
     String name;
     HashMap<String, GameVariable> fields = new HashMap<>();
@@ -33,8 +36,9 @@ public abstract class GameVariableObject extends GameVariable {
     @Override
     public TextComponent displayString(String arenaName) {
         TextComponent out = new TextComponent("§f{");
+
         for (String key : fields.keySet()) {
-            out.addExtra("\n  ");
+            out.addExtra("\n");
             out.addExtra(GameUtils.addGameVarString(key + " [" + fields.get(key).typeString() + "]: §f", fields.get(key), arenaName, key));
             if (fields.get(key) instanceof GameVariableList) {
                 TextComponent tc = new TextComponent("[Show Contents]");
@@ -100,6 +104,14 @@ public abstract class GameVariableObject extends GameVariable {
     @Override public void storeItem(String arenaName, String path) {
         for (String key: fields.keySet()) {
             fields.get(key).storeItem(arenaName, path + "." + key);
+        }
+    }
+
+    public void populateFields(String arenaName, String path) {
+        Arena arena = ArenaManager.getArena(arenaName);
+        Map<String, GameVariable> objectFields = arena.getObjectFields(path);
+        for (String fieldName : objectFields.keySet()) {
+            addField(fieldName, objectFields.get(fieldName));
         }
     }
 

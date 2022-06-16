@@ -3,8 +3,8 @@ package org.cubeville.cvgames.managers;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.cubeville.cvgames.CVGames;
-import org.cubeville.cvgames.models.BaseGame;
 
+import java.util.List;
 import java.util.Objects;
 
 public class ConfigImportManager {
@@ -18,17 +18,22 @@ public class ConfigImportManager {
 		for (String arenaName : Objects.requireNonNull(config.getConfigurationSection("arenas")).getKeys(false)) {
 
 			ConfigurationSection arenaConfig = config.getConfigurationSection("arenas." + arenaName);
-			String game = arenaConfig.getString("game");
-			if (game != null && game.equals(gameName)) {
-				// now we know the game is set up properly, we can add the arena and set its game
-				ArenaManager.addArena(arenaName);
-				ArenaManager.setArenaGame(arenaName, game);
+			assert arenaConfig != null;
+
+			if (arenaConfig.isList("game")) {
+				List<String> games = arenaConfig.getStringList("game");
+				if (!games.contains(gameName)) continue;
+			} else {
+				String game = arenaConfig.getString("game");
+				if (game == null || !game.equals(gameName)) continue;
 			}
-			else continue;
+
+			// now we know the game is set up properly, we can add the arena and set its game
+			ArenaManager.addArena(arenaName);
+			ArenaManager.addArenaGame(arenaName, gameName);
 
 
 			if (!arenaConfig.contains("variables")) continue;
-			BaseGame arenaGame = ArenaManager.getArena(arenaName).getGame();
 			parseArenaVariables("variables", arenaConfig, arenaName);
 		}
 	}
@@ -42,7 +47,7 @@ public class ConfigImportManager {
 			if (config.isConfigurationSection(var)) {
 				parseArenaVariables(path, arenaConfig, arenaName);
 			} else {
-				ArenaManager.getArena(arenaName).getGame().setVarFromValue(path, arenaName);
+				ArenaManager.getArena(arenaName).setVarFromValue(path, arenaName);
 			}
 		}
 	}

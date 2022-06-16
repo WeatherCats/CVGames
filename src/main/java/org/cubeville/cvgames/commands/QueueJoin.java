@@ -16,8 +16,12 @@ public class QueueJoin extends RunnableCommand {
     public TextComponent execute(CommandSender sender, List<Object> params) throws Error {
         Arena arena = ArenaManager.getArena((String) params.get(0));
         Player playerToAdd = (Player) params.get(1);
-        if (!arena.getQueue().join(playerToAdd)) {
-            playerToAdd.teleport((Location) arena.getGame().getVariable("exit"));
+        String gameName = (String) params.get(2);
+        if (arena.getGame(gameName) == null) {
+            throw new Error("Arena " + arena.getName() + " does not have game " + gameName);
+        }
+        if (!arena.getQueue().join(playerToAdd, gameName)) {
+            playerToAdd.teleport((Location) arena.getGame(gameName).getVariable("exit"));
         } else {
             SignManager.updateArenaSignsFill(arena.getName());
         }

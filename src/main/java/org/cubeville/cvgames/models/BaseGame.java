@@ -21,7 +21,6 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	protected Arena arena;
 	protected HashMap<Player, Object> state = new HashMap<>();
 	private int arenaRegionTask;
-	private final Map<String, GameVariable> verificationMap = new HashMap<>();
 	private boolean isRunningGame = false;
 
 	public BaseGame(String id) {
@@ -40,7 +39,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		onPlayerLeave(p);
 		state.remove(p);
 		p.getInventory().clear();
-		if (teleportToExit) { p.teleport((Location) arena.getGame().getVariable("exit")); }
+		if (teleportToExit) { p.teleport((Location) arena.getGame(id).getVariable("exit")); }
 		if (isRunningGame && state.isEmpty()) { finishGame(); }
 	}
 
@@ -81,69 +80,6 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 
 	public abstract void onGameFinish();
 
-	// i hate this
-	public GameVariable getGameVariable(String var, GameVariable inVariable) {
-		if (!var.equals("") && var.charAt(0) == '.') {
-			var = var.substring(1);
-		}
-		if (var.equals("")) { return inVariable; }
-		String firstVar = var.split("\\.")[0];
-		GameVariable gv;
-		if (inVariable instanceof GameVariableList) {
-			GameVariable variableAtIndex = ((GameVariableList<?>) inVariable).getVariableAtIndex(Integer.valueOf(firstVar));
-			if (variableAtIndex != null) {
-				gv = variableAtIndex;
-			} else {
-				gv = ((GameVariableList<?>) inVariable).addBlankGameVariable();
-			}
-		} else if (inVariable instanceof GameVariableObject) {
-			// inVariable is an object
-			gv = ((GameVariableObject) inVariable).getVariableAtField(firstVar);
-		} else {
-			return null;
-		}
-
-		if (gv instanceof GameVariableList || gv instanceof GameVariableObject) {
-			// continued despair
-			return getGameVariable(var.replaceFirst(firstVar, ""), gv);
-		}
-		return gv;
-	}
-
-	public GameVariable getGameVariable(String var) {
-		String firstVar = var.split("\\.")[0];
-		GameVariable gv = verificationMap.get(firstVar);
-		if (gv instanceof GameVariableList || gv instanceof GameVariableObject) {
-			// fuck
-			gv.path = firstVar;
-			return getGameVariable(var.replaceFirst(firstVar, ""), gv);
-		}
-		return gv;
-	}
-
-	public Object getVariable(String var) {
-		return getGameVariable(var.toLowerCase()).getItem();
-	}
-
-	public boolean hasVariable(String var) {
-		return verificationMap.containsKey(var);
-	}
-
-	public void addGameVariable(String varName, GameVariable variable) {
-		addGameVariable(varName, variable, null);
-	}
-
-	public void addGameVariable(String varName, GameVariable variable, @Nullable Object defaultValue) {
-		if (defaultValue != null) {
-			if (defaultValue instanceof List && variable instanceof GameVariableList) {
-				((GameVariableList) variable).setItems((List<Object>) defaultValue, "");
-			} else {
-				variable.setItem(defaultValue, "");
-			}
-		}
-		verificationMap.put(varName.toLowerCase(), variable);
-	}
-
 	private void startArenaRegionCheck() {
 		GameRegion gameRegion = (GameRegion) getVariable("region");
 
@@ -163,21 +99,23 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		arenaRegionTask = -1;
 	}
 
-	public void setVarFromValue(String path, String arenaName) {
-		String fullPath = "arenas." + arenaName + "." + path;
-		path = path.replace("variables", "");
-		if (!path.equals("") && path.charAt(0) == '.') {
-			path = path.substring(1);
-		}
-
-		GameVariable gv = getGameVariable(path);
-		if (gv == null) return;
-		gv.path = path;
-		gv.setItem(gv.getFromPath(fullPath), arenaName);
+	public Object getVariable(String var) {
+		return arena.getVariable(var);
 	}
 
-	public Set<String> getVariables() {
-		return this.verificationMap.keySet();
+	public void addGameVariable(String varName, GameVariable variable) {
+		addGameVariable(varName, variable, null);
 	}
 
+	public void addGameVariable(String varName, GameVariable variable, @Nullable Object defaultValue) {
+		arena.addGameVariable(varName, variable, defaultValue);
+	}
+
+	public void addGameVariableObjectList(String varName, HashMap<String, GameVariable> fields) {
+		arena.addGameVariableObjectList(varName, fields);
+	}
+
+	public void addGameVariableTeamsList(HashMap<String, GameVariable> fields) {
+		arena.addGameVariableTeamsList(fields);
+	}
 }

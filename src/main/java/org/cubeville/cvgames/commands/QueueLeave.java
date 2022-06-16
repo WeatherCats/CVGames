@@ -13,7 +13,7 @@ public class QueueLeave extends RunnableCommand {
 
     @Override
     public TextComponent execute(CommandSender sender, List<Object> params) throws Error {
-        Arena arena = ArenaManager.getArena((String) params.get(0));
+        Arena arena = (Arena) params.get(0);
         Player playerToLeave = (Player) params.get(1);
         arena.getQueue().leave(playerToLeave);
         return null;

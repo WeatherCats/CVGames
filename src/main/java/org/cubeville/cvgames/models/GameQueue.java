@@ -25,16 +25,20 @@ public class GameQueue implements PlayerContainer {
 	private Arena arena;
 	private int countdownTimer;
 	private int counter;
+	private String selectedGame;
 
 	public GameQueue(Arena arena) {
 		this.arena = arena;
-		arena.getGame().addGameVariable("queue-min", new GameVariableInt());
-		arena.getGame().addGameVariable("queue-max", new GameVariableInt());
-		arena.getGame().addGameVariable("lobby", new GameVariableLocation());
-		arena.getGame().addGameVariable("exit", new GameVariableLocation());
-		arena.getGame().addGameVariable("signs", new GameVariableList<>(GameVariableQueueSign.class));
-		if (arena.getGame() instanceof TeamSelectorGame) {
-			arena.getGame().addGameVariable("team-selector", new GameVariableFlag(), true);
+	}
+
+	public void setGameQueueVariables(BaseGame game) {
+		arena.addGameVariable("queue-min", new GameVariableInt());
+		arena.addGameVariable("queue-max", new GameVariableInt());
+		arena.addGameVariable("lobby", new GameVariableLocation());
+		arena.addGameVariable("exit", new GameVariableLocation());
+		arena.addGameVariable("signs", new GameVariableList<>(GameVariableQueueSign.class));
+		if (game instanceof TeamSelectorGame) {
+			arena.addGameVariable("team-selector", new GameVariableFlag(), true);
 		}
 	}
 
@@ -65,13 +69,17 @@ public class GameQueue implements PlayerContainer {
 		return players;
 	}
 
-	public boolean join(Player p) {
+	public boolean join(Player p, String gameName) {
 		if (!canJoinQueue(p)) {
 			return false;
 		}
+		if (arena.getStatus().equals(ArenaStatus.OPEN)) {
+			arena.setStatus(ArenaStatus.IN_QUEUE);
+			selectedGame = gameName;
+		}
 		if (!playerTeams.containsKey(-1)) {
-			if (arena.getGame() instanceof TeamSelectorGame) {
-				int numberOfTeams = ((TeamSelectorGame) arena.getGame()).getTeamVariable().size();
+			if (getGame() instanceof TeamSelectorGame) {
+				int numberOfTeams = ((TeamSelectorGame) getGame()).getTeamVariable().size();
 				for (int i = -1; i < numberOfTeams; i++) {
 					playerTeams.put(i, new ArrayList<>());
 				}
@@ -95,23 +103,27 @@ public class GameQueue implements PlayerContainer {
 		return true;
 	}
 
+	private BaseGame getGame() {
+		return arena.getGame(selectedGame);
+	}
+
 	private void setPlayerToLobby(Player p) {
-		p.teleport((Location) arena.getGame().getVariable("lobby"));
+		p.teleport((Location) arena.getGame(selectedGame).getVariable("lobby"));
 		PlayerInventory inv = p.getInventory();
 		inv.clear();
 		Bukkit.getScheduler().scheduleSyncDelayedTask(CVGames.getInstance(), () -> {
 			int numberOfTeams = 0;
-			if (arena.getGame() instanceof TeamSelectorGame) {
-				numberOfTeams = ((TeamSelectorGame) arena.getGame()).getTeamVariable().size();
+			if (getGame() instanceof TeamSelectorGame) {
+				numberOfTeams = ((TeamSelectorGame) getGame()).getTeamVariable().size();
 			}
-			if (numberOfTeams > 1 && (Boolean) arena.getGame().getVariable("team-selector")) inv.setItem(7, teamSelectorItem());
+			if (numberOfTeams > 1 && (Boolean) getGame().getVariable("team-selector")) inv.setItem(7, teamSelectorItem());
 			inv.setItem(8, queueLeaveItem());
 		}, 20L);
 		GameUtils.messagePlayerList(getPlayerSet(), "§b" + p.getName() + " has joined the queue!", Sound.BLOCK_DISPENSER_DISPENSE);
 	}
 
 	private void removePlayerFromLobby(Player p) {
-		p.teleport((Location) arena.getGame().getVariable("exit"));
+		p.teleport((Location) getGame().getVariable("exit"));
 		p.getInventory().clear();
  		GameUtils.messagePlayerList(getPlayerSet(), "§b" + p.getName() + " has left the queue.", Sound.BLOCK_DISPENSER_DISPENSE);
 	}
@@ -129,9 +141,15 @@ public class GameQueue implements PlayerContainer {
 			GameUtils.messagePlayerList(players, "§cCountdown cancelled -- Not enough players!");
 			endCountdown();
 		}
+
+		if (getPlayerSet().size() == 0) {
+			arena.setStatus(ArenaStatus.OPEN);
+			selectedGame = null;
+			return;
+		}
 		// If using the team selector, make sure the teams are now balanced out
-		if (!(arena.getGame() instanceof TeamSelectorGame)) return;
-		int numberOfTeams = ((TeamSelectorGame) arena.getGame()).getTeamVariable().size();
+		if (!(getGame() instanceof TeamSelectorGame)) return;
+		int numberOfTeams = ((TeamSelectorGame) getGame()).getTeamVariable().size();
 		int maxTeamSize = (getPlayerSet().size() / numberOfTeams) + 1;
 		for (Integer index : playerTeams.keySet() ) {
 			if (index == -1) return;
@@ -149,13 +167,13 @@ public class GameQueue implements PlayerContainer {
 	}
 
 	public int getMaxPlayers() {
-		Integer max = (Integer) arena.getGame().getVariable("queue-max");
+		Integer max = (Integer) getGame().getVariable("queue-max");
 		if (max == null) { return 0; }
 		return max;
 	}
 
 	public int getMinPlayers() {
-		Integer min = (Integer) arena.getGame().getVariable("queue-min");
+		Integer min = (Integer) getGame().getVariable("queue-min");
 		if (min == null) { return 0; }
 		return min;
 	}
@@ -176,7 +194,8 @@ public class GameQueue implements PlayerContainer {
 				} else {
 					endCountdown();
 					arena.setStatus(ArenaStatus.IN_USE);
-					arena.getGame().startGame(playerTeams, arena);
+					arena.setUsingGame(selectedGame);
+					getGame().startGame(playerTeams, arena);
 				}
 			}
 		}, 0L, 20L);
@@ -205,12 +224,13 @@ public class GameQueue implements PlayerContainer {
 
 	public void clear() {
 		playerTeams.clear();
+		selectedGame = null;
 		SignManager.updateArenaSignsFill(arena.getName());
 	}
 
 	public void setSelectedTeam(Player player, int index) {
-		if (!(arena.getGame() instanceof TeamSelectorGame)) return;
-		int numberOfTeams = ((TeamSelectorGame) arena.getGame()).getTeamVariable().size();
+		if (!(getGame() instanceof TeamSelectorGame)) return;
+		int numberOfTeams = ((TeamSelectorGame) getGame()).getTeamVariable().size();
 		if (index >= numberOfTeams && index % 9 != 8) return;
 		// when a player is selecting one of the teams
 		if (index < numberOfTeams) {
@@ -225,7 +245,7 @@ public class GameQueue implements PlayerContainer {
 				player.playSound(player.getLocation(),Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, .7F);
 				return;
 			}
-			HashMap<String, Object> team = ((TeamSelectorGame) arena.getGame()).getTeamVariable().get(index);
+			HashMap<String, Object> team = ((TeamSelectorGame) getGame()).getTeamVariable().get(index);
 			playerTeams.values().forEach(playerSet -> playerSet.remove(player));
 			playerTeams.get(index).add(player);
 			ChatColor chatColor = (ChatColor) team.get("chat-color");
@@ -246,8 +266,8 @@ public class GameQueue implements PlayerContainer {
 	}
 
 	private Inventory teamSelectorGUI() {
-		if (!(arena.getGame() instanceof TeamSelectorGame)) return null;
-		List<HashMap<String, Object>> teams = ((TeamSelectorGame) arena.getGame()).getTeamVariable();
+		if (!(getGame() instanceof TeamSelectorGame)) return null;
+		List<HashMap<String, Object>> teams = ((TeamSelectorGame) getGame()).getTeamVariable();
 		if (teams.size() <= 1) return null;
 		int invSize = (1 + (teams.size() / 9)) * 9;
 		Inventory inv = Bukkit.createInventory(null, invSize, arena.teamSelectorInventoryName());

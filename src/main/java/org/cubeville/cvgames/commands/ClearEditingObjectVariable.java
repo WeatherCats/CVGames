@@ -3,7 +3,9 @@ package org.cubeville.cvgames.commands;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.managers.EditingManager;
+import org.cubeville.cvgames.models.Arena;
 
 import java.util.List;
 import java.util.Map;
@@ -16,8 +18,8 @@ public class ClearEditingObjectVariable extends RunnableCommand {
             throws Error {
         if (!(sender instanceof Player)) throw new Error("You cannot run this command from console!");
         Player player = (Player) sender;
-        String arenaName = (String) baseParameters.get(0);
-        EditingManager.clearEditObject(arenaName, player);
-        return new TextComponent("§aYou are back to editing the main object for arena " + arenaName);
+        Arena arena = ArenaManager.getArena((String) baseParameters.get(0));
+        EditingManager.clearEditObject(arena.getName(), player);
+        return new TextComponent("§aYou are back to editing the main object for arena " + arena.getName());
     }
 }

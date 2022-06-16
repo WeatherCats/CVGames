@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.vartypes;
 
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -38,6 +39,9 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 
 			GV variable = variableClass.getDeclaredConstructor().newInstance();
 			variable.setItem(player, input, arenaName);
+			if (variable instanceof GameVariableObject) {
+				((GameVariableObject) variable).populateFields(arenaName, path);
+			}
 			variable.path = path + "." + currentValue.size();
 			this.currentValue.add(variable);
 		}
@@ -159,18 +163,23 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 	public TextComponent displayString(String arenaName) {
 		if (this.currentValue.size() == 0) { return new TextComponent("[]"); }
 		TextComponent out = new TextComponent();
-		for (GameVariable var : this.currentValue) {
+		for (int i = 0; i < currentValue.size(); i++) {
+			GameVariable var = currentValue.get(i);
 			out.addExtra("\n  ");
 			if (var instanceof GameVariableObject) {
-				TextComponent tc = new TextComponent("§f- ");
+				out.addExtra("§f- ");
 				String[] splitPath =  var.path.split("\\.");
 				if (splitPath.length == 2) {
 					try {
+						TextComponent tc = new TextComponent("[Edit This " + ((GameVariableObject) var).name +"]");
+						tc.setColor(ChatColor.AQUA);
+						tc.setBold(true);
 						tc.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/cvgames arena " + arenaName + " setedit " + splitPath[0] + " " + (Integer.parseInt(splitPath[1]) + 1)));
 						tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Set editing item to this object")));
+						out.addExtra(tc);
+						out.addExtra("\n  ");
 					} catch (NumberFormatException e) { /* then just dont suggest the command */ }
 				}
-				out.addExtra(tc);
 			} else {
 				out.addExtra("§f- ");
 			}

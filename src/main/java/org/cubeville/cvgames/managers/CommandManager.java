@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.commands.*;
+import org.cubeville.cvgames.models.Arena;
 
 import java.util.*;
 
@@ -19,7 +20,7 @@ public class CommandManager {
         put("createarena", new CreateArena());
         put("deletearena", new DeleteArena());
         put("verify", new VerifyArena());
-        put("setgame", new SetArenaGame());
+        put("setgame", new AddArenaGame());
         put("clearedit", new ClearEditingObjectVariable());
         put("addvar", new AddArenaVariable());
         put("setvar", new SetArenaVariable());
@@ -48,25 +49,34 @@ public class CommandManager {
 
         if (args.length == 0) return sendErrorMessage(sender, DEFAULT_ERROR);
 
+        // this file makes me want to cry, but at least i don't have to write a command manager
         switch (args[0].toLowerCase()) {
             case "help":
                 if (!sender.hasPermission("cvgames.setup.help")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
                 return runCommand("help", sender, new ArrayList<>());
             case "queue":
-                if (args.length != 4) return sendErrorMessage(sender, DEFAULT_ERROR);
                 String leaveOrJoin = args[1].toLowerCase();
+                if (args.length != 4 && leaveOrJoin.equals("leave") || args.length != 5 && leaveOrJoin.equals("join")) return sendErrorMessage(sender, DEFAULT_ERROR);
                 switch (leaveOrJoin) {
                     case "join":
                     case "leave":
-                        String arenaName = args[2].toLowerCase();
-                        if (!ArenaManager.hasArena(arenaName)) {
-                            return sendErrorMessage(sender, "Arena with name " + arenaName + " does not exist!");
+                        if (!sender.hasPermission("cvgames.queue." + leaveOrJoin)) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+
+                        Arena arena = ArenaManager.getArena(args[2].toLowerCase());
+                        if (arena == null) {
+                            return sendErrorMessage(sender, "Arena with name " + args[1].toLowerCase() + " does not exist!");
                         }
+                        if (arena.getVariables().size() == 0) sendErrorMessage(sender,"You need to add a game to the arena " + arena.getName());
 
                         Player player = Bukkit.getPlayer(args[3]);
                         if (player == null) return sendErrorMessage(sender, "Player with name " + args[3] + " is not online!");
-                        if (!sender.hasPermission("cvgames.queue." + leaveOrJoin)) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
-                        return runCommand("queue" + leaveOrJoin, sender, List.of(arenaName, player));
+
+                        ArrayList<Object> params = new ArrayList<>(List.of(arena, player));
+                        if (args.length == 5) {
+                            if (arena.getGame(args[4].toLowerCase()) == null) return sendErrorMessage(sender, "Arena " + arena.getName() + " does not have a game named " + args[4].toLowerCase());
+                            params.add(args[4].toLowerCase());
+                        }
+                        return runCommand("queue" + leaveOrJoin, sender, params);
 
                 }
             case "center":
@@ -86,39 +96,41 @@ public class CommandManager {
                         if (args.length != 3) return sendErrorMessage(sender, "Error: invalid parameter size. Did you mean \"/cvgames arena " + args[1].toLowerCase() + " <arena_name>\" ?");
                         return runCommand(args[1].toLowerCase() + "arena", sender, List.of(args[2].toLowerCase()));
                     default:
-                        String arenaName = args[1].toLowerCase();
-                        if (!ArenaManager.hasArena(arenaName)) {
-                            return sendErrorMessage(sender, "Arena with name " + arenaName + " does not exist!");
+                        Arena arena = ArenaManager.getArena(args[1].toLowerCase());
+                        if (arena == null) {
+                            return sendErrorMessage(sender, "Arena with name " + args[1].toLowerCase() + " does not exist!");
                         }
+                        if (arena.getVariables().size() == 0) sendErrorMessage(sender,"You need to add a game to the arena " + arena.getName());
+
                         switch (args[2].toLowerCase()) {
                             case "verify":
                                 if (args.length > 4) return sendErrorMessage(sender, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> verify [path]\" ?");
                                 if (!sender.hasPermission("cvgames.setup.verify")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
-                                ArrayList<Object> verifyParams = new ArrayList<>(List.of(arenaName));
+                                ArrayList<Object> verifyParams = new ArrayList<>(List.of(arena));
                                 if (args.length == 4) { verifyParams.add(args[3].toLowerCase());}
                                 return runCommand("verify", sender, verifyParams);
                             case "clearedit":
                                 if (!sender.hasPermission("cvgames.setup.clearedit")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
-                                return runCommand("clearedit", sender, List.of(arenaName));
+                                return runCommand("clearedit", sender, List.of(arena));
                             case "setgame":
                                 if (!sender.hasPermission("cvgames.setup.setgame")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
                                 if (args.length != 4) return sendErrorMessage(sender, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> setgame <game_name>\" ?");
-                                return runCommand("setgame", sender, List.of(arenaName, args[3].toLowerCase()));
+                                return runCommand("setgame", sender, List.of(arena, args[3].toLowerCase()));
                             case "addvar":
                             case "setvar":
                                 if (!sender.hasPermission("cvgames.setup." + args[2].toLowerCase())) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
                                 if (args.length > 5 || args.length < 4) return sendErrorMessage(sender, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> " + args[2].toLowerCase() + " <var_name> [input]\" ?");
-                                List<Object> params = new ArrayList<>(List.of(arenaName, args[3].toLowerCase()));
+                                List<Object> params = new ArrayList<>(List.of(arena, args[3].toLowerCase()));
                                 if (args.length == 5) params.add(args[4]);
                                 return runCommand(args[2].toLowerCase(), sender, params);
                             case "setedit":
                                 if (!sender.hasPermission("cvgames.setup.setedit")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
                                 if (args.length != 5) return sendErrorMessage(sender, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> setedit <var_name> <index>\" ?");
-                                return runCommand("setedit", sender, List.of(arenaName, args[3].toLowerCase(), args[4]));
+                                return runCommand("setedit", sender, List.of(arena, args[3].toLowerCase(), args[4]));
                             case "removevar":
                                 if (!sender.hasPermission("cvgames.setup.removevar")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
                                 if (args.length != 5) return sendErrorMessage(sender, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> removevar <var_name> <index>\" ?");
-                                return runCommand("removevar", sender, List.of(arenaName, args[3].toLowerCase(), args[4]));
+                                return runCommand("removevar", sender, List.of(arena, args[3].toLowerCase(), args[4]));
                         }
                 }
             default:

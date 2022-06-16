@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.managers.EditingManager;
+import org.cubeville.cvgames.models.Arena;
 import org.cubeville.cvgames.models.BaseGame;
 import org.cubeville.cvgames.vartypes.GameVariable;
 import org.cubeville.cvgames.vartypes.GameVariableList;
@@ -19,12 +20,10 @@ public class SetEditingObjectVariable extends RunnableCommand {
             throws Error {
         if (!(sender instanceof Player)) throw new Error("You cannot run this command from console!");
         Player player = (Player) sender;
-        String arenaName = (String) baseParameters.get(0);
-        BaseGame arenaGame = ArenaManager.getArena(arenaName).getGame();
-        if (arenaGame == null) throw new Error("You need to set the game for the arena " + arenaName);
+        Arena arena = (Arena) baseParameters.get(0);
         String variable = ((String) baseParameters.get(1)).toLowerCase();
-        if (!arenaGame.hasVariable(variable)) throw new Error("That variable does not exist for the game " + arenaGame.getId());
-        GameVariable gameVariable = arenaGame.getGameVariable(variable);
+        if (!arena.hasVariable(variable)) throw new Error("That variable does not exist for the arena " + arena.getName());
+        GameVariable gameVariable = arena.getGameVariable(variable);
         if (!(gameVariable instanceof GameVariableList)) throw new Error("The variable " + variable +" is not a list");
         int index;
         try {
@@ -37,8 +36,8 @@ public class SetEditingObjectVariable extends RunnableCommand {
         if (!(editingVar instanceof GameVariableObject)) throw new Error("The list " + variable + " is not a list of objects");
 
         String path = variable + "." + (index - 1);
-        EditingManager.setEditObject(ArenaManager.getArena(arenaName), player, (GameVariableObject) editingVar, path);
-        return new TextComponent("§aEditing object number " + index + " in list " + variable + " for arena " + arenaName);
+        EditingManager.setEditObject(arena, player, (GameVariableObject) editingVar, path);
+        return new TextComponent("§aEditing object number " + index + " in list " + variable + " for arena " + arena.getName());
     }
 
 }

@@ -10,10 +10,12 @@ public class QueueSign {
 
 	private Sign sign;
 	private Arena arena;
+	private String gameName;
 
-	public QueueSign(Sign sign, Arena arena) {
+	public QueueSign(Sign sign, Arena arena, String gameName) {
 		this.sign = sign;
 		this.arena = arena;
+		this.gameName = gameName;
 		this.sign.setLine(0, arena.getName());
 		this.displayStatus(arena.getStatus());
 		this.displayFill();
@@ -24,6 +26,9 @@ public class QueueSign {
 		switch (status) {
 			case OPEN:
 				this.sign.setLine(2, "§a§lOPEN");
+				break;
+			case IN_QUEUE:
+				this.sign.setLine(2, "§e§IN_QUEUE");
 				break;
 			case IN_USE:
 				this.sign.setLine(2, "§7§lIN USE");
@@ -40,16 +45,12 @@ public class QueueSign {
 		this.sign.update();
 	}
 
-	public Sign getSign() {
-		return sign;
-	}
-
 	public String getArenaName() {
 		return arena.getName();
 	}
 
 	public void onRightClick(Player p) {
-		this.arena.getQueue().join(p);
+		this.arena.getQueue().join(p, gameName);
 		SignManager.updateArenaSignsFill(getArenaName());
 	}
 }

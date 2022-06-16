@@ -33,8 +33,8 @@ public class SignManager {
 		)
 	);
 
-	public static QueueSign addSign(Sign sign, String arenaName) {
-		QueueSign queueSign = new QueueSign(sign, ArenaManager.getArena(arenaName));
+	public static QueueSign addSign(Sign sign, String arenaName, String gameName) {
+		QueueSign queueSign = new QueueSign(sign, ArenaManager.getArena(arenaName), gameName);
 		signs.put(createKey(sign.getLocation()), queueSign);
 		return queueSign;
 	}
