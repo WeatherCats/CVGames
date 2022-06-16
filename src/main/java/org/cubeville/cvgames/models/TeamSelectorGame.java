@@ -5,10 +5,9 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public abstract class TeamSelectorGame extends BaseGame {
-    private String teamVariable;
 
-    public TeamSelectorGame(String id) {
-        super(id);
+    public TeamSelectorGame(String id, String arenaName) {
+        super(id, arenaName);
     }
 
     @Override
@@ -45,13 +44,8 @@ public abstract class TeamSelectorGame extends BaseGame {
 
     public abstract void onGameStart(List<Set<Player>> teamPlayers);
 
-    protected void setTeamVariable(String variable) {
-        teamVariable = variable;
-    }
-
     public List<HashMap<String, Object>> getTeamVariable() {
-        if (teamVariable == null) return null;
-        List<HashMap<String, Object>> teams = (List<HashMap<String, Object>>) getVariable(teamVariable);
+        List<HashMap<String, Object>> teams = (List<HashMap<String, Object>>) getVariable("teams");
         return teams;
     }
 }

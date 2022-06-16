@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.Set;
 
 public abstract class Game extends BaseGame {
-    public Game(String id) {
-        super(id);
+    public Game(String id, String arenaName) {
+        super(id, arenaName);
     }
 
     @Override

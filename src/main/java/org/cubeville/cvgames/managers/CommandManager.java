@@ -20,7 +20,8 @@ public class CommandManager {
         put("createarena", new CreateArena());
         put("deletearena", new DeleteArena());
         put("verify", new VerifyArena());
-        put("setgame", new AddArenaGame());
+        put("addgame", new AddArenaGame());
+        put("removegame", new RemoveArenaGame());
         put("clearedit", new ClearEditingObjectVariable());
         put("addvar", new AddArenaVariable());
         put("setvar", new SetArenaVariable());
@@ -112,10 +113,14 @@ public class CommandManager {
                             case "clearedit":
                                 if (!sender.hasPermission("cvgames.setup.clearedit")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
                                 return runCommand("clearedit", sender, List.of(arena));
-                            case "setgame":
-                                if (!sender.hasPermission("cvgames.setup.setgame")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
-                                if (args.length != 4) return sendErrorMessage(sender, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> setgame <game_name>\" ?");
-                                return runCommand("setgame", sender, List.of(arena, args[3].toLowerCase()));
+                            case "addgame":
+                                if (!sender.hasPermission("cvgames.setup.addgame")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                                if (args.length != 4) return sendErrorMessage(sender, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> addgame <game_name>\" ?");
+                                return runCommand("addgame", sender, List.of(arena, args[3].toLowerCase()));
+                            case "removegame":
+                                if (!sender.hasPermission("cvgames.setup.removegame")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                                if (args.length != 4) return sendErrorMessage(sender, "Error: invalid parameter size. Did you mean \"/cvgames arena <arena_name> removegame <game_name>\" ?");
+                                return runCommand("removegame", sender, List.of(arena, args[3].toLowerCase()));
                             case "addvar":
                             case "setvar":
                                 if (!sender.hasPermission("cvgames.setup." + args[2].toLowerCase())) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }

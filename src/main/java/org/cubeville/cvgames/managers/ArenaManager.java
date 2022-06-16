@@ -36,9 +36,10 @@ public class ArenaManager {
 
 	public static void addArenaGame(String name, String game) throws Error {
 		try {
-			Class[] cArgs = new Class[1];
+			Class[] cArgs = new Class[2];
 			cArgs[0] = String.class;
-			BaseGame arenaGame = (BaseGame) gameManager().getGame(game).getDeclaredConstructor(cArgs).newInstance(name);
+			cArgs[1] = String.class;
+			BaseGame arenaGame = (BaseGame) gameManager().getGame(game).getDeclaredConstructor(cArgs).newInstance(game, name);
 			getServer().getPluginManager().registerEvents(arenaGame, CVGames.getInstance());
 
 			arenas.get(name).addGame(arenaGame);
@@ -58,8 +59,6 @@ public class ArenaManager {
 		getInstance().getConfig().set("arenas." + name + ".game", arenas.get(name).getGameNames());
 		getInstance().saveConfig();
 	}
-
-
 
 	public static boolean hasArena(String name) {
 		return arenas.containsKey(name) || getInstance().getConfig().contains("arenas." + name);

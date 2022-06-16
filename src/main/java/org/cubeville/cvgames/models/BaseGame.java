@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.cubeville.cvgames.CVGames;
 import org.cubeville.cvgames.enums.ArenaStatus;
+import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.managers.PlayerManager;
 import org.cubeville.cvgames.vartypes.GameVariable;
 import org.cubeville.cvgames.vartypes.GameVariableList;
@@ -23,11 +24,11 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	private int arenaRegionTask;
 	private boolean isRunningGame = false;
 
-	public BaseGame(String id) {
+	public BaseGame(String id, String arenaName) {
 		this.id = id;
-		addGameVariable("region", new GameVariableRegion());
+		this.arena = ArenaManager.getArena(arenaName);
+		this.arena.addGameVariable("region", new GameVariableRegion());
 	}
-
 
 	@Override
 	public void whenPlayerLogout(Player p, Arena a) {
@@ -56,7 +57,6 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 					player.getInventory().clear();
 				})
 		);
-		this.arena = arena;
 		startArenaRegionCheck();
 		processPlayerMap(playerTeamMap);
 		isRunningGame = true;

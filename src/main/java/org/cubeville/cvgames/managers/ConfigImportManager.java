@@ -32,7 +32,6 @@ public class ConfigImportManager {
 			ArenaManager.addArena(arenaName);
 			ArenaManager.addArenaGame(arenaName, gameName);
 
-
 			if (!arenaConfig.contains("variables")) continue;
 			parseArenaVariables("variables", arenaConfig, arenaName);
 		}
