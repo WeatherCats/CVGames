@@ -21,4 +21,6 @@ public abstract class Game extends BaseGame {
 
     public abstract void onGameStart(Set<Player> players);
 
+    protected abstract PlayerState getState(Player p);
+
 }

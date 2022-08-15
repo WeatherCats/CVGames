@@ -8,8 +8,6 @@ import java.util.*;
 
 public abstract class TeamSelectorGame extends BaseGame {
 
-    private HashMap<Player, Object> state;
-
     public TeamSelectorGame(String id, String arenaName) {
         super(id, arenaName);
     }
@@ -47,6 +45,8 @@ public abstract class TeamSelectorGame extends BaseGame {
     }
 
     public abstract void onGameStart(List<Set<Player>> teamPlayers);
+
+    protected abstract PlayerState getState(Player p);
 
     public List<HashMap<String, Object>> getTeamVariable() {
         return (List<HashMap<String, Object>>) getVariable("teams");
