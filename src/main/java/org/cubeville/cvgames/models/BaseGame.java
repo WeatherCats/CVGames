@@ -49,7 +49,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 
 	public abstract void onPlayerLeave(Player p);
 
-	public abstract PlayerState getState(Player p);
+	protected abstract PlayerState getState(Player p);
 
 	public String getId() {
 		return id;
