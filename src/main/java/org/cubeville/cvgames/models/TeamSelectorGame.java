@@ -1,10 +1,14 @@
 package org.cubeville.cvgames.models;
 
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
+import org.cubeville.cvgames.utils.GameUtils;
 
 import java.util.*;
 
 public abstract class TeamSelectorGame extends BaseGame {
+
+    private HashMap<Player, Object> state;
 
     public TeamSelectorGame(String id, String arenaName) {
         super(id, arenaName);
@@ -45,7 +49,39 @@ public abstract class TeamSelectorGame extends BaseGame {
     public abstract void onGameStart(List<Set<Player>> teamPlayers);
 
     public List<HashMap<String, Object>> getTeamVariable() {
-        List<HashMap<String, Object>> teams = (List<HashMap<String, Object>>) getVariable("teams");
-        return teams;
+        return (List<HashMap<String, Object>>) getVariable("teams");
+    }
+
+    public void updateDefaultScoreboard(int currentTime, ArrayList<Integer[]> teamScores, String key) {
+        updateDefaultScoreboard(currentTime, teamScores, key, false);
+    }
+
+    public void updateDefaultScoreboard(int currentTime, ArrayList<Integer[]> teamScores, String key, boolean isReverse) {
+        Scoreboard scoreboard;
+        ArrayList<String> scoreboardLines = new ArrayList<>();
+
+        scoreboardLines.add("§bTime remaining: §f" +
+                String.format("%d:%02d", currentTime / 60000, (currentTime / 1000) % 60)
+        );
+        scoreboardLines.add("   ");
+
+        List<HashMap<String, Object>> teams = getTeamVariable();
+        if (teams.size() == 1) {
+            state.keySet().stream().sorted(Comparator.comparingInt(o -> (isReverse ? 1 : -1) * getState(o).getSortingValue())).forEach( p -> {
+                int points = getState(p).getSortingValue();
+                scoreboardLines.add("§a" + p.getDisplayName() + "§f: " + points + " " + key);
+            });
+            scoreboard = GameUtils.createScoreboard(arena, "§b§lFFA " + getId(), scoreboardLines);
+        } else {
+            for (int i = 0; i < teamScores.size(); i++) {
+                String line = teams.get(i).get("name") + "§f: ";
+                line += teamScores.get(i)[1];
+                line += " ";
+                line += key;
+                scoreboardLines.add(line);
+            }
+            scoreboard = GameUtils.createScoreboard(arena, "§b§lTeam " + getId(), scoreboardLines);
+        }
+        sendScoreboardToArena(scoreboard);
     }
 }

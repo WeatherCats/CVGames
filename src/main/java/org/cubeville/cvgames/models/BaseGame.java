@@ -11,6 +11,7 @@ import org.cubeville.cvgames.CVGames;
 import org.cubeville.cvgames.enums.ArenaStatus;
 import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.managers.PlayerManager;
+import org.cubeville.cvgames.utils.GameUtils;
 import org.cubeville.cvgames.vartypes.GameVariable;
 import org.cubeville.cvgames.vartypes.GameVariableList;
 import org.cubeville.cvgames.vartypes.GameVariableObject;
@@ -22,7 +23,7 @@ import java.util.*;
 abstract public class BaseGame implements PlayerContainer, Listener {
 	private final String id;
 	protected Arena arena;
-	protected HashMap<Player, Object> state = new HashMap<>();
+	protected HashMap<Player, PlayerState> state = new HashMap<>();
 	private int arenaRegionTask;
 	public boolean isRunningGame = false;
 
@@ -47,6 +48,8 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	}
 
 	public abstract void onPlayerLeave(Player p);
+
+	public abstract PlayerState getState(Player p);
 
 	public String getId() {
 		return id;
@@ -134,4 +137,5 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	public void sendMessageToArena(String message) {
 		arena.getQueue().getPlayerSet().forEach(p -> p.sendMessage(message));
 	}
+
 }
