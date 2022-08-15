@@ -23,7 +23,7 @@ import java.util.*;
 abstract public class BaseGame implements PlayerContainer, Listener {
 	private final String id;
 	protected Arena arena;
-	protected HashMap<Player, PlayerState> state = new HashMap<>();
+	public HashMap<Player, PlayerState> state = new HashMap<>();
 	private int arenaRegionTask;
 	public boolean isRunningGame = false;
 
