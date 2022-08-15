@@ -75,6 +75,20 @@ public class GameUtils {
 		}
 	}
 
+	public static TextComponent createColorTextComponent(String input) {
+		Matcher matcher = GameUtils.HEX_PATTERN.matcher(input);
+		String[] inBetweens = input.split(GameUtils.HEX_PATTERN.pattern());
+		TextComponent tc = new TextComponent(ChatColor.translateAlternateColorCodes('&', inBetweens[0]));
+		int i = 1;
+		while (matcher.find()) {
+			TextComponent colorArea = new TextComponent(ChatColor.translateAlternateColorCodes('&', inBetweens[i]));
+			colorArea.setColor(ChatColor.of("#" + matcher.group(1)));
+			tc.addExtra(colorArea);
+			i++;
+		}
+		return tc;
+	}
+
 	public static String playerLocToString(Location location) {
 		List<String> locParameters = new ArrayList<>(
 			Arrays.asList(

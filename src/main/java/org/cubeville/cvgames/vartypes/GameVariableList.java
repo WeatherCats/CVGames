@@ -74,6 +74,9 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 
 			GV variable = variableClass.getDeclaredConstructor().newInstance();
 			variable.setItem(object, arenaName);
+			if (variable instanceof GameVariableObject) {
+				((GameVariableObject) variable).populateFields(arenaName, path);
+			}
 			variable.path = path + "." + currentValue.size();
 			this.currentValue.add(variable);
 		}
@@ -83,10 +86,13 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 		}
 	}
 
-	public GameVariable addBlankGameVariable() {
+	public GameVariable addBlankGameVariable(String arenaName) {
 		try {
 			if (maximumSize != null && currentValue.size() >= maximumSize) throw new Error("This list is at max capacity.");
 			GV variable = variableClass.getDeclaredConstructor().newInstance();
+			if (variable instanceof GameVariableObject) {
+				((GameVariableObject) variable).populateFields(arenaName, path);
+			}
 			variable.path = path + "." + currentValue.size();
 			this.currentValue.add(variable);
 			return variable;
@@ -159,6 +165,10 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 		getInstance().saveConfig();
 	}
 
+	public Class<GV> getVariableClass() {
+		return variableClass;
+	}
+
 	@Override
 	public TextComponent displayString(String arenaName) {
 		if (this.currentValue.size() == 0) { return new TextComponent("[]"); }
@@ -171,13 +181,13 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 				String[] splitPath =  var.path.split("\\.");
 				if (splitPath.length == 2) {
 					try {
-						TextComponent tc = new TextComponent("[Edit This " + ((GameVariableObject) var).name +"]");
+						TextComponent tc = new TextComponent("[Edit This " + var.typeString() +"]");
 						tc.setColor(ChatColor.AQUA);
 						tc.setBold(true);
 						tc.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/cvgames arena " + arenaName + " setedit " + splitPath[0] + " " + (Integer.parseInt(splitPath[1]) + 1)));
 						tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Set editing item to this object")));
 						out.addExtra(tc);
-						out.addExtra("\n  ");
+						out.addExtra("  ");
 					} catch (NumberFormatException e) { /* then just dont suggest the command */ }
 				}
 			} else {

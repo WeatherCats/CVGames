@@ -24,15 +24,22 @@ public class VerifyArena extends RunnableCommand {
 		throws Error {
 		Arena arena = (Arena) parameters.get(0);
 
-		TextComponent out = new TextComponent("[Variables for the arena " + arena.getName() + "]\n");
-		out.setBold(true);
-		out.setColor(ChatColor.AQUA);
-		out.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cvgames arena " + arena.getName() + " verify"));
+		TextComponent out = new TextComponent();
 
-		TextComponent clearEdit = new TextComponent("[Edit Main Object]");
+		TextComponent title = new TextComponent("[Variables for the arena " + arena.getName() + "]\n");
+		title.setBold(true);
+		title.setColor(ChatColor.AQUA);
+		title.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cvgames arena " + arena.getName() + " verify"));
+		title.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to run the verify command again")));
+
+		out.addExtra(title);
+
+		TextComponent clearEdit = new TextComponent("[Edit Main Object]\n");
 		clearEdit.setBold(true);
 		clearEdit.setColor(ChatColor.AQUA);
-		out.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cvgames arena " + arena.getName() + " clearedit"));
+		clearEdit.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cvgames arena " + arena.getName() + " clearedit"));
+		clearEdit.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to set your editing object to the main object")));
+		out.addExtra(clearEdit);
 
 		ArrayList<String> varKeys = new ArrayList<>();
 		String path = null;

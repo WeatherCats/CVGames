@@ -14,7 +14,7 @@ public class AddArenaGame extends RunnableCommand {
 	public TextComponent execute(CommandSender sender, List<Object> parameters)
 		throws Error {
 		Arena arena = (Arena) parameters.get(0);
-		String gameName = CVGames.gameManager().filterGameInput((String) parameters.get(1));
+		String gameName = (String) parameters.get(1);
 		ArenaManager.addArenaGame(arena.getName(), gameName);
 
 		return new TextComponent("§aAdd the game " + gameName + " to arena " + arena.getName() + "!");

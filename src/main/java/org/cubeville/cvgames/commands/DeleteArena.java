@@ -12,7 +12,7 @@ public class DeleteArena extends RunnableCommand {
 	@Override
 	public TextComponent execute(CommandSender sender, List<Object> parameters) throws Error {
 
-		Arena arena = ArenaManager.getArena((String) parameters.get(0));
+		Arena arena = (Arena) parameters.get(0);
 		if (arena == null) {
 			throw new Error("Arena with name " + arena.getName() + " does not exist!");
 		}

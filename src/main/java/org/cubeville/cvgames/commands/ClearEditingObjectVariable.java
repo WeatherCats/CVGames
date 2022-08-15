@@ -18,7 +18,7 @@ public class ClearEditingObjectVariable extends RunnableCommand {
             throws Error {
         if (!(sender instanceof Player)) throw new Error("You cannot run this command from console!");
         Player player = (Player) sender;
-        Arena arena = ArenaManager.getArena((String) baseParameters.get(0));
+        Arena arena = (Arena) baseParameters.get(0);
         EditingManager.clearEditObject(arena.getName(), player);
         return new TextComponent("§aYou are back to editing the main object for arena " + arena.getName());
     }

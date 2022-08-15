@@ -17,14 +17,18 @@ import org.cubeville.cvgames.managers.PlayerManager;
 import org.cubeville.cvgames.managers.SignManager;
 import org.cubeville.cvgames.vartypes.*;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class GameQueue implements PlayerContainer {
 
 	private Map<Integer, List<Player>> playerTeams = new HashMap<>();
+	private Set<Player> playerLobby = new HashSet<>();
 	private Arena arena;
-	private int countdownTimer;
+	private Integer countdownTimer = null;
 	private int counter;
+	private Integer arenaLobbyRegionTask = null;
+	private Player host;
 	private String selectedGame;
 
 	public GameQueue(Arena arena) {
@@ -63,20 +67,50 @@ public class GameQueue implements PlayerContainer {
 		return true;
 	}
 
-	private Set<Player> getPlayerSet() {
-		Set<Player> players = new HashSet<>();
-		playerTeams.values().forEach(players::addAll);
-		return players;
+	public void startArenaLobbyRegionCheck() {
+		GameRegion gameRegion = (GameRegion) arena.getVariable("region");
+
+		arenaLobbyRegionTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(CVGames.getInstance(), () -> {
+			for (Player player : playerLobby) {
+				if (!gameRegion.containsPlayer(player) && !getGame().isRunningGame) {
+					leave(player, false);
+				}
+			}
+		}, 0L, 20L);
 	}
 
-	public boolean join(Player p, String gameName) {
+	private void killArenaLobbyRegionCheck() {
+		if (arenaLobbyRegionTask == null) { return; }
+		Bukkit.getScheduler().cancelTask(arenaLobbyRegionTask);
+		arenaLobbyRegionTask = null;
+	}
+
+	public Set<Player> getPlayerSet() {
+		return playerLobby;
+	}
+
+	private void setSelectedGame(@Nullable String gameName) {
+		selectedGame = gameName;
+		SignManager.updateArenaSignsGame(arena.getName(), gameName);
+	}
+
+	public boolean join(Player p) {
+		return join(p, null);
+	}
+
+	public boolean join(Player p, @Nullable String gameName) {
 		if (!canJoinQueue(p)) {
 			return false;
 		}
+		if (selectedGame == null && gameName != null) {
+			selectedGame = gameName;
+			SignManager.updateArenaSignsGame(arena.getName(), gameName);
+		}
+
 		if (arena.getStatus().equals(ArenaStatus.OPEN)) {
 			arena.setStatus(ArenaStatus.IN_QUEUE);
-			selectedGame = gameName;
 		}
+
 		if (!playerTeams.containsKey(-1)) {
 			if (getGame() instanceof TeamSelectorGame) {
 				int numberOfTeams = ((TeamSelectorGame) getGame()).getTeamVariable().size();
@@ -87,64 +121,120 @@ public class GameQueue implements PlayerContainer {
 				playerTeams.put(-1, new ArrayList<>());
 			}
 		}
-		playerTeams.get(-1).add(p);
 		setPlayerToLobby(p);
 		PlayerManager.setPlayer(p, arena.getName());
-		Set<Player> players = getPlayerSet();
-		if (players.size() == getMinPlayers()) {
-			startCountdown(20);
-		}
-		final int SPEED_COUNTDOWN = 6;
-		if (players.size() == getMaxPlayers() && counter > SPEED_COUNTDOWN) {
-			endCountdown();
-			GameUtils.messagePlayerList(players, "§bQueue has been filled, starting game.", Sound.BLOCK_DISPENSER_DISPENSE);
-			startCountdown(SPEED_COUNTDOWN);
+		if (!arena.getStatus().equals(ArenaStatus.HOSTING)) {
+			playerTeams.get(-1).add(p);
+			Set<Player> players = getPlayerSet();
+			if (players.size() == getMinPlayers()) {
+				startCountdown(20);
+			}
+			final int SPEED_COUNTDOWN = 6;
+			if (players.size() == getMaxPlayers() && counter > SPEED_COUNTDOWN) {
+				endCountdown();
+				GameUtils.messagePlayerList(players, "§bQueue has been filled, starting game.", Sound.BLOCK_DISPENSER_DISPENSE);
+				startCountdown(SPEED_COUNTDOWN);
+			}
 		}
 		return true;
 	}
 
-	private BaseGame getGame() {
+	public void addToHostedGame(Player p) throws Error {
+		if (!getPlayerSet().contains(p)) throw new Error("Player " + p.getDisplayName() + " is not in the lobby!");
+		playerTeams.computeIfAbsent(-1, k -> new ArrayList<>());
+		playerTeams.get(-1).add(p);
+		GameUtils.messagePlayerList(getPlayerSet(),"§b" + p.getName() + " will be playing in the next game!");
+	}
+
+	public void removeFromHostedGame(Player p) {
+		if (!getPlayerSet().contains(p)) throw new Error("Player " + p.getDisplayName() + " is not in the lobby!");
+		playerTeams.keySet().forEach(i -> playerTeams.get(i).remove(p));
+		GameUtils.messagePlayerList(getPlayerSet(),"§b" + p.getName() + " will no longer be playing in the next game!");
+	}
+
+	public BaseGame getGame() {
 		return arena.getGame(selectedGame);
 	}
 
+	public String getSelectedGame() {
+		return selectedGame;
+	}
+
 	private void setPlayerToLobby(Player p) {
-		p.teleport((Location) arena.getGame(selectedGame).getVariable("lobby"));
+		p.teleport((Location) arena.getVariable("lobby"));
 		PlayerInventory inv = p.getInventory();
 		inv.clear();
+		if (arenaLobbyRegionTask == null) {
+			startArenaLobbyRegionCheck();
+		}
+		playerLobby.add(p);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(CVGames.getInstance(), () -> {
-			int numberOfTeams = 0;
-			if (getGame() instanceof TeamSelectorGame) {
-				numberOfTeams = ((TeamSelectorGame) getGame()).getTeamVariable().size();
-			}
-			if (numberOfTeams > 1 && (Boolean) getGame().getVariable("team-selector")) inv.setItem(7, teamSelectorItem());
-			inv.setItem(8, queueLeaveItem());
+			setLobbyInventory(inv);
 		}, 20L);
-		GameUtils.messagePlayerList(getPlayerSet(), "§b" + p.getName() + " has joined the queue!", Sound.BLOCK_DISPENSER_DISPENSE);
+		final String lobbyJoinMessage = "§b" + p.getName() + " has joined the lobby!";
+		if (!arena.getStatus().equals(ArenaStatus.HOSTING)) {
+			GameUtils.messagePlayerList(getPlayerSet(), lobbyJoinMessage, Sound.BLOCK_DISPENSER_DISPENSE);
+		} else {
+			host.sendMessage(lobbyJoinMessage);
+		}
+	}
+
+	public void setLobbyInventory(PlayerInventory inv) {
+		int numberOfTeams = 0;
+		if (getGame() instanceof TeamSelectorGame) {
+			numberOfTeams = ((TeamSelectorGame) getGame()).getTeamVariable().size();
+		}
+		if (numberOfTeams > 1 && (Boolean) arena.getVariable("team-selector") && !arena.getStatus().equals(ArenaStatus.HOSTING)) inv.setItem(7, teamSelectorItem());
+		inv.setItem(8, queueLeaveItem());
 	}
 
 	private void removePlayerFromLobby(Player p) {
-		p.teleport((Location) getGame().getVariable("exit"));
-		p.getInventory().clear();
- 		GameUtils.messagePlayerList(getPlayerSet(), "§b" + p.getName() + " has left the queue.", Sound.BLOCK_DISPENSER_DISPENSE);
+		removePlayerFromLobby(p, true);
 	}
 
-	public void leave( Player p ) {
+	private void removePlayerFromLobby(Player p, boolean shouldSendToExit) {
+		if (shouldSendToExit) { p.teleport((Location) arena.getVariable("exit")); }
+		p.getInventory().clear();
+		playerLobby.remove(p);
+		if (playerLobby.size() == 0 && arenaLobbyRegionTask != null) {
+			killArenaLobbyRegionCheck();
+		}
+		SignManager.updateArenaSignsFill(arena.getName());
+	}
+
+	public void leave(Player p) {
+		leave(p, true);
+	}
+
+	public void leave( Player p, boolean shouldSendToExit ) {
 		if (!getPlayerSet().contains(p)) { return; }
 		playerTeams.values().forEach(playerSet -> playerSet.remove(p));
 		Set<Player> players = getPlayerSet();
-		SignManager.updateArenaSignsFill(arena.getName());
 		PlayerManager.removePlayer(p);
-		if (arena.getStatus() != ArenaStatus.OPEN) { return; }
-		p.sendMessage("§bYou have left the queue.");
-		removePlayerFromLobby(p);
-		if (players.size() == (getMinPlayers() - 1)) {
-			GameUtils.messagePlayerList(players, "§cCountdown cancelled -- Not enough players!");
+		if (arena.getStatus() != ArenaStatus.IN_QUEUE && arena.getStatus() != ArenaStatus.HOSTING) { return; }
+		p.sendMessage("§cYou have left the lobby.");
+		removePlayerFromLobby(p, shouldSendToExit);
+		final String lobbyLeaveMessage = "§c" + p.getName() + " has left the lobby.";
+		if (!arena.getStatus().equals(ArenaStatus.HOSTING)) {
+			GameUtils.messagePlayerList(players, lobbyLeaveMessage, Sound.BLOCK_DISPENSER_DISPENSE);
+		} else {
+			host.sendMessage(lobbyLeaveMessage);
+		}
+
+		if (p.equals(host)) {
+			GameUtils.messagePlayerList(players, "§cThe host has left the lobby.");
+			clearHostedLobby();
+		}
+
+		if (players.size() < getMinPlayers() && countdownTimer != null) {
+			final String countdownCancelledMessage = "§cCountdown cancelled -- Not enough players!";
+			GameUtils.messagePlayerList(players, countdownCancelledMessage);
 			endCountdown();
 		}
 
-		if (getPlayerSet().size() == 0) {
+		if (getPlayerSet().size() == 0 && host == null) {
 			arena.setStatus(ArenaStatus.OPEN);
-			selectedGame = null;
+			setSelectedGame(null);
 			return;
 		}
 		// If using the team selector, make sure the teams are now balanced out
@@ -167,46 +257,52 @@ public class GameQueue implements PlayerContainer {
 	}
 
 	public int getMaxPlayers() {
-		Integer max = (Integer) getGame().getVariable("queue-max");
+		Integer max = (Integer) arena.getVariable("queue-max");
 		if (max == null) { return 0; }
 		return max;
 	}
 
 	public int getMinPlayers() {
-		Integer min = (Integer) getGame().getVariable("queue-min");
+		Integer min = (Integer) arena.getVariable("queue-min");
 		if (min == null) { return 0; }
 		return min;
 	}
 
+	public void startHostedCountdown(int startCount) throws Error {
+		int playerCount = playerTeams.values().stream().mapToInt(List::size).sum();
+		if (playerCount < getMinPlayers()) {
+			throw new Error("There are not enough players to start the game!");
+		}
+		startCountdown(startCount);
+	}
 
 	private void startCountdown(int startCount) {
 		counter = startCount;
-		this.countdownTimer = Bukkit.getScheduler().scheduleSyncRepeatingTask(CVGames.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				Set<Player> players = getPlayerSet();
-				if (counter > 0) {
-					if (counter % 10 == 0 || counter <= 5)
-					GameUtils
-						.messagePlayerList(players, "§e" + counter + " seconds until the game starts",
-							Sound.BLOCK_NOTE_BLOCK_PLING);
-					counter--;
-				} else {
-					endCountdown();
-					arena.setStatus(ArenaStatus.IN_USE);
-					arena.setUsingGame(selectedGame);
-					getGame().startGame(playerTeams, arena);
-				}
+		this.countdownTimer = Bukkit.getScheduler().scheduleSyncRepeatingTask(CVGames.getInstance(), () -> {
+			Set<Player> players = getPlayerSet();
+			if (counter > 0) {
+				if (counter % 10 == 0 || counter <= 5)
+				GameUtils
+					.messagePlayerList(players, "§e" + counter + " seconds until the game starts",
+						Sound.BLOCK_NOTE_BLOCK_PLING);
+				counter--;
+			} else {
+				endCountdown();
+				arena.setUsingGame(selectedGame);
+				getGame().startGame(playerTeams);
+				if (!arena.getStatus().equals(ArenaStatus.HOSTING)) { arena.setStatus(ArenaStatus.IN_USE); }
 			}
 		}, 0L, 20L);
 	}
 
 	private void endCountdown() {
 		Bukkit.getScheduler().cancelTask(this.countdownTimer);
+		this.countdownTimer = null;
 	}
 
 	@Override
 	public void whenPlayerLogout(Player p, Arena a) {
+		playerLobby.remove(p);
 		leave(p);
 	}
 
@@ -224,8 +320,11 @@ public class GameQueue implements PlayerContainer {
 
 	public void clear() {
 		playerTeams.clear();
-		selectedGame = null;
-		SignManager.updateArenaSignsFill(arena.getName());
+		if (!arena.getStatus().equals(ArenaStatus.HOSTING)) {
+			playerLobby.clear();
+			setSelectedGame(null);
+			SignManager.updateArenaSignsFill(arena.getName());
+		}
 	}
 
 	public void setSelectedTeam(Player player, int index) {
@@ -246,17 +345,36 @@ public class GameQueue implements PlayerContainer {
 				return;
 			}
 			HashMap<String, Object> team = ((TeamSelectorGame) getGame()).getTeamVariable().get(index);
-			playerTeams.values().forEach(playerSet -> playerSet.remove(player));
-			playerTeams.get(index).add(player);
+			setPlayerAsTeam(player, index);
 			ChatColor chatColor = (ChatColor) team.get("chat-color");
 			player.sendMessage(chatColor + "You have joined " + team.get("name"));
 			player.playSound(player.getLocation(),Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 0.8F, 0.5F);
 		} else {
-			playerTeams.values().forEach(playerSet -> playerSet.remove(player));
-			playerTeams.get(-1).add(player);
+			setPlayerAsTeam(player, -1);
 			player.sendMessage("§eYou are no longer selecting a team");
 			player.playSound(player.getLocation(),Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 0.8F, 0.5F);
 		}
+	}
+
+	public void setPlayerAsTeamMember(Player player, int index) throws Error {
+		if (!getPlayerSet().contains(player)) throw new Error("Player " + player.getDisplayName() + " is not in the lobby!");
+		if (!(getGame() instanceof TeamSelectorGame)) throw new Error("Game " + getGame().getId() + " does not support teams!");
+		List<HashMap<String, Object>> teams = ((TeamSelectorGame) getGame()).getTeamVariable();
+		if (teams.size() <= index || index < 0) throw new Error("There is no team at index " + (index + 1));
+		setPlayerAsTeam(player, index);
+		GameUtils.messagePlayerList(getPlayerSet(),"§b" + player.getName() + " will be joining " + teams.get(index).get("name"));
+	}
+
+	public void removePlayerFromTeams(Player player) throws Error {
+		if (!getPlayerSet().contains(player)) throw new Error("Player " + player.getDisplayName() + " is not in the lobby!");
+		setPlayerAsTeam(player, -1);
+		GameUtils.messagePlayerList(getPlayerSet(),"§b" + player.getName() + " is no longer assigned a team.");
+	}
+
+	private void setPlayerAsTeam(Player player, int index) {
+		playerTeams.values().forEach(playerSet -> playerSet.remove(player));
+		playerTeams.computeIfAbsent(index, k -> new ArrayList<>());
+		playerTeams.get(index).add(player);
 	}
 
 	public void openTeamSelector(Player player) {
@@ -295,5 +413,33 @@ public class GameQueue implements PlayerContainer {
 		}
 		inv.setItem(invSize - 1, removeTeamSelectionItem());
 		return inv;
+	}
+
+	public Player getHost() {
+		return host;
+	}
+
+	public void setHostedLobby(Player player, String selectedGame) {
+		this.host = player;
+		setSelectedGame(selectedGame);
+		playerLobby.add(player);
+		arena.setStatus(ArenaStatus.HOSTING);
+
+	}
+	public void clearHostedLobby() {
+		this.host = null;
+		Set<Player> playerSet = new HashSet<>(getPlayerSet());
+		for (Player player : playerSet) {
+			PlayerManager.removePlayer(player);
+			removePlayerFromLobby(player);
+		}
+		playerTeams.clear();
+		setSelectedGame(null);
+		SignManager.updateArenaSignsFill(arena.getName());
+		arena.setStatus(ArenaStatus.OPEN);
+	}
+
+	public Map<Integer, List<Player>> getPlayerTeams() {
+		return playerTeams;
 	}
 }

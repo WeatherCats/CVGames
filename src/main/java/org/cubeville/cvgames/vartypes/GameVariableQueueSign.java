@@ -38,11 +38,13 @@ public class GameVariableQueueSign extends GameVariableSign {
 
 	@Override
 	public String itemString() {
+		if (sign == null) { return "<INVALID SIGN>"; }
 		return GameUtils.blockLocToString(sign.getLocation()) + " ~ " + gameName;
 	}
 
 	@Override
 	public void clearItem () {
+		if (sign == null) return;
 		SignManager.deleteSign(sign.getLocation());
 	}
 }

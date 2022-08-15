@@ -18,7 +18,7 @@ public class AddArenaVariable extends RunnableCommand {
 		throws Error {
 		if (!(sender instanceof Player)) throw new Error("You cannot run this command from console!");
 		Player player = (Player) sender;
-		Arena arena = ArenaManager.getArena((String) baseParameters.get(0));
+		Arena arena = (Arena) baseParameters.get(0);
 		String variable = ((String) baseParameters.get(1)).toLowerCase();
 
 		String input = null;

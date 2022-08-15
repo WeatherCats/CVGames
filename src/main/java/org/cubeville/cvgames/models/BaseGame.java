@@ -1,10 +1,12 @@
 package org.cubeville.cvgames.models;
 
+import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.scoreboard.Scoreboard;
 import org.cubeville.cvgames.CVGames;
 import org.cubeville.cvgames.enums.ArenaStatus;
 import org.cubeville.cvgames.managers.ArenaManager;
@@ -22,7 +24,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	protected Arena arena;
 	protected HashMap<Player, Object> state = new HashMap<>();
 	private int arenaRegionTask;
-	private boolean isRunningGame = false;
+	public boolean isRunningGame = false;
 
 	public BaseGame(String id, String arenaName) {
 		this.id = id;
@@ -50,7 +52,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		return id;
 	}
 
-	public void startGame(Map<Integer, List<Player>> playerTeamMap, Arena arena) {
+	public void startGame(Map<Integer, List<Player>> playerTeamMap) {
 		playerTeamMap.values().forEach(players ->
 				players.forEach(player -> {
 					player.closeInventory();
@@ -63,13 +65,19 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	};
 
 	public void finishGame() {
-		arena.setStatus(ArenaStatus.OPEN);
+		if (!arena.getStatus().equals(ArenaStatus.HOSTING)) { arena.setStatus(ArenaStatus.OPEN); }
 		arena.getQueue().clear();
 		killArenaRegionCheck();
 		this.state.keySet().forEach(player -> {
-			PlayerManager.removePlayer(player);
-			player.teleport((Location) getVariable("exit"));
-			player.getInventory().clear();
+			if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
+				player.teleport((Location) getVariable("lobby"));
+				player.getInventory().clear();
+				arena.getQueue().setLobbyInventory(player.getInventory());
+			} else {
+				PlayerManager.removePlayer(player);
+				player.teleport((Location) getVariable("exit"));
+				player.getInventory().clear();
+			}
 		});
 		onGameFinish();
 		state.clear();
@@ -117,5 +125,13 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 
 	public void addGameVariableTeamsList(HashMap<String, GameVariable> fields) {
 		arena.addGameVariableTeamsList(fields);
+	}
+
+	public void sendScoreboardToArena(Scoreboard scoreboard) {
+		arena.getQueue().getPlayerSet().forEach(p -> p.setScoreboard(scoreboard));
+	}
+
+	public void sendMessageToArena(String message) {
+		arena.getQueue().getPlayerSet().forEach(p -> p.sendMessage(message));
 	}
 }

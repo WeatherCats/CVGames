@@ -55,4 +55,5 @@ public abstract class GameVariable {
 	public Object getFromPath(String path) {
 		return getInstance().getConfig().getString(path);
 	}
+
 }

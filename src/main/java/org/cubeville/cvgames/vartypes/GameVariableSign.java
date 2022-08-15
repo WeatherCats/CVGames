@@ -52,7 +52,7 @@ public class GameVariableSign extends GameVariable {
 	@Override
 	public String itemString() {
 		if (sign == null) {
-			return null;
+			return "<INVALID SIGN>";
 		}
 		return GameUtils.blockLocToString(sign.getLocation());
 	}

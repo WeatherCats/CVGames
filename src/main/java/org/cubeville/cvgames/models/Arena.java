@@ -114,7 +114,7 @@ public class Arena {
 	}
 
 	public void addGameVariable(String var, Player player, String input) {
-		getGameVariable(var).setVariable(this.getName(), var, player, input);
+		getGameVariable(var).addVariable(this.getName(), var, player, input);
 	}
 
 	// i hate this
@@ -130,7 +130,7 @@ public class Arena {
 			if (variableAtIndex != null) {
 				gv = variableAtIndex;
 			} else {
-				gv = ((GameVariableList<?>) inVariable).addBlankGameVariable();
+				gv = ((GameVariableList<?>) inVariable).addBlankGameVariable(this.getName());
 			}
 		} else if (inVariable instanceof GameVariableObject) {
 			// inVariable is an object
@@ -183,8 +183,13 @@ public class Arena {
 	private void saveObjectFields(String varName, HashMap<String, GameVariable> fields) {
 		// merge the object fields together
 		if (objectFields.containsKey(varName)) {
-			Stream<Map.Entry<String, GameVariable>> combinedFieldNames = Stream.concat(objectFields.get(varName).entrySet().stream(), fields.entrySet().stream());
-			objectFields.put(varName, combinedFieldNames.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+			Map<String, GameVariable> existingFields = objectFields.get(varName);
+			for (String fieldName : fields.keySet()) {
+				if (!existingFields.containsKey(fieldName)) {
+					existingFields.put(fieldName, fields.get(fieldName));
+				}
+			}
+			objectFields.put(varName, existingFields);
 		} else {
 			objectFields.put(varName, fields);
 		}

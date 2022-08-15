@@ -21,12 +21,4 @@ public class GameManager<T extends BaseGame> {
 	public boolean hasGame(String name) {
 		return games.containsKey(name);
 	}
-
-	public String filterGameInput(String gameInput) throws Error {
-		String gameName = gameInput.toLowerCase();
-		if (!hasGame(gameName)) {
-			throw new Error("Game with name " + gameName + " does not exist!");
-		}
-		return gameInput;
-	}
 }

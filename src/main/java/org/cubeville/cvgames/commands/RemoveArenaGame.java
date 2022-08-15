@@ -12,7 +12,7 @@ public class RemoveArenaGame extends RunnableCommand {
     @Override
     public TextComponent execute(CommandSender sender, List<Object> params) throws Error {
         Arena arena = (Arena) params.get(0);
-        String gameName = CVGames.gameManager().filterGameInput((String) params.get(1));
+        String gameName = (String) params.get(1);
         ArenaManager.removeArenaGame(arena.getName(), gameName);
 
         return new TextComponent("§aRemoved the game " + gameName + " from arena " + arena.getName() + "!");

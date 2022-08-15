@@ -5,6 +5,7 @@ import org.cubeville.cvgames.CVGames;
 import org.cubeville.cvgames.models.BaseGame;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.bukkit.Bukkit.getServer;
@@ -35,6 +36,12 @@ public class ArenaManager {
 	}
 
 	public static void addArenaGame(String name, String game) throws Error {
+		importArenaGame(name, game);
+		getInstance().getConfig().set("arenas." + name + ".game", new ArrayList<>(arenas.get(name).getGameNames()));
+		getInstance().saveConfig();
+	}
+
+	public static void importArenaGame(String name, String game) throws Error {
 		try {
 			Class[] cArgs = new Class[2];
 			cArgs[0] = String.class;
@@ -48,19 +55,21 @@ public class ArenaManager {
 			e.printStackTrace();
 			throw new Error("Could not add game properly for arena " + name + " and game " + game + "!");
 		}
-		getInstance().getConfig().set("arenas." + name + ".game", arenas.get(name).getGameNames());
-		getInstance().saveConfig();
 	}
 
 	public static void removeArenaGame(String name, String game) {
 		if (!arenas.containsKey(name)) return;
 		arenas.get(name).removeGameWithName(game);
 
-		getInstance().getConfig().set("arenas." + name + ".game", arenas.get(name).getGameNames());
+		getInstance().getConfig().set("arenas." + name + ".game", new ArrayList<>(arenas.get(name).getGameNames()));
 		getInstance().saveConfig();
 	}
 
+	public static boolean hasLoadedArena(String name) {
+		return arenas.containsKey(name);
+	}
+
 	public static boolean hasArena(String name) {
-		return arenas.containsKey(name) || getInstance().getConfig().contains("arenas." + name);
+		return hasLoadedArena(name) || getInstance().getConfig().contains("arenas." + name);
 	}
 }

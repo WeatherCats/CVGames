@@ -16,7 +16,6 @@ public class ConfigImportManager {
 		}
 
 		for (String arenaName : Objects.requireNonNull(config.getConfigurationSection("arenas")).getKeys(false)) {
-
 			ConfigurationSection arenaConfig = config.getConfigurationSection("arenas." + arenaName);
 			assert arenaConfig != null;
 
@@ -28,9 +27,11 @@ public class ConfigImportManager {
 				if (game == null || !game.equals(gameName)) continue;
 			}
 
-			// now we know the game is set up properly, we can add the arena and set its game
-			ArenaManager.addArena(arenaName);
-			ArenaManager.addArenaGame(arenaName, gameName);
+			// now we know the game is set up properly, we can add the arena (if it doesn't exit)
+			// and add the current game as one of its games
+			if (!ArenaManager.hasLoadedArena(arenaName))
+				ArenaManager.addArena(arenaName);
+			ArenaManager.importArenaGame(arenaName, gameName);
 
 			if (!arenaConfig.contains("variables")) continue;
 			parseArenaVariables("variables", arenaConfig, arenaName);

@@ -31,7 +31,7 @@ public class EventHandlers implements Listener {
 
 		// Is the player in a queue for an arena
 		Arena arena = PlayerManager.getPlayerArena(event.getPlayer());
-		if (arena != null && arena.getQueue() != null && arena.getStatus().equals(ArenaStatus.OPEN)) {
+		if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_QUEUE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
 			if (event.getItem() != null) {
 				// If the player is holding the item to leave the queue, have them leave it
 				if (arena.getQueue().queueLeaveItem().isSimilar(event.getItem())) {
@@ -60,7 +60,7 @@ public class EventHandlers implements Listener {
 		if (event.getView().getTitle().contains(GameUtils.teamSelectorPrefix)) {
 			if (event.getWhoClicked() instanceof Player && event.getClick().isLeftClick() && event.getSlot() >= 0) {
 				Arena arena = PlayerManager.getPlayerArena((Player) event.getWhoClicked());
-				if (arena != null && arena.getQueue() != null && arena.getStatus().equals(ArenaStatus.OPEN)) {
+				if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_QUEUE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
 					arena.getQueue().setSelectedTeam((Player) event.getWhoClicked(), event.getSlot());
 					event.setCancelled(true);
 					event.getWhoClicked().closeInventory();
@@ -71,9 +71,9 @@ public class EventHandlers implements Listener {
 		if (event.getViewers().size() == 0) return;
 		// Is the player in a queue for an arena
 		Arena arena = PlayerManager.getPlayerArena((Player) event.getViewers().get(0));
-		if (arena != null && arena.getQueue() != null && arena.getStatus().equals(ArenaStatus.OPEN)) {
+		if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_QUEUE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
 			// If the player is moving the item to leave the queue
-			if (event.getCurrentItem() != null && event.getCurrentItem().equals(arena.getQueue().queueLeaveItem())) {
+			if (event.getCurrentItem() != null && (event.getCurrentItem().isSimilar(arena.getQueue().queueLeaveItem()) || event.getCurrentItem().isSimilar(arena.getQueue().teamSelectorItem()))) {
 				event.setCancelled(true);
 			}
 		}

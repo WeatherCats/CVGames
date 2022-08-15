@@ -34,6 +34,7 @@ public class SignManager {
 	);
 
 	public static QueueSign addSign(Sign sign, String arenaName, String gameName) {
+		if (sign == null) return null;
 		QueueSign queueSign = new QueueSign(sign, ArenaManager.getArena(arenaName), gameName);
 		signs.put(createKey(sign.getLocation()), queueSign);
 		return queueSign;
@@ -58,6 +59,12 @@ public class SignManager {
 		}
 	}
 
+	public static void updateArenaSignsGame(String arenaName, String selectedGame) {
+		for (QueueSign sign : signs.values()) {
+			if (sign.getArenaName().equals(arenaName)) sign.displayGameName(selectedGame);
+		}
+	}
+
 	public static void updateArenaSignsStatus(String arenaName, ArenaStatus status) {
 		for (QueueSign sign : signs.values()) {
 			if (sign.getArenaName().equals(arenaName)) sign.displayStatus(status);
@@ -68,6 +75,7 @@ public class SignManager {
 		for (QueueSign sign : signs.values()) {
 			sign.displayFill();
 			sign.displayStatus( ArenaManager.getArena(sign.getArenaName()).getStatus() );
+			sign.displayGameName(null);
 		}
 	}
 }

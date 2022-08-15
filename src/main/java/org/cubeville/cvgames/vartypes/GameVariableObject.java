@@ -12,17 +12,13 @@ import org.cubeville.cvgames.models.Arena;
 import org.cubeville.cvgames.utils.GameUtils;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GameVariableObject extends GameVariable {
 
-    String name;
     HashMap<String, GameVariable> fields = new HashMap<>();
-
-    public GameVariableObject(String name) {
-        this.name = name;
-    }
 
     @Override
     public Object getItem() {
@@ -41,6 +37,7 @@ public class GameVariableObject extends GameVariable {
             out.addExtra("\n");
             out.addExtra(GameUtils.addGameVarString(key + " [" + fields.get(key).typeString() + "]: §f", fields.get(key), arenaName, key));
             if (fields.get(key) instanceof GameVariableList) {
+                out.addExtra("  ");
                 TextComponent tc = new TextComponent("[Show Contents]");
                 tc.setBold(true);
                 tc.setColor(ChatColor.AQUA);
@@ -75,7 +72,7 @@ public class GameVariableObject extends GameVariable {
     }
 
     public void addToField(String arenaName, String fieldName, Player player, String input) throws Error {
-        if (!fields.containsKey(fieldName)) throw new Error("Field " + fieldName + " does not exist for object " + name);
+        if (!fields.containsKey(fieldName)) throw new Error("Field " + fieldName + " does not exist for variable at path " + path);
         String fieldPath = EditingManager.getEditPath(arenaName, player) + "." + fieldName;
         fields.get(fieldName).path = fieldPath;
         fields.get(fieldName).addVariable(arenaName, fieldPath, player, input);
@@ -86,7 +83,7 @@ public class GameVariableObject extends GameVariable {
     }
 
     public void setField(String arenaName, String fieldName, Player player, String input) throws Error {
-        if (!fields.containsKey(fieldName)) throw new Error("Field " + fieldName + " does not exist for object " + name);
+        if (!fields.containsKey(fieldName)) throw new Error("Field " + fieldName + " does not exist for variable at path " + path);
         String fieldPath = EditingManager.getEditPath(arenaName, player) + "." + fieldName;
         fields.get(fieldName).path = fieldPath;
         fields.get(fieldName).setVariable(arenaName, fieldPath, player, input);
@@ -98,7 +95,7 @@ public class GameVariableObject extends GameVariable {
 
     @Override
     public String typeString() {
-        return name;
+        return "Object";
     }
 
     @Override public void storeItem(String arenaName, String path) {
@@ -111,7 +108,19 @@ public class GameVariableObject extends GameVariable {
         Arena arena = ArenaManager.getArena(arenaName);
         Map<String, GameVariable> objectFields = arena.getObjectFields(path);
         for (String fieldName : objectFields.keySet()) {
-            addField(fieldName, objectFields.get(fieldName));
+            GameVariable var = objectFields.get(fieldName);
+            try {
+                if (var instanceof GameVariableList) {
+                    GameVariableList<GameVariable> list = (GameVariableList<GameVariable>) var;
+                    Class[] cArgs = new Class[1];
+                    cArgs[0] = Class.class;
+                    addField(fieldName, list.getClass().getDeclaredConstructor(cArgs).newInstance(list.getVariableClass()));
+                } else {
+                    addField(fieldName, var.getClass().getDeclaredConstructor().newInstance());
+                }
+            } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
     }
 

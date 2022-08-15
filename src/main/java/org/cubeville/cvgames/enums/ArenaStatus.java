@@ -4,6 +4,7 @@ public enum ArenaStatus {
 	OPEN,
 	IN_QUEUE,
 	IN_USE,
-	CLOSED
+	CLOSED,
+	HOSTING
 }
 

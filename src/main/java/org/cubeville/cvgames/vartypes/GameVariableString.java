@@ -12,6 +12,8 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 
+import static org.cubeville.cvgames.utils.GameUtils.createColorTextComponent;
+
 public class GameVariableString extends GameVariable {
 
 	String item;
@@ -43,20 +45,6 @@ public class GameVariableString extends GameVariable {
 			matcher.appendReplacement(stringBuilder, ChatColor.of("#" + matcher.group(1)).toString());
 		}
 		return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(stringBuilder).toString());
-	}
-
-	private TextComponent createColorTextComponent(String input) {
-		Matcher matcher = GameUtils.HEX_PATTERN.matcher(input);
-		String[] inBetweens = input.split(GameUtils.HEX_PATTERN.pattern());
-		TextComponent tc = new TextComponent(ChatColor.translateAlternateColorCodes('&', inBetweens[0]));
-		int i = 1;
-		while (matcher.find()) {
-			TextComponent colorArea = new TextComponent(ChatColor.translateAlternateColorCodes('&', inBetweens[i]));
-			colorArea.setColor(ChatColor.of("#" + matcher.group(1)));
-			tc.addExtra(colorArea);
-			i++;
-		}
-		return tc;
 	}
 
 	@Override
