@@ -48,7 +48,6 @@ public class ArenaManager {
 			cArgs[1] = String.class;
 			BaseGame arenaGame = (BaseGame) gameManager().getGame(game).getDeclaredConstructor(cArgs).newInstance(game, name);
 			getServer().getPluginManager().registerEvents(arenaGame, CVGames.getInstance());
-
 			arenas.get(name).addGame(arenaGame);
 		}
 		catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {

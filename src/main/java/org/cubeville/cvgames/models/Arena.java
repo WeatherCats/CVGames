@@ -18,6 +18,7 @@ public class Arena {
 
 	private final Map<String, GameVariable> verificationMap = new HashMap<>();
 	private final Map<String, Map<String, GameVariable>> objectFields = new HashMap<>();
+	private final Map<String, Boolean> shouldRedefine = new HashMap<>();
 	private final String name;
 	private final HashMap<String, BaseGame> games = new HashMap<>();
 	private String usingGame;
@@ -103,6 +104,16 @@ public class Arena {
 		GameVariable gv = verificationMap.get(firstVar);
 		if (gv instanceof GameVariableList || gv instanceof GameVariableObject) {
 			// fuck
+			if (shouldRedefine.containsKey(firstVar) && shouldRedefine.get(firstVar)) {
+				if (gv instanceof GameVariableList) {
+					// clear the list so the newly defined fields can populate
+					((GameVariableList<?>) gv).setItems(List.of(), getName());
+				} else {
+					// clear the object so the newly defined fields can populate
+					((GameVariableObject) gv).clearFields();
+				}
+				shouldRedefine.put(firstVar, false);
+			}
 			gv.path = firstVar;
 			return getGameVariable(var.replaceFirst(firstVar, ""), gv);
 		}
@@ -183,6 +194,7 @@ public class Arena {
 	private void saveObjectFields(String varName, HashMap<String, GameVariable> fields) {
 		// merge the object fields together
 		if (objectFields.containsKey(varName)) {
+			shouldRedefine.put(varName, true);
 			Map<String, GameVariable> existingFields = objectFields.get(varName);
 			for (String fieldName : fields.keySet()) {
 				if (!existingFields.containsKey(fieldName)) {
@@ -191,6 +203,7 @@ public class Arena {
 			}
 			objectFields.put(varName, existingFields);
 		} else {
+			shouldRedefine.put(varName, false);
 			objectFields.put(varName, fields);
 		}
 	}

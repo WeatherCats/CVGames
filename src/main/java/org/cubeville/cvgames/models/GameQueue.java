@@ -140,6 +140,9 @@ public class GameQueue implements PlayerContainer {
 
 	public void addToHostedGame(Player p) throws Error {
 		if (!getPlayerSet().contains(p)) throw new Error("Player " + p.getDisplayName() + " is not in the lobby!");
+		if (playerTeams.keySet().stream().anyMatch(key -> playerTeams.get(key).contains(p))) {
+			throw new Error("Player " + p.getDisplayName() + " is already in the next game!");
+		}
 		playerTeams.computeIfAbsent(-1, k -> new ArrayList<>());
 		playerTeams.get(-1).add(p);
 		GameUtils.messagePlayerList(getPlayerSet(),"§b" + p.getName() + " will be playing in the next game!");
@@ -147,6 +150,9 @@ public class GameQueue implements PlayerContainer {
 
 	public void removeFromHostedGame(Player p) {
 		if (!getPlayerSet().contains(p)) throw new Error("Player " + p.getDisplayName() + " is not in the lobby!");
+		if (playerTeams.keySet().stream().noneMatch(key -> playerTeams.get(key).contains(p))) {
+			throw new Error("Player " + p.getDisplayName() + " is already absent from the next game!");
+		}
 		playerTeams.keySet().forEach(i -> playerTeams.get(i).remove(p));
 		GameUtils.messagePlayerList(getPlayerSet(),"§b" + p.getName() + " will no longer be playing in the next game!");
 	}
@@ -199,6 +205,7 @@ public class GameQueue implements PlayerContainer {
 			killArenaLobbyRegionCheck();
 		}
 		SignManager.updateArenaSignsFill(arena.getName());
+		p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 	}
 
 	public void leave(Player p) {
@@ -225,9 +232,9 @@ public class GameQueue implements PlayerContainer {
 			clearHostedLobby();
 		}
 
-		if (players.size() < getMinPlayers() && countdownTimer != null) {
-			final String countdownCancelledMessage = "§cCountdown cancelled -- Not enough players!";
-			GameUtils.messagePlayerList(players, countdownCancelledMessage);
+		int playerCount = playerTeams.values().stream().mapToInt(List::size).sum();
+		if (playerCount < getMinPlayers() && countdownTimer != null) {
+			GameUtils.messagePlayerList(players, "§cCountdown cancelled -- Not enough players!");
 			endCountdown();
 		}
 
@@ -423,6 +430,7 @@ public class GameQueue implements PlayerContainer {
 		playerLobby.add(player);
 		arena.setStatus(ArenaStatus.HOSTING);
 		SignManager.updateArenaSignsFill(arena.getName());
+		setLobbyInventory(player.getInventory());
 
 	}
 	public void clearHostedLobby() {

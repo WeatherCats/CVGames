@@ -29,8 +29,9 @@ public class ConfigImportManager {
 
 			// now we know the game is set up properly, we can add the arena (if it doesn't exit)
 			// and add the current game as one of its games
-			if (!ArenaManager.hasLoadedArena(arenaName))
+			if (!ArenaManager.hasLoadedArena(arenaName)) {
 				ArenaManager.addArena(arenaName);
+			}
 			ArenaManager.importArenaGame(arenaName, gameName);
 
 			if (!arenaConfig.contains("variables")) continue;

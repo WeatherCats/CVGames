@@ -104,6 +104,10 @@ public class GameVariableObject extends GameVariable {
         }
     }
 
+    public void clearFields() {
+        fields.clear();
+    }
+
     public void populateFields(String arenaName, String path) {
         Arena arena = ArenaManager.getArena(arenaName);
         Map<String, GameVariable> objectFields = arena.getObjectFields(path);
