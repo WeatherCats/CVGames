@@ -1,11 +1,9 @@
 package org.cubeville.cvgames.models;
 
 import org.bukkit.entity.Player;
+import org.cubeville.cvgames.utils.GameUtils;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class Game extends BaseGame {
     public Game(String id, String arenaName) {

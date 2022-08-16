@@ -130,7 +130,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		arena.addGameVariableTeamsList(fields);
 	}
 
-	public void sendScoreboardToArena(Scoreboard scoreboard) {
+	protected void sendScoreboardToArena(Scoreboard scoreboard) {
 		arena.getQueue().getPlayerSet().forEach(p -> p.setScoreboard(scoreboard));
 	}
 
@@ -138,4 +138,20 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		arena.getQueue().getPlayerSet().forEach(p -> p.sendMessage(message));
 	}
 
+	public void updateDefaultScoreboard(int currentTime, String key, boolean isReverse) {
+		Scoreboard scoreboard;
+		ArrayList<String> scoreboardLines = new ArrayList<>();
+
+		scoreboardLines.add("§bTime remaining: §f" +
+				String.format("%d:%02d", currentTime / 60000, (currentTime / 1000) % 60)
+		);
+		scoreboardLines.add("   ");
+
+		state.keySet().stream().sorted(Comparator.comparingInt(o -> (isReverse ? 1 : -1) * getState(o).getSortingValue())).forEach(p -> {
+			int points = getState(p).getSortingValue();
+			scoreboardLines.add("§a" + p.getDisplayName() + "§f: " + points + " " + key);
+		});
+		scoreboard = GameUtils.createScoreboard(arena, "§b§lFFA " + getId(), scoreboardLines);
+		sendScoreboardToArena(scoreboard);
+	}
 }

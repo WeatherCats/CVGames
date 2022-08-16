@@ -57,6 +57,11 @@ public abstract class TeamSelectorGame extends BaseGame {
     }
 
     public void updateDefaultScoreboard(int currentTime, ArrayList<Integer[]> teamScores, String key, boolean isReverse) {
+        List<HashMap<String, Object>> teams = getTeamVariable();
+        if (teams.size() == 1) {
+            updateDefaultScoreboard(currentTime, key, isReverse);
+            return;
+        }
         Scoreboard scoreboard;
         ArrayList<String> scoreboardLines = new ArrayList<>();
 
@@ -64,24 +69,14 @@ public abstract class TeamSelectorGame extends BaseGame {
                 String.format("%d:%02d", currentTime / 60000, (currentTime / 1000) % 60)
         );
         scoreboardLines.add("   ");
-
-        List<HashMap<String, Object>> teams = getTeamVariable();
-        if (teams.size() == 1) {
-            state.keySet().stream().sorted(Comparator.comparingInt(o -> (isReverse ? 1 : -1) * getState(o).getSortingValue())).forEach( p -> {
-                int points = getState(p).getSortingValue();
-                scoreboardLines.add("§a" + p.getDisplayName() + "§f: " + points + " " + key);
-            });
-            scoreboard = GameUtils.createScoreboard(arena, "§b§lFFA " + getId(), scoreboardLines);
-        } else {
-            for (int i = 0; i < teamScores.size(); i++) {
-                String line = teams.get(i).get("name") + "§f: ";
-                line += teamScores.get(i)[1];
-                line += " ";
-                line += key;
-                scoreboardLines.add(line);
-            }
-            scoreboard = GameUtils.createScoreboard(arena, "§b§lTeam " + getId(), scoreboardLines);
+        for (int i = 0; i < teamScores.size(); i++) {
+            String line = teams.get(i).get("name") + "§f: ";
+            line += teamScores.get(i)[1];
+            line += " ";
+            line += key;
+            scoreboardLines.add(line);
         }
+        scoreboard = GameUtils.createScoreboard(arena, "§b§lTeam " + getId(), scoreboardLines);
         sendScoreboardToArena(scoreboard);
     }
 }

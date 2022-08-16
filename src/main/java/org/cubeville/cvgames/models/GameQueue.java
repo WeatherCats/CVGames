@@ -103,8 +103,7 @@ public class GameQueue implements PlayerContainer {
 			return false;
 		}
 		if (selectedGame == null && gameName != null) {
-			selectedGame = gameName;
-			SignManager.updateArenaSignsGame(arena.getName(), gameName);
+			setSelectedGame(gameName);
 		}
 
 		if (arena.getStatus().equals(ArenaStatus.OPEN)) {
@@ -302,7 +301,6 @@ public class GameQueue implements PlayerContainer {
 
 	@Override
 	public void whenPlayerLogout(Player p, Arena a) {
-		playerLobby.remove(p);
 		leave(p);
 	}
 
@@ -424,6 +422,7 @@ public class GameQueue implements PlayerContainer {
 		setSelectedGame(selectedGame);
 		playerLobby.add(player);
 		arena.setStatus(ArenaStatus.HOSTING);
+		SignManager.updateArenaSignsFill(arena.getName());
 
 	}
 	public void clearHostedLobby() {
