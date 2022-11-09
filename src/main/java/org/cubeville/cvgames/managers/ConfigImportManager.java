@@ -19,20 +19,24 @@ public class ConfigImportManager {
 			ConfigurationSection arenaConfig = config.getConfigurationSection("arenas." + arenaName);
 			assert arenaConfig != null;
 
-			if (arenaConfig.isList("game")) {
-				List<String> games = arenaConfig.getStringList("game");
-				if (!games.contains(gameName)) continue;
-			} else {
-				String game = arenaConfig.getString("game");
-				if (game == null || !game.equals(gameName)) continue;
+			if (arenaConfig.contains("game")) {
+				if (arenaConfig.isList("game")) {
+					List<String> games = arenaConfig.getStringList("game");
+					if (!games.contains(gameName)) continue;
+				} else {
+					String game = arenaConfig.getString("game");
+					if (game == null || !game.equals(gameName)) continue;
+				}
 			}
 
-			// now we know the game is set up properly, we can add the arena (if it doesn't exit)
+			// now we know the game is set up properly (or has no games), we can add the arena (if it doesn't exit)
 			// and add the current game as one of its games
 			if (!ArenaManager.hasLoadedArena(arenaName)) {
 				ArenaManager.addArena(arenaName);
 			}
-			ArenaManager.importArenaGame(arenaName, gameName);
+			if (arenaConfig.contains("game")) {
+				ArenaManager.importArenaGame(arenaName, gameName);
+			}
 
 			if (!arenaConfig.contains("variables")) continue;
 			parseArenaVariables("variables", arenaConfig, arenaName);

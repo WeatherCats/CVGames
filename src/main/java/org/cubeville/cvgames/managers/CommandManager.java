@@ -4,9 +4,11 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.checkerframework.checker.units.qual.A;
 import org.cubeville.cvgames.CVGames;
 import org.cubeville.cvgames.commands.*;
 import org.cubeville.cvgames.models.Arena;
+import org.cubeville.cvgames.models.BaseGame;
 
 import java.util.*;
 
@@ -42,6 +44,10 @@ public class CommandManager {
         put("hostteamsremove", new HostTeamsRemove());
         put("hostlobby", new HostLobby());
         put("hostcountdown", new HostCountdown());
+        put("arenas", new Arenas());
+        put("metricsarena", new MetricsArena());
+        put("metricsgame", new MetricsGame());
+        put("metricssearch", new MetricsSearch());
     }};
 
     public static boolean parse(CommandSender sender, String[] argsIn) {
@@ -76,12 +82,12 @@ public class CommandManager {
 
                         Arena arena = ArenaManager.getArena(args[2].toLowerCase());
                         if (arena == null) {
-                            return sendErrorMessage(sender, "Arena with name " + args[1].toLowerCase() + " does not exist!");
+                            return sendErrorMessage(sender, "Error: Arena with name " + args[1].toLowerCase() + " does not exist!");
                         }
-                        if (arena.getVariables().size() == 0) sendErrorMessage(sender,"You need to add a game to the arena " + arena.getName());
+                        if (arena.getVariables().size() == 0) return sendErrorMessage(sender,"You need to add a game to the arena " + arena.getName());
 
                         Player player = Bukkit.getPlayer(args[3]);
-                        if (player == null) return sendErrorMessage(sender, "Player with name " + args[3] + " is not online!");
+                        if (player == null) return sendErrorMessage(sender, "Error: Player with name " + args[3] + " is not online!");
 
                         ArrayList<Object> params = new ArrayList<>(List.of(arena, player));
                         if (args.length == 5) {
@@ -110,14 +116,25 @@ public class CommandManager {
                     default:
                         Arena arena = ArenaManager.getArena(args[1].toLowerCase());
                         if (arena == null) {
-                            return sendErrorMessage(sender, "Arena with name " + args[1].toLowerCase() + " does not exist!");
+                            return sendErrorMessage(sender, "Error: Arena with name " + args[1].toLowerCase() + " does not exist!");
                         }
-                        if (arena.getVariables().size() == 0) sendErrorMessage(sender,"You need to add a game to the arena " + arena.getName());
+                        if (arena.getVariables().size() == 0 && !args[2].equalsIgnoreCase("addgame")) return sendErrorMessage(sender,"You need to add a game to the arena " + arena.getName());
 
                         return parseArenaCommands(sender, arena, Arrays.copyOfRange(args, 2, args.length));
                 }
+            case "arenas":
+                if (!sender.hasPermission("cvgames.setup.list")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                if (args.length > 2) return sendErrorMessage(sender, "Error: Invalid parameter size. Did you mean \"/cvgames arenas [game]\" ?");
+                List<Object> arenasParameters = new ArrayList<>();
+                if (args.length == 2) {
+                    if (!CVGames.gameManager().hasGame(args[1].toLowerCase())) return sendErrorMessage(sender, "Error: Game with name " + args[1].toLowerCase() + " does not exist!");
+                    arenasParameters.add(args[1].toLowerCase());
+                }
+                return runCommand("arenas", sender, arenasParameters);
             case "host":
                 return parseHostingCommands(sender, Arrays.copyOfRange(args, 1, args.length));
+            case "metrics":
+                return parseMetricsCommands(sender, Arrays.copyOfRange(args, 1, args.length));
             default:
                 return sendErrorMessage(sender, DEFAULT_ERROR);
         }
@@ -153,7 +170,7 @@ public class CommandManager {
                 if (!CVGames.gameManager().hasGame(gameName))  return sendErrorMessage(sender, "Error: game with name \"" + gameName + "\" does not exist");
                 // add game name
                 parametersList.add(gameName);
-                return runCommand("addgame", sender, List.of(arena, parametersList));
+                return runCommand("addgame", sender, parametersList);
             case "addvar":
             case "setvar":
                 if (!sender.hasPermission("cvgames.setup." + actionArg)) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
@@ -257,14 +274,38 @@ public class CommandManager {
                         if (args.length != 3) return sendErrorMessage(sender, "Error: Invalid parameter size. Did you mean \"/cvgames host players " + subTeamsArg + " <player>\" ?");
                         return runCommand("hostteamsremove", player, List.of(args[2]));
                 }
-
-
         }
 
         return sendErrorMessage(player, DEFAULT_ERROR);
     }
 
-    // Written by Fredi, I don't want to have to rewrite this
+    private static boolean parseMetricsCommands(CommandSender sender, String[] args) {
+        if (args.length == 0) return sendErrorMessage(sender, DEFAULT_ERROR);
+        String actionArg = args[0].toLowerCase();
+        switch (actionArg) {
+            case "arena":
+                if (!sender.hasPermission("cvgames.metrics.arena")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                if (args.length != 2) return sendErrorMessage(sender, "Error: Invalid parameter size. Did you mean \"/cvgames metrics arena <arena>\" ?");
+                Arena arena = ArenaManager.getArena(args[1].toLowerCase());
+                if (arena == null) return sendErrorMessage(sender, "Error: Arena with name " + args[1].toLowerCase() + " does not exist!");
+                runCommand("metricsarena", sender, List.of(arena));
+                break;
+            case "game":
+                if (!sender.hasPermission("cvgames.metrics.game")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                if (args.length != 2) return sendErrorMessage(sender, "Error: Invalid parameter size. Did you mean \"/cvgames metrics game <game>\" ?");
+                if (!CVGames.gameManager().hasGame(args[1].toLowerCase())) return sendErrorMessage(sender, "Error: Game with name " + args[1].toLowerCase() + " does not exist!");
+                runCommand("metricsgame", sender, List.of(args[1].toLowerCase()));
+                break;
+            case "search":
+                if (!sender.hasPermission("cvgames.metrics.search")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                if (args.length != 2) return sendErrorMessage(sender, "Error: Invalid parameter size. Did you mean \"/cvgames metrics search <query>\" ?");
+                runCommand("metricssearch", sender, List.of(args[1].toLowerCase()));
+                break;
+        }
+        return sendErrorMessage(sender, DEFAULT_ERROR);
+    }
+
+        // Written by Fredi, I don't want to have to rewrite this
     private static List<String> smartSplit(String full) {
         // I don't like this piece of code....
         if(full.length() == 0) return new ArrayList<>();

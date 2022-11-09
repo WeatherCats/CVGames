@@ -7,6 +7,7 @@ import org.cubeville.cvgames.models.BaseGame;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import static org.bukkit.Bukkit.getServer;
 import static org.cubeville.cvgames.CVGames.*;
@@ -42,18 +43,9 @@ public class ArenaManager {
 	}
 
 	public static void importArenaGame(String name, String game) throws Error {
-		try {
-			Class[] cArgs = new Class[2];
-			cArgs[0] = String.class;
-			cArgs[1] = String.class;
-			BaseGame arenaGame = (BaseGame) gameManager().getGame(game).getDeclaredConstructor(cArgs).newInstance(game, name);
-			getServer().getPluginManager().registerEvents(arenaGame, CVGames.getInstance());
-			arenas.get(name).addGame(arenaGame);
-		}
-		catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-			e.printStackTrace();
-			throw new Error("Could not add game properly for arena " + name + " and game " + game + "!");
-		}
+		BaseGame arenaGame = gameManager().getGameLoader(game).load(name, game);
+		getServer().getPluginManager().registerEvents(arenaGame, CVGames.getInstance());
+		arenas.get(name).addGame(arenaGame);
 	}
 
 	public static void removeArenaGame(String name, String game) {
@@ -70,5 +62,9 @@ public class ArenaManager {
 
 	public static boolean hasArena(String name) {
 		return hasLoadedArena(name) || getInstance().getConfig().contains("arenas." + name);
+	}
+
+	public static Set<Arena> getArenas() {
+		return (Set<Arena>) arenas.values();
 	}
 }

@@ -1,20 +1,21 @@
 package org.cubeville.cvgames.managers;
 
 import org.cubeville.cvgames.models.BaseGame;
+import org.cubeville.cvgames.models.GameLoader;
 
 import java.util.HashMap;
 
-public class GameManager<T extends BaseGame> {
+public class GameManager {
 
-	private HashMap<String, Class<T>> games = new HashMap<>();
+	private HashMap<String, GameLoader> games = new HashMap<>();
 
-	public void registerGame(String name, Class<T> game) {
-		games.put(name, game);
+	public void registerGame(String name, GameLoader gameLoader) {
+		games.put(name, gameLoader);
 		ConfigImportManager.importConfiguration(name);
 		SignManager.updateSigns();
 	}
 
-	public Class<T> getGame(String id) {
+	public GameLoader getGameLoader(String id) {
 		return games.get(id);
 	}
 

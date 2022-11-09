@@ -43,7 +43,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		onPlayerLeave(p);
 		state.remove(p);
 		p.getInventory().clear();
-		if (teleportToExit) { p.teleport((Location) arena.getGame(id).getVariable("exit")); }
+		if (teleportToExit) { p.teleport((Location) this.getVariable("exit")); }
 		if (isRunningGame && state.isEmpty()) { finishGame(); }
 	}
 
@@ -153,5 +153,9 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		});
 		scoreboard = GameUtils.createScoreboard(arena, "§b§lFFA " + getId(), scoreboardLines);
 		sendScoreboardToArena(scoreboard);
+	}
+
+	public Arena getArena() {
+		return arena;
 	}
 }

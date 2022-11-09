@@ -110,16 +110,16 @@ public class GameQueue implements PlayerContainer {
 			arena.setStatus(ArenaStatus.IN_QUEUE);
 		}
 
-		if (!playerTeams.containsKey(-1)) {
-			if (getGame() instanceof TeamSelectorGame) {
-				int numberOfTeams = ((TeamSelectorGame) getGame()).getTeamVariable().size();
-				for (int i = -1; i < numberOfTeams; i++) {
-					playerTeams.put(i, new ArrayList<>());
-				}
-			} else {
-				playerTeams.put(-1, new ArrayList<>());
+		// let's be extra careful, there's no harm in making sure the map is consistent with each join
+		if (getGame() instanceof TeamSelectorGame) {
+			int numberOfTeams = ((TeamSelectorGame) getGame()).getTeamVariable().size();
+			for (int i = -1; i < numberOfTeams; i++) {
+				playerTeams.putIfAbsent(i, new ArrayList<>());
 			}
+		} else {
+			playerTeams.putIfAbsent(-1, new ArrayList<>());
 		}
+
 		setPlayerToLobby(p);
 		PlayerManager.setPlayer(p, arena.getName());
 		if (!arena.getStatus().equals(ArenaStatus.HOSTING)) {
@@ -324,7 +324,7 @@ public class GameQueue implements PlayerContainer {
 	}
 
 	public void clear() {
-		playerTeams.clear();
+		playerTeams.keySet().forEach(key -> playerTeams.get(key).clear());
 		if (!arena.getStatus().equals(ArenaStatus.HOSTING)) {
 			playerLobby.clear();
 			setSelectedGame(null);
