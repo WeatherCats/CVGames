@@ -1,21 +1,21 @@
 package org.cubeville.cvgames.managers;
 
 import org.cubeville.cvgames.models.BaseGame;
-import org.cubeville.cvgames.models.GameLoader;
 
 import java.util.HashMap;
+import java.util.function.BiFunction;
 
 public class GameManager {
 
-	private HashMap<String, GameLoader> games = new HashMap<>();
+	private HashMap<String, BiFunction<String, String, BaseGame>> games = new HashMap<>();
 
-	public void registerGame(String name, GameLoader gameLoader) {
-		games.put(name, gameLoader);
+	public void registerGame(String name, BiFunction<String, String, BaseGame> fn) {
+		games.put(name, fn);
 		ConfigImportManager.importConfiguration(name);
 		SignManager.updateSigns();
 	}
 
-	public GameLoader getGameLoader(String id) {
+	public BiFunction<String, String, BaseGame> getGameLoader(String id) {
 		return games.get(id);
 	}
 
