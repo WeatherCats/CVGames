@@ -6,23 +6,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import org.cubeville.cvgames.database.GamesDB;
 import org.cubeville.cvgames.managers.CommandManager;
-import org.cubeville.cvgames.managers.DataManager;
 import org.cubeville.cvgames.managers.GameManager;
-
-import java.io.IOException;
 
 public class CVGames extends JavaPlugin implements Listener {
 
     private static CVGames instance;
     private static GameManager games;
-    private static DataManager data;
 
     public void onEnable() {
         instance = this;
         games = new GameManager();
-        data = new DataManager();
 
         saveDefaultConfig();
         PluginManager pm = getServer().getPluginManager();
@@ -44,11 +38,6 @@ public class CVGames extends JavaPlugin implements Listener {
     public static GameManager gameManager() {
         return games;
     }
-
-    public static DataManager dataManager() {
-        return data;
-    }
-
 
 
 }

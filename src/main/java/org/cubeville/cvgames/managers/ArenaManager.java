@@ -43,7 +43,7 @@ public class ArenaManager {
 	}
 
 	public static void importArenaGame(String name, String game) throws Error {
-		BaseGame arenaGame = gameManager().getGameLoader(game).apply(name, game);
+		BaseGame arenaGame = gameManager().getGameLoader(game).apply(game, name);
 		getServer().getPluginManager().registerEvents(arenaGame, CVGames.getInstance());
 		arenas.get(name).addGame(arenaGame);
 	}

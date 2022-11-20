@@ -4,11 +4,9 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.units.qual.A;
 import org.cubeville.cvgames.CVGames;
 import org.cubeville.cvgames.commands.*;
 import org.cubeville.cvgames.models.Arena;
-import org.cubeville.cvgames.models.BaseGame;
 
 import java.util.*;
 
@@ -45,9 +43,6 @@ public class CommandManager {
         put("hostlobby", new HostLobby());
         put("hostcountdown", new HostCountdown());
         put("arenas", new Arenas());
-        put("metricsarena", new MetricsArena());
-        put("metricsgame", new MetricsGame());
-        put("metricssearch", new MetricsSearch());
     }};
 
     public static boolean parse(CommandSender sender, String[] argsIn) {
@@ -133,8 +128,6 @@ public class CommandManager {
                 return runCommand("arenas", sender, arenasParameters);
             case "host":
                 return parseHostingCommands(sender, Arrays.copyOfRange(args, 1, args.length));
-            case "metrics":
-                return parseMetricsCommands(sender, Arrays.copyOfRange(args, 1, args.length));
             default:
                 return sendErrorMessage(sender, DEFAULT_ERROR);
         }
@@ -277,32 +270,6 @@ public class CommandManager {
         }
 
         return sendErrorMessage(player, DEFAULT_ERROR);
-    }
-
-    private static boolean parseMetricsCommands(CommandSender sender, String[] args) {
-        if (args.length == 0) return sendErrorMessage(sender, DEFAULT_ERROR);
-        String actionArg = args[0].toLowerCase();
-        switch (actionArg) {
-            case "arena":
-                if (!sender.hasPermission("cvgames.metrics.arena")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
-                if (args.length != 2) return sendErrorMessage(sender, "Error: Invalid parameter size. Did you mean \"/cvgames metrics arena <arena>\" ?");
-                Arena arena = ArenaManager.getArena(args[1].toLowerCase());
-                if (arena == null) return sendErrorMessage(sender, "Error: Arena with name " + args[1].toLowerCase() + " does not exist!");
-                runCommand("metricsarena", sender, List.of(arena));
-                break;
-            case "game":
-                if (!sender.hasPermission("cvgames.metrics.game")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
-                if (args.length != 2) return sendErrorMessage(sender, "Error: Invalid parameter size. Did you mean \"/cvgames metrics game <game>\" ?");
-                if (!CVGames.gameManager().hasGame(args[1].toLowerCase())) return sendErrorMessage(sender, "Error: Game with name " + args[1].toLowerCase() + " does not exist!");
-                runCommand("metricsgame", sender, List.of(args[1].toLowerCase()));
-                break;
-            case "search":
-                if (!sender.hasPermission("cvgames.metrics.search")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
-                if (args.length != 2) return sendErrorMessage(sender, "Error: Invalid parameter size. Did you mean \"/cvgames metrics search <query>\" ?");
-                runCommand("metricssearch", sender, List.of(args[1].toLowerCase()));
-                break;
-        }
-        return sendErrorMessage(sender, DEFAULT_ERROR);
     }
 
         // Written by Fredi, I don't want to have to rewrite this
