@@ -22,14 +22,31 @@ public class GameVariableList<GV extends GameVariable> extends GameVariable {
 	private List<GV> currentValue = new ArrayList<>();
 
 	public GameVariableList(Class<GV> variableClass) {
-		this.variableClass = variableClass;
-		this.minimumSize = 1;
+		init(variableClass, 1, null);
 	}
 
-	public GameVariableList(Class<GV> variableClass, int minimumSize, @Nullable int maximumSize) {
+	public GameVariableList(Class<GV> variableClass, String description) {
+		super(description);
+		init(variableClass, 1, null);
+	}
+
+	public GameVariableList(Class<GV> variableClass, Integer minimumSize, @Nullable Integer maximumSize) {
+		init(variableClass, minimumSize, maximumSize);
+	}
+
+	public GameVariableList(Class<GV> variableClass, Integer minimumSize, @Nullable Integer maximumSize, String description) {
+		super(description);
+		init(variableClass, minimumSize, maximumSize);
+	}
+
+	private void init(Class<GV> variableClass, @Nullable Integer minimumSize, @Nullable Integer maximumSize) {
 		this.variableClass = variableClass;
-		this.minimumSize = minimumSize;
-		this.maximumSize = maximumSize;
+		if (minimumSize != null) {
+			this.minimumSize = minimumSize;
+		}
+		if (maximumSize != null) {
+			this.maximumSize = maximumSize;
+		}
 	}
 
 	@Override

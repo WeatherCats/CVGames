@@ -11,6 +11,12 @@ public class GameVariableQueueSign extends GameVariableSign {
 
 	String gameName;
 
+	public GameVariableQueueSign() {}
+
+	public GameVariableQueueSign(String description) {
+		super(description);
+	}
+
 	@Override
 	public void setItem(Player player, String input, String arenaName)
 		throws Error {

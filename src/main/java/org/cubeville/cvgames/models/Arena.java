@@ -182,12 +182,16 @@ public class Arena {
 	}
 
 	public void addGameVariableObjectList(String varName, HashMap<String, GameVariable> fields) {
-		addGameVariable(varName, new GameVariableList<>(GameVariableObject.class));
+		addGameVariableObjectList(varName, fields, "");
+	}
+
+	public void addGameVariableObjectList(String varName, HashMap<String, GameVariable> fields, String description) {
+		addGameVariable(varName, new GameVariableList<>(GameVariableObject.class, description));
 		saveObjectFields(varName, fields);
 	}
 
 	public void addGameVariableTeamsList(HashMap<String, GameVariable> fields) {
-		addGameVariable("teams", new GameVariableList<>(GameVariableTeam.class));
+		addGameVariable("teams", new GameVariableList<>(GameVariableTeam.class, "The teams for this arena"));
 		saveObjectFields("teams", fields);
 	}
 

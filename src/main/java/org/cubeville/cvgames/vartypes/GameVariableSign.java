@@ -15,6 +15,12 @@ public class GameVariableSign extends GameVariable {
 
 	Sign sign;
 
+	public GameVariableSign() {}
+
+	public GameVariableSign(String description) {
+		super(description);
+	}
+
 	@Override
 	public void setItem(Player player, String input, String arenaName) throws Error {
 		Block block = player.getTargetBlock(null, 20);

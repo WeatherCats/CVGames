@@ -10,6 +10,12 @@ public class GameVariableDouble extends GameVariable {
 
     private Double number;
 
+    public GameVariableDouble() {}
+
+    public GameVariableDouble(String description) {
+        super(description);
+    }
+
     @Override
     public void setItem(Player player, String input, String arenaName) throws Error {
         number = Double.parseDouble(input);

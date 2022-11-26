@@ -10,6 +10,12 @@ public class GameVariableLocation extends GameVariable {
 
 	private Location tpLoc;
 
+	public GameVariableLocation() {}
+
+	public GameVariableLocation(String description) {
+		super(description);
+	}
+
 	@Override
 	public void setItem(Player player, String input, String arenaName) {
 		tpLoc = player.getLocation();

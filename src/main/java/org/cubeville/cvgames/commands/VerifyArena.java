@@ -75,7 +75,6 @@ public class VerifyArena extends RunnableCommand {
 			}
 			out.addExtra("\n");
 		}
-
 		return out;
 	}
 }

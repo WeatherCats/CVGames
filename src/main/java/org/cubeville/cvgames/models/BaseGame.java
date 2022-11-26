@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.models;
 
+import com.google.common.collect.ImmutableSet;
 import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -30,7 +31,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	public BaseGame(String id, String arenaName) {
 		this.id = id;
 		this.arena = ArenaManager.getArena(arenaName);
-		this.arena.addGameVariable("region", new GameVariableRegion());
+		this.arena.addGameVariable("region", new GameVariableRegion(), "A region surrounding both the game and the lobby of an arena -- if players leave this arena, they will automatically be removed from the game and queue");
 	}
 
 	@Override
@@ -95,7 +96,8 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		GameRegion gameRegion = (GameRegion) getVariable("region");
 
 		arenaRegionTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(CVGames.getInstance(), () -> {
-			for (Player player : state.keySet()) {
+			Set<Player> players = ImmutableSet.copyOf(state.keySet());
+			for (Player player : players) {
 				if (!gameRegion.containsPlayer(player)) {
 					kickPlayerFromGame(player, false);
 					player.sendMessage("§cYou have left the game!");
@@ -122,8 +124,12 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		arena.addGameVariable(varName, variable, defaultValue);
 	}
 
+	public void addGameVariableObjectList(String varName, HashMap<String, GameVariable> fields, String description) {
+		arena.addGameVariableObjectList(varName, fields, description);
+	}
+
 	public void addGameVariableObjectList(String varName, HashMap<String, GameVariable> fields) {
-		arena.addGameVariableObjectList(varName, fields);
+		arena.addGameVariableObjectList(varName, fields, "");
 	}
 
 	public void addGameVariableTeamsList(HashMap<String, GameVariable> fields) {

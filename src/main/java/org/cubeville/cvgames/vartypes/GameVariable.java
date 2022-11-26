@@ -11,6 +11,13 @@ import static org.cubeville.cvgames.CVGames.getInstance;
 public abstract class GameVariable {
 
 	public String path = "";
+	public String description = "";
+
+	public GameVariable() {}
+
+	public GameVariable(String description) {
+		this.description = description;
+	}
 
 	public abstract void setItem(Player player, String input, String arenaName) throws Error;
 

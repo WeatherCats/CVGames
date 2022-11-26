@@ -11,6 +11,12 @@ import javax.annotation.Nullable;
 public class GameVariableRegion extends GameVariable {
     GameRegion region;
 
+    public GameVariableRegion() {}
+
+    public GameVariableRegion(String description) {
+        super(description);
+    }
+
     @Override
     public void setItem(Player player, String input, String arenaName) throws Error {
         try {

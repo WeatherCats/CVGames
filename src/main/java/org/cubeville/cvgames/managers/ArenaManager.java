@@ -6,6 +6,7 @@ import org.cubeville.cvgames.models.BaseGame;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -64,7 +65,7 @@ public class ArenaManager {
 		return hasLoadedArena(name) || getInstance().getConfig().contains("arenas." + name);
 	}
 
-	public static Set<Arena> getArenas() {
-		return (Set<Arena>) arenas.values();
+	public static Collection<Arena> getArenas() {
+		return arenas.values();
 	}
 }

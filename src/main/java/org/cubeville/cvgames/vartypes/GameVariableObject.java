@@ -20,6 +20,12 @@ public class GameVariableObject extends GameVariable {
 
     HashMap<String, GameVariable> fields = new HashMap<>();
 
+    public GameVariableObject() {}
+
+    public GameVariableObject(String description) {
+        super(description);
+    }
+
     @Override
     public Object getItem() {
         HashMap<String, Object> publicItem = new HashMap<>();

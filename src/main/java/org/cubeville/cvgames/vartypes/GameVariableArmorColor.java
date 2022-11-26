@@ -11,6 +11,12 @@ public class GameVariableArmorColor extends GameVariable {
 
     private Color color;
 
+    public GameVariableArmorColor() {}
+
+    public GameVariableArmorColor(String description) {
+        super(description);
+    }
+
     @Override
     public void setItem(Player player, String input, String arenaName) throws Error {
         Color newColor = colorFromString(input);

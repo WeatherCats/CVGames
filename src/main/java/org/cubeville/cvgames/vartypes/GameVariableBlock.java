@@ -10,6 +10,12 @@ public class GameVariableBlock extends GameVariable {
 
 	private Block block;
 
+	public GameVariableBlock() {}
+
+	public GameVariableBlock(String description) {
+		super(description);
+	}
+
 	@Override
 	public void setItem(Player player, String input, String arenaName) throws Error {
 		Block b = player.getTargetBlock(null, 20);

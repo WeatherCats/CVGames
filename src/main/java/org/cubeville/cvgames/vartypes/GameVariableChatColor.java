@@ -10,6 +10,12 @@ public class GameVariableChatColor extends GameVariable {
 
 	private ChatColor color;
 
+	public GameVariableChatColor() {}
+
+	public GameVariableChatColor(String description) {
+		super(description);
+	}
+
 	@Override
 	public void setItem(Player player, String input, String arenaName) throws Error {
 		ChatColor newColor = colorFromString(input);

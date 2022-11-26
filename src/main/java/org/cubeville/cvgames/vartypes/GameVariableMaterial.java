@@ -11,6 +11,12 @@ public class GameVariableMaterial extends GameVariable {
 
 	private Material blockMaterial;
 
+	public GameVariableMaterial() {}
+
+	public GameVariableMaterial(String description) {
+		super(description);
+	}
+
 	@Override
 	public void setItem(Player player, String input, String arenaName) throws Error {
 		Material mat;

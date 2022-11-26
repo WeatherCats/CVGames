@@ -36,13 +36,13 @@ public class GameQueue implements PlayerContainer {
 	}
 
 	public void setGameQueueVariables(BaseGame game) {
-		arena.addGameVariable("queue-min", new GameVariableInt());
-		arena.addGameVariable("queue-max", new GameVariableInt());
-		arena.addGameVariable("lobby", new GameVariableLocation());
-		arena.addGameVariable("exit", new GameVariableLocation());
-		arena.addGameVariable("signs", new GameVariableList<>(GameVariableQueueSign.class));
+		arena.addGameVariable("queue-min", new GameVariableInt("The minimum players needed to start the game"));
+		arena.addGameVariable("queue-max", new GameVariableInt("The maximum players the game can hold"));
+		arena.addGameVariable("lobby", new GameVariableLocation("The waiting lobby for players"));
+		arena.addGameVariable("exit", new GameVariableLocation("The exit location for players leaving the arena"));
+		arena.addGameVariable("signs", new GameVariableList<>(GameVariableQueueSign.class, "The signs that players can right click to join this arena"));
 		if (game instanceof TeamSelectorGame) {
-			arena.addGameVariable("team-selector", new GameVariableFlag(), true);
+			arena.addGameVariable("team-selector", new GameVariableFlag("If true, players will be able to select their own teams in this game"), true);
 		}
 	}
 

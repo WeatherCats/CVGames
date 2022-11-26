@@ -15,6 +15,12 @@ public class GameVariableItem extends GameVariable {
     String arenaName;
     ItemStack item;
 
+    public GameVariableItem() {}
+
+    public GameVariableItem(String description) {
+        super(description);
+    }
+
     @Override
     public void setItem(Player player, String input, String arenaName) throws Error {
         this.arenaName = arenaName;

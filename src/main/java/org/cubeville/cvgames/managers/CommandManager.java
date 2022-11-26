@@ -77,7 +77,7 @@ public class CommandManager {
 
                         Arena arena = ArenaManager.getArena(args[2].toLowerCase());
                         if (arena == null) {
-                            return sendErrorMessage(sender, "Error: Arena with name " + args[1].toLowerCase() + " does not exist!");
+                            return sendErrorMessage(sender, "Error: Arena with name " + args[2].toLowerCase() + " does not exist!");
                         }
                         if (arena.getVariables().size() == 0) return sendErrorMessage(sender,"You need to add a game to the arena " + arena.getName());
 
@@ -86,7 +86,6 @@ public class CommandManager {
 
                         ArrayList<Object> params = new ArrayList<>(List.of(arena, player));
                         if (args.length == 5) {
-                            if (arena.getGame(args[4].toLowerCase()) == null) return sendErrorMessage(sender, "Arena " + arena.getName() + " does not have a game named " + args[4].toLowerCase());
                             params.add(args[4].toLowerCase());
                         }
                         return runCommand("queue" + leaveOrJoin, sender, params);

@@ -10,6 +10,12 @@ public class GameVariableFlag extends GameVariable {
 
     Boolean bool;
 
+    public GameVariableFlag() {}
+
+    public GameVariableFlag(String description) {
+        super(description);
+    }
+
     @Override
     public void setItem(Player player, String input, String arenaName) throws Error {
         if (input.equalsIgnoreCase("true")) {

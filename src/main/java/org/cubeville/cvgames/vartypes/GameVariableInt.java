@@ -11,6 +11,12 @@ public class GameVariableInt extends GameVariable {
 
 	private Integer number;
 
+	public GameVariableInt() {}
+
+	public GameVariableInt(String description) {
+		super(description);
+	}
+
 	@Override
 	public void setItem(Player player, String input, String arenaName) throws Error {
 		number = Integer.valueOf(input);

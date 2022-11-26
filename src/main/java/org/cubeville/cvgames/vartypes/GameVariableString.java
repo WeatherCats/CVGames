@@ -18,6 +18,12 @@ public class GameVariableString extends GameVariable {
 
 	String item;
 
+	public GameVariableString() {}
+
+	public GameVariableString(String description) {
+		super(description);
+	}
+
 	@Override
 	public void setItem(Player player, String input, String arenaName) throws Error {
 		item = input;

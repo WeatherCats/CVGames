@@ -189,10 +189,10 @@ public class GameUtils {
 			return tc;
 		} else if (gv instanceof GameVariableList) {
 			suggestedCommand = "/cvgames arena " + arenaName + " addvar " + key + " ";
-			hover = "Click to add an item to this list";
+			hover = gv.description.equals("") ? "Click to add an item to this list" : gv.description;
 		} else {
 			suggestedCommand = "/cvgames arena " + arenaName + " setvar " + key + " ";
-			hover = "Click to set this variable";
+			hover = gv.description.equals("") ? "Click to set this variable" : gv.description;
 
 		}
 		tc.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggestedCommand));
