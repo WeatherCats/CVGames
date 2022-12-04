@@ -29,8 +29,8 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	public BaseGame(String id, String arenaName) {
 		this.id = id;
 		this.arena = ArenaManager.getArena(arenaName);
-		this.arena.addGameVariable("region", new GameVariableRegion(), "A region surrounding both the game and the lobby of an arena -- if players leave this arena, they will automatically be removed from the game and queue");
-		this.arena.addGameVariable("spectator-spawn", new GameVariableLocation(), "The location spectators spawn at.");
+		this.arena.addGameVariable("region", new GameVariableRegion("A region surrounding both the game and the lobby of an arena -- if players leave this arena, they will automatically be removed from the game and queue"));
+		this.arena.addGameVariable("spectator-spawn", new GameVariableLocation("The location spectators spawn at."));
 	}
 
 	@Override
@@ -58,10 +58,10 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	public String getId() {
 		return id;
 	}
-
 	public void addSpectator(Player player) {
 		spectators.add(player);
-		PlayerManager.setPlayer(player, getArena().getName());
+		player.teleport((Location) getVariable("spectator-spawn"));
+		player.setAllowFlight(true);
 		for (Player gp : state.keySet()) {
 			gp.hidePlayer(CVGames.getInstance(), player);
 		}
@@ -69,7 +69,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 
 	public void removeSpectator(Player player) {
 		spectators.remove(player);
-		PlayerManager.removePlayer(player);
+		player.setAllowFlight(false);
 		for (Player gp : state.keySet()) {
 			gp.showPlayer(CVGames.getInstance(), player);
 		}
@@ -101,6 +101,20 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		arena.getQueue().clear();
 		killArenaRegionCheck();
 		this.state.keySet().forEach(player -> {
+			showSpectators(player);
+			if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
+				player.teleport((Location) getVariable("lobby"));
+				player.getInventory().clear();
+				arena.getQueue().setLobbyInventory(player.getInventory());
+			} else {
+				PlayerManager.removePlayer(player);
+				player.teleport((Location) getVariable("exit"));
+				player.getInventory().clear();
+			}
+		});
+		this.spectators.forEach(player -> {
+			removeSpectator(player);
+			if (state.containsKey(player)) return;
 			if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
 				player.teleport((Location) getVariable("lobby"));
 				player.getInventory().clear();
@@ -129,6 +143,14 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 				if (!gameRegion.containsPlayer(player)) {
 					kickPlayerFromGame(player, false);
 					player.sendMessage("§cYou have left the game!");
+					player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, .7F);
+				}
+			}
+			Set<Player> spectators = ImmutableSet.copyOf(this.spectators);
+			for (Player player : spectators) {
+				if (!gameRegion.containsPlayer(player)) {
+					player.teleport((Location) getVariable("spectator-spawn"));
+					player.sendMessage("§cYou left the playing area!");
 					player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, .7F);
 				}
 			}
@@ -166,6 +188,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 
 	protected void sendScoreboardToArena(Scoreboard scoreboard) {
 		arena.getQueue().getPlayerSet().forEach(p -> p.setScoreboard(scoreboard));
+		spectators.forEach(p -> p.setScoreboard(scoreboard));
 	}
 
 	public void sendMessageToArena(String message) {
