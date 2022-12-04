@@ -13,10 +13,7 @@ import org.cubeville.cvgames.enums.ArenaStatus;
 import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.managers.PlayerManager;
 import org.cubeville.cvgames.utils.GameUtils;
-import org.cubeville.cvgames.vartypes.GameVariable;
-import org.cubeville.cvgames.vartypes.GameVariableList;
-import org.cubeville.cvgames.vartypes.GameVariableObject;
-import org.cubeville.cvgames.vartypes.GameVariableRegion;
+import org.cubeville.cvgames.vartypes.*;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -25,6 +22,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	private final String id;
 	protected Arena arena;
 	protected HashMap<Player, PlayerState> state = new HashMap<>();
+	protected List<Player> spectators = new ArrayList<>();
 	private int arenaRegionTask;
 	public boolean isRunningGame = false;
 
@@ -32,6 +30,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		this.id = id;
 		this.arena = ArenaManager.getArena(arenaName);
 		this.arena.addGameVariable("region", new GameVariableRegion(), "A region surrounding both the game and the lobby of an arena -- if players leave this arena, they will automatically be removed from the game and queue");
+		this.arena.addGameVariable("spectator-spawn", new GameVariableLocation(), "The location spectators spawn at.");
 	}
 
 	@Override
@@ -40,10 +39,14 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	}
 
 	private void kickPlayerFromGame(Player p, boolean teleportToExit) {
-		PlayerManager.removePlayer(p);
-		onPlayerLeave(p);
-		state.remove(p);
-		p.getInventory().clear();
+		if (spectators.contains(p)) removeSpectator(p);
+		if (state.containsKey(p)) {
+			PlayerManager.removePlayer(p);
+			onPlayerLeave(p);
+			state.remove(p);
+			p.getInventory().clear();
+			showSpectators(p);
+		}
 		if (teleportToExit) { p.teleport((Location) this.getVariable("exit")); }
 		if (isRunningGame && state.isEmpty()) { finishGame(); }
 	}
@@ -56,6 +59,31 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		return id;
 	}
 
+	public void addSpectator(Player player) {
+		spectators.add(player);
+		PlayerManager.setPlayer(player, getArena().getName());
+		for (Player gp : state.keySet()) {
+			gp.hidePlayer(CVGames.getInstance(), player);
+		}
+	}
+
+	public void removeSpectator(Player player) {
+		spectators.remove(player);
+		PlayerManager.removePlayer(player);
+		for (Player gp : state.keySet()) {
+			gp.showPlayer(CVGames.getInstance(), player);
+		}
+	}
+	public void showSpectators(Player player) {
+		for (Player sp : spectators) {
+			player.showPlayer(CVGames.getInstance(), sp);
+		}
+	}
+	public void hideSpectators(Player player) {
+		for (Player sp : spectators) {
+			player.hidePlayer(CVGames.getInstance(), sp);
+		}
+	}
 	public void startGame(Map<Integer, List<Player>> playerTeamMap) {
 		playerTeamMap.values().forEach(players ->
 				players.forEach(player -> {

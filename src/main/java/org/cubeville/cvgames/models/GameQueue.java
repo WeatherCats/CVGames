@@ -100,7 +100,10 @@ public class GameQueue implements PlayerContainer {
 
 	public boolean join(Player p, @Nullable String gameName) {
 		if (!canJoinQueue(p)) {
-			return false;
+			if (arena.getStatus().equals(ArenaStatus.IN_USE)) {
+				arena.getGame(gameName).addSpectator(p);
+			}
+			else return false;
 		}
 		if (selectedGame == null && gameName != null) {
 			setSelectedGame(gameName);
