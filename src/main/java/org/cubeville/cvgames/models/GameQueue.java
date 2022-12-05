@@ -291,6 +291,7 @@ public class GameQueue implements PlayerContainer {
 				GameUtils
 					.messagePlayerList(players, "§e" + counter + " seconds until the game starts",
 						Sound.BLOCK_NOTE_BLOCK_PLING);
+				getGame().onCountdown(counter);
 				counter--;
 			} else {
 				endCountdown();

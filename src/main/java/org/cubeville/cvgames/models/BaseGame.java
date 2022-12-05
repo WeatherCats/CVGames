@@ -164,4 +164,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	public Arena getArena() {
 		return arena;
 	}
+
+	public void onCountdown(int counter) {}
+
 }
