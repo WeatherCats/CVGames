@@ -1,6 +1,5 @@
 package org.cubeville.cvgames.vartypes;
 
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;

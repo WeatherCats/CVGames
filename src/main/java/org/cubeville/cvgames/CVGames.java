@@ -39,5 +39,4 @@ public class CVGames extends JavaPlugin implements Listener {
         return games;
     }
 
-
 }
