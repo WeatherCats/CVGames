@@ -31,7 +31,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	public BaseGame(String id, String arenaName) {
 		this.id = id;
 		this.arena = ArenaManager.getArena(arenaName);
-		this.arena.addGameVariable("region", new GameVariableRegion(), "A region surrounding both the game and the lobby of an arena");
+		this.arena.addGameVariable("region", new GameVariableRegion("A region surrounding both the game and the lobby for an arena"));
 	}
 
 	@Override
