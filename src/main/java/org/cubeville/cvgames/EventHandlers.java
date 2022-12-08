@@ -1,12 +1,16 @@
 package org.cubeville.cvgames;
 
+import com.sk89q.worldedit.bukkit.adapter.BukkitImplAdapter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.cubeville.cvgames.enums.ArenaStatus;
 import org.cubeville.cvgames.managers.PlayerManager;
 import org.cubeville.cvgames.managers.SignManager;
@@ -14,9 +18,11 @@ import org.cubeville.cvgames.models.Arena;
 import org.cubeville.cvgames.models.QueueSign;
 import org.cubeville.cvgames.utils.GameUtils;
 
+import java.util.Objects;
+
 public class EventHandlers implements Listener {
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (event.getClickedBlock() != null &&
 			(event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) &&
@@ -44,6 +50,19 @@ public class EventHandlers implements Listener {
 				}
 			}
 		}
+		if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_USE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
+			if (event.getItem() != null) {
+				if (arena.getQueue().spectatorLeaveItem().isSimilar(event.getItem())) {
+					event.setCancelled(true);
+					arena.getQueue().getGame().removeSpectator(event.getPlayer());
+					arena.getQueue().removeSpectatorFromLobby(event.getPlayer());
+				}
+				if (arena.getQueue().playerCompassItem().isSimilar(event.getItem())) {
+					event.setCancelled(true);
+					event.getPlayer().openInventory(arena.getQueue().getGame().getPlayerCompassInventory(event.getPlayer(), 1));
+				}
+			}
+		}
 	}
 
 	@EventHandler
@@ -63,6 +82,19 @@ public class EventHandlers implements Listener {
 				if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_QUEUE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
 					arena.getQueue().setSelectedTeam((Player) event.getWhoClicked(), event.getSlot());
 					event.setCancelled(true);
+					event.getWhoClicked().closeInventory();
+				}
+			}
+		}
+		if (event.getView().getTitle().contains("Player Compass")) {
+			if (event.getWhoClicked() instanceof Player && event.getSlot() >= 0) {
+				Arena arena = PlayerManager.getPlayerArena((Player) event.getWhoClicked());
+				if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_USE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
+					event.setCancelled(true);
+					if (Objects.isNull(event.getCurrentItem()) || !(event.getCurrentItem().getItemMeta() instanceof SkullMeta)) return;
+					SkullMeta meta = (SkullMeta) event.getCurrentItem().getItemMeta();
+					if (Objects.isNull(meta.getOwningPlayer().getPlayer())) return;
+					event.getWhoClicked().teleport(meta.getOwningPlayer().getPlayer());
 					event.getWhoClicked().closeInventory();
 				}
 			}

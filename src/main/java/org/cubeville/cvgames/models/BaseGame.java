@@ -7,6 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 import org.cubeville.cvgames.CVGames;
 import org.cubeville.cvgames.enums.ArenaStatus;
@@ -84,6 +86,31 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 			player.hidePlayer(CVGames.getInstance(), sp);
 		}
 	}
+
+	public Inventory getPlayerCompassInventory(Player player, int page) {
+		List<ItemStack> contents = getPlayerCompassContents();
+		int invSize = (1 + (contents.size() / 9)) * 9;
+		if (invSize > 45) {
+			invSize = 54;
+			contents = contents.subList(0, 45);
+		}
+		Inventory inv = Bukkit.createInventory(player, invSize, "Player Compass");
+		int i = 0;
+		for (ItemStack item : contents) {
+			inv.setItem(i, item);
+			i++;
+		}
+		//TODO Page logic (If I really need to bother)
+		if (invSize > 45) {
+			for (i = invSize - 9; i < invSize; i++) {
+				if (i == 45) {
+
+				}
+			}
+		}
+		return inv;
+	}
+	public abstract List<ItemStack> getPlayerCompassContents();
 	public void startGame(Map<Integer, List<Player>> playerTeamMap) {
 		playerTeamMap.values().forEach(players ->
 				players.forEach(player -> {
@@ -93,6 +120,12 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		);
 		startArenaRegionCheck();
 		processPlayerMap(playerTeamMap);
+		if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
+			arena.getQueue().getPlayerSet().forEach(player -> {
+				if (state.keySet().contains(player)) return;
+				addSpectator(player);
+			});
+		}
 		isRunningGame = true;
 	};
 
@@ -112,7 +145,8 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 				player.getInventory().clear();
 			}
 		});
-		this.spectators.forEach(player -> {
+		List<Player> spectatorList = new ArrayList<>(this.spectators);
+		spectatorList.forEach(player -> {
 			removeSpectator(player);
 			if (state.containsKey(player)) return;
 			if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
@@ -188,7 +222,6 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 
 	protected void sendScoreboardToArena(Scoreboard scoreboard) {
 		arena.getQueue().getPlayerSet().forEach(p -> p.setScoreboard(scoreboard));
-		spectators.forEach(p -> p.setScoreboard(scoreboard));
 	}
 
 	public void sendMessageToArena(String message) {

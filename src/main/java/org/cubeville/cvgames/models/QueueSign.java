@@ -45,7 +45,10 @@ public class QueueSign {
 	}
 
 	public void displayFill() {
-		this.sign.setLine(1,"§l" + arena.getQueue().size() + "/" + arena.getQueue().getMaxPlayers());
+		if (arena.getStatus() != ArenaStatus.IN_USE) {
+			this.sign.setLine(1,"§l" + arena.getQueue().size() + "/" + arena.getQueue().getMaxPlayers());
+		}
+		else this.sign.setLine(1,"§l" + arena.getQueue().getGame().state.keySet().size() + "/" + arena.getQueue().getMaxPlayers() + " §7§o(+" + arena.getQueue().getGame().spectators.size() + ")");
 		this.sign.update();
 	}
 

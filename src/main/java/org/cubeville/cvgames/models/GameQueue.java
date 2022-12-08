@@ -99,12 +99,13 @@ public class GameQueue implements PlayerContainer {
 	}
 
 	public boolean join(Player p, @Nullable String gameName) {
+		if (!Objects.isNull(arena.getQueue().getGame()) && arena.getQueue().getGame().isRunningGame) {
+			PlayerManager.setPlayer(p, arena.getName());
+			arena.getQueue().setSpectatorToLobby(p);
+			arena.getGame(gameName).addSpectator(p);
+			return false;
+		}
 		if (!canJoinQueue(p)) {
-			if (arena.getStatus().equals(ArenaStatus.IN_USE)) {
-				PlayerManager.setPlayer(p, gameName);
-				arena.getGame(gameName).addSpectator(p);
-				return false;
-			}
 			return false;
 		}
 		if (selectedGame == null && gameName != null) {
@@ -189,6 +190,13 @@ public class GameQueue implements PlayerContainer {
 		}
 	}
 
+	public void setSpectatorToLobby(Player p) {
+		playerLobby.add(p);
+		PlayerInventory inv = p.getInventory();
+		inv.clear();
+		SignManager.updateArenaSignsFill(arena.getName());
+		setSpectatorInventory(inv);
+	}
 	public void setLobbyInventory(PlayerInventory inv) {
 		int numberOfTeams = 0;
 		if (getGame() instanceof TeamSelectorGame) {
@@ -196,6 +204,10 @@ public class GameQueue implements PlayerContainer {
 		}
 		if (numberOfTeams > 1 && (Boolean) arena.getVariable("team-selector") && !arena.getStatus().equals(ArenaStatus.HOSTING)) inv.setItem(7, teamSelectorItem());
 		inv.setItem(8, queueLeaveItem());
+	}
+	public void setSpectatorInventory(PlayerInventory inv) {
+		inv.setItem(8, spectatorLeaveItem());
+		inv.setItem(0, playerCompassItem());
 	}
 
 	private void removePlayerFromLobby(Player p) {
@@ -211,6 +223,14 @@ public class GameQueue implements PlayerContainer {
 		}
 		SignManager.updateArenaSignsFill(arena.getName());
 		p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+	}
+
+	public void removeSpectatorFromLobby(Player p) {
+		p.getInventory().clear();
+		playerLobby.remove(p);
+		p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+		SignManager.updateArenaSignsFill(arena.getName());
+		p.teleport((Location) arena.getVariable("exit"));
 	}
 
 	public void leave(Player p) {
@@ -318,6 +338,14 @@ public class GameQueue implements PlayerContainer {
 
 	public ItemStack queueLeaveItem() {
 		return GameUtils.customItem(Material.RED_BED, "§c§l§oLeave Queue §7§o(Right Click)");
+	}
+
+	public ItemStack spectatorLeaveItem() {
+		return GameUtils.customItem(Material.RED_BED, "§c§l§oLeave §7§o(Right Click)");
+	}
+
+	public ItemStack playerCompassItem() {
+		return GameUtils.customItem(Material.COMPASS, "§e§l§oPlayer Compass §7§o(Right Click)");
 	}
 
 	public ItemStack teamSelectorItem() {
