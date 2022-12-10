@@ -60,6 +60,9 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	public String getId() {
 		return id;
 	}
+	public List<Player> getSpectators() {
+		return spectators;
+	}
 	public void addSpectator(Player player) {
 		spectators.add(player);
 		player.teleport((Location) getVariable("spectator-spawn"));
@@ -123,6 +126,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
 			arena.getQueue().getPlayerSet().forEach(player -> {
 				if (state.keySet().contains(player)) return;
+				player.getInventory().setItem(0, this.getArena().getQueue().playerCompassItem());
 				addSpectator(player);
 			});
 		}

@@ -195,7 +195,9 @@ public class GameQueue implements PlayerContainer {
 		PlayerInventory inv = p.getInventory();
 		inv.clear();
 		SignManager.updateArenaSignsFill(arena.getName());
-		setSpectatorInventory(inv);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(CVGames.getInstance(), () -> {
+			setSpectatorInventory(inv);
+		}, 20L);
 	}
 	public void setLobbyInventory(PlayerInventory inv) {
 		int numberOfTeams = 0;

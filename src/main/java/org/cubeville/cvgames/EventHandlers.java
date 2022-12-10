@@ -3,11 +3,15 @@ package org.cubeville.cvgames;
 import com.sk89q.worldedit.bukkit.adapter.BukkitImplAdapter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -24,6 +28,10 @@ public class EventHandlers implements Listener {
 
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerInteract(PlayerInteractEvent event) {
+		Event.Result result;
+		if (spectatorCancel(event.getPlayer())) result = Event.Result.DENY;
+		else result = Event.Result.DEFAULT;
+		event.setUseInteractedBlock(result);
 		if (event.getClickedBlock() != null &&
 			(event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) &&
 			SignManager.signMaterials.contains(event.getClickedBlock().getType())
@@ -110,5 +118,24 @@ public class EventHandlers implements Listener {
 			}
 		}
 	}
-}
+	private boolean spectatorCancel(Player player) {
+		Arena arena = PlayerManager.getPlayerArena((Player) player);
+		if (arena == null || !arena.getQueue().getGame().getSpectators().contains(player)) return false;
+		return true;
+	}
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerHit(EntityDamageByEntityEvent event) {
+		if (!(event.getDamager() instanceof Player)) return;
+		event.setCancelled(spectatorCancel((Player) event.getDamager()));
+	}
 
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerBreak(PlayerHarvestBlockEvent event) {
+		event.setCancelled(spectatorCancel(event.getPlayer()));
+	}
+
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerPlace(BlockPlaceEvent event) {
+		event.setCancelled(spectatorCancel(event.getPlayer()));
+	}
+}

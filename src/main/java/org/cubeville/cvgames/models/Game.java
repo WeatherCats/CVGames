@@ -29,6 +29,7 @@ public abstract class Game extends BaseGame {
         state.keySet().stream().sorted(Comparator.comparingInt(o -> -1 * getState(o).getSortingValue())).forEach(p -> {
             ItemStack item = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) item.getItemMeta();
+            meta.setDisplayName("§f" + p.getDisplayName());
             meta.setOwningPlayer(p);
             item.setItemMeta(meta);
             items.add(item);
