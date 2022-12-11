@@ -217,6 +217,10 @@ public class GameQueue implements PlayerContainer {
 	}
 
 	private void removePlayerFromLobby(Player p, boolean shouldSendToExit) {
+		if (getGame().getSpectators().contains(p)) {
+			getGame().removeSpectator(p);
+			removeSpectatorFromLobby(p);
+		}
 		if (shouldSendToExit) { p.teleport((Location) arena.getVariable("exit")); }
 		p.getInventory().clear();
 		playerLobby.remove(p);
