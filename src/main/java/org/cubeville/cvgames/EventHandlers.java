@@ -3,16 +3,18 @@ package org.cubeville.cvgames;
 import com.sk89q.worldedit.bukkit.adapter.BukkitImplAdapter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupArrowEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.cubeville.cvgames.enums.ArenaStatus;
@@ -125,8 +127,17 @@ public class EventHandlers implements Listener {
 	}
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerHit(EntityDamageByEntityEvent event) {
-		if (!(event.getDamager() instanceof Player)) return;
-		event.setCancelled(spectatorCancel((Player) event.getDamager()));
+		Player player;
+		if (!(event.getDamager() instanceof Player)) {
+			if ((event.getDamager() instanceof Projectile)) {
+				Projectile projectile = (Projectile) event.getDamager();
+				if (!(projectile.getShooter() instanceof Player)) return;
+				else player = (Player) projectile.getShooter();
+			}
+			else return;
+		}
+		else player = (Player) event.getDamager();
+		event.setCancelled(spectatorCancel(player));
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
@@ -137,5 +148,28 @@ public class EventHandlers implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerPlace(BlockPlaceEvent event) {
 		event.setCancelled(spectatorCancel(event.getPlayer()));
+	}
+
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerPickupArrow(PlayerPickupArrowEvent event) {
+		event.setCancelled(spectatorCancel(event.getPlayer()));
+	}
+
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerPickupItem(EntityPickupItemEvent event) {
+		if (!(event.getEntity() instanceof Player)) return;
+		event.setCancelled(spectatorCancel((Player) event.getEntity()));
+	}
+
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerDropItem(EntityDropItemEvent event) {
+		if (!(event.getEntity() instanceof Player)) return;
+		event.setCancelled(spectatorCancel((Player) event.getEntity()));
+	}
+
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerShoot(EntityShootBowEvent event) {
+		if (!(event.getEntity() instanceof Player)) return;
+		event.setCancelled(spectatorCancel((Player) event.getEntity()));
 	}
 }

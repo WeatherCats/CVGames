@@ -67,7 +67,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		spectators.add(player);
 		player.teleport((Location) getVariable("spectator-spawn"));
 		player.setAllowFlight(true);
-		for (Player gp : state.keySet()) {
+		for (Player gp : getArena().getQueue().getPlayerSet()) {
 			gp.hidePlayer(CVGames.getInstance(), player);
 		}
 	}
@@ -75,7 +75,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	public void removeSpectator(Player player) {
 		spectators.remove(player);
 		player.setAllowFlight(false);
-		for (Player gp : state.keySet()) {
+		for (Player gp : getArena().getQueue().getPlayerSet()) {
 			gp.showPlayer(CVGames.getInstance(), player);
 		}
 	}
