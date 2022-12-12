@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.cubeville.cvgames.enums.ArenaStatus;
 import org.cubeville.cvgames.managers.SignManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QueueSign {
@@ -52,7 +53,7 @@ public class QueueSign {
 		}
 		else {
 			String spectatorString = "";
-			List<Player> spectators = arena.getQueue().getGame().getSpectators();
+			List<Player> spectators = new ArrayList<>(arena.getQueue().getGame().getSpectators());
 			spectators.removeAll(arena.getQueue().getGame().state.keySet());
 			if (arena.getQueue().getGame().spectators.size() > 0)
 				spectatorString = " §7§o(+" + spectators.size() + ")";

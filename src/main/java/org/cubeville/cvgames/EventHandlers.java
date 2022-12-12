@@ -12,10 +12,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerHarvestBlockEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupArrowEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.cubeville.cvgames.enums.ArenaStatus;
 import org.cubeville.cvgames.managers.PlayerManager;
@@ -121,7 +118,7 @@ public class EventHandlers implements Listener {
 		}
 	}
 	private boolean spectatorCancel(Player player) {
-		Arena arena = PlayerManager.getPlayerArena((Player) player);
+		Arena arena = PlayerManager.getPlayerArena(player);
 		if (arena == null || !arena.getQueue().getGame().getSpectators().contains(player)) return false;
 		return true;
 	}
@@ -162,9 +159,9 @@ public class EventHandlers implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerDropItem(EntityDropItemEvent event) {
-		if (!(event.getEntity() instanceof Player)) return;
-		event.setCancelled(spectatorCancel((Player) event.getEntity()));
+	public void onPlayerDropItem(PlayerDropItemEvent event) {
+		if (!(event.getPlayer() instanceof Player)) return;
+		event.setCancelled(spectatorCancel((Player) event.getPlayer()));
 	}
 
 	@EventHandler(priority = EventPriority.LOW)

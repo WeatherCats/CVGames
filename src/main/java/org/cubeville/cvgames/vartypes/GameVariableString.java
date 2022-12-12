@@ -43,19 +43,9 @@ public class GameVariableString extends GameVariable {
 		}
 	}
 
-	private String createColorString(String input) {
-		Matcher matcher = GameUtils.HEX_PATTERN.matcher(input);
-		StringBuilder stringBuilder = new StringBuilder();
-
-		while(matcher.find()) {
-			matcher.appendReplacement(stringBuilder, ChatColor.of("#" + matcher.group(1)).toString());
-		}
-		return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(stringBuilder).toString());
-	}
-
 	@Override
 	public Object getItem() {
-		return createColorString(item);
+		return GameUtils.createColorString(item);
 	}
 
 	@Override

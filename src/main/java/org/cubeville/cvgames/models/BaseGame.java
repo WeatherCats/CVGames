@@ -70,6 +70,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		for (Player gp : getArena().getQueue().getPlayerSet()) {
 			gp.hidePlayer(CVGames.getInstance(), player);
 		}
+		hideSpectators(player);
 	}
 
 	public void removeSpectator(Player player) {
@@ -135,10 +136,10 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 
 	public void finishGame() {
 		if (!arena.getStatus().equals(ArenaStatus.HOSTING)) { arena.setStatus(ArenaStatus.OPEN); }
-		arena.getQueue().clear();
-		killArenaRegionCheck();
-		this.state.keySet().forEach(player -> {
-			showSpectators(player);
+		List<Player> spectatorList = new ArrayList<>(this.spectators);
+		spectatorList.forEach(player -> {
+			removeSpectator(player);
+			if (state.containsKey(player)) return;
 			if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
 				player.teleport((Location) getVariable("lobby"));
 				player.getInventory().clear();
@@ -149,10 +150,10 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 				player.getInventory().clear();
 			}
 		});
-		List<Player> spectatorList = new ArrayList<>(this.spectators);
-		spectatorList.forEach(player -> {
-			removeSpectator(player);
-			if (state.containsKey(player)) return;
+		arena.getQueue().clear();
+		killArenaRegionCheck();
+		this.state.keySet().forEach(player -> {
+			showSpectators(player);
 			if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
 				player.teleport((Location) getVariable("lobby"));
 				player.getInventory().clear();
