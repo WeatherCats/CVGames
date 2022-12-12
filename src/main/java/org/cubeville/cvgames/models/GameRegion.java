@@ -1,6 +1,7 @@
 package org.cubeville.cvgames.models;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class GameRegion {
@@ -21,10 +22,17 @@ public class GameRegion {
     }
 
     public boolean containsPlayer(Player player) {
-        Location loc = player.getLocation();
-        return (max.getX() >= loc.getX() && loc.getX() >= min.getX()) &&
-        (max.getY() >= loc.getY() && loc.getY() >= min.getY()) &&
-        (max.getZ() >= loc.getZ() && loc.getZ() >= min.getZ());
+        return containsLocation(player.getLocation());
+    }
+
+    public boolean containsEntity(Entity entity) {
+        return containsLocation(entity.getLocation());
+    }
+
+    public boolean containsLocation(Location location) {
+        return (max.getX() >= location.getX() && location.getX() >= min.getX()) &&
+                (max.getY() >= location.getY() && location.getY() >= min.getY()) &&
+                (max.getZ() >= location.getZ() && location.getZ() >= min.getZ());
     }
 }
 
