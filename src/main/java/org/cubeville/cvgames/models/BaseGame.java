@@ -7,16 +7,15 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 import org.cubeville.cvgames.CVGames;
 import org.cubeville.cvgames.enums.ArenaStatus;
 import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.managers.PlayerManager;
 import org.cubeville.cvgames.utils.GameUtils;
-import org.cubeville.cvgames.vartypes.GameVariable;
-import org.cubeville.cvgames.vartypes.GameVariableList;
-import org.cubeville.cvgames.vartypes.GameVariableObject;
-import org.cubeville.cvgames.vartypes.GameVariableRegion;
+import org.cubeville.cvgames.vartypes.*;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -25,13 +24,16 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	private final String id;
 	protected Arena arena;
 	protected HashMap<Player, PlayerState> state = new HashMap<>();
+	protected List<Player> spectators = new ArrayList<>();
 	private int arenaRegionTask;
 	public boolean isRunningGame = false;
 
 	public BaseGame(String id, String arenaName) {
 		this.id = id;
 		this.arena = ArenaManager.getArena(arenaName);
-		this.arena.addGameVariable("region", new GameVariableRegion("A region surrounding both the game and the lobby for an arena"));
+		this.arena.addGameVariable("region", new GameVariableRegion("A region surrounding both the game and the lobby of an arena -- if players leave this arena, they will automatically be removed from the game and queue"));
+		this.arena.addGameVariable("spectator-spawn", new GameVariableLocation("The location spectators spawn at."));
+
 	}
 
 	@Override
@@ -40,10 +42,14 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	}
 
 	private void kickPlayerFromGame(Player p, boolean teleportToExit) {
-		PlayerManager.removePlayer(p);
-		onPlayerLeave(p);
-		state.remove(p);
-		p.getInventory().clear();
+		if (spectators.contains(p)) removeSpectator(p);
+		if (state.containsKey(p)) {
+			PlayerManager.removePlayer(p);
+			onPlayerLeave(p);
+			state.remove(p);
+			p.getInventory().clear();
+			showSpectators(p);
+		}
 		if (teleportToExit) { p.teleport((Location) this.getVariable("exit")); }
 		if (isRunningGame && state.isEmpty()) { finishGame(); }
 	}
@@ -55,6 +61,63 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	public String getId() {
 		return id;
 	}
+	public List<Player> getSpectators() {
+		return spectators;
+	}
+	public void addSpectator(Player player) {
+		spectators.add(player);
+		player.teleport((Location) getVariable("spectator-spawn"));
+		player.setAllowFlight(true);
+		for (Player gp : getArena().getQueue().getPlayerSet()) {
+			gp.hidePlayer(CVGames.getInstance(), player);
+		}
+		hideSpectators(player);
+	}
+
+	public void removeSpectator(Player player) {
+		spectators.remove(player);
+		player.setAllowFlight(false);
+		for (Player gp : getArena().getQueue().getPlayerSet()) {
+			gp.showPlayer(CVGames.getInstance(), player);
+		}
+	}
+	public void showSpectators(Player player) {
+		for (Player sp : spectators) {
+			player.showPlayer(CVGames.getInstance(), sp);
+		}
+	}
+	public void hideSpectators(Player player) {
+		for (Player sp : spectators) {
+			player.hidePlayer(CVGames.getInstance(), sp);
+		}
+	}
+
+	public Inventory getPlayerCompassInventory(Player player, int page) {
+		List<ItemStack> contents = getPlayerCompassContents();
+		int invSize = (1 + (contents.size() / 9)) * 9;
+		if (invSize > 45) {
+			invSize = 54;
+			contents = contents.subList(0, 45);
+		}
+		Inventory inv = Bukkit.createInventory(player, invSize, "Player Compass");
+		int i = 0;
+		for (ItemStack item : contents) {
+			inv.setItem(i, item);
+			i++;
+		}
+		/* TODO Page logic (If I really need to bother)
+		if (invSize > 45) {
+			for (i = invSize - 9; i < invSize; i++) {
+				if (i == 45) {
+
+				}
+			}
+		} */
+		return inv;
+	}
+
+	//TODO Would be nice to have team game compass split players into team-based sections
+	public abstract List<ItemStack> getPlayerCompassContents();
 
 	public void startGame(Map<Integer, List<Player>> playerTeamMap) {
 		playerTeamMap.values().forEach(players ->
@@ -65,14 +128,36 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		);
 		startArenaRegionCheck();
 		processPlayerMap(playerTeamMap);
+		if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
+			arena.getQueue().getPlayerSet().forEach(player -> {
+				if (state.keySet().contains(player)) return;
+				player.getInventory().setItem(0, this.getArena().getQueue().playerCompassItem());
+				addSpectator(player);
+			});
+		}
 		isRunningGame = true;
 	};
 
 	public void finishGame() {
 		if (!arena.getStatus().equals(ArenaStatus.HOSTING)) { arena.setStatus(ArenaStatus.OPEN); }
+		List<Player> spectatorList = new ArrayList<>(this.spectators);
+		spectatorList.forEach(player -> {
+			removeSpectator(player);
+			if (state.containsKey(player)) return;
+			if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
+				player.teleport((Location) getVariable("lobby"));
+				player.getInventory().clear();
+				arena.getQueue().setLobbyInventory(player.getInventory());
+			} else {
+				PlayerManager.removePlayer(player);
+				player.teleport((Location) getVariable("exit"));
+				player.getInventory().clear();
+			}
+		});
 		arena.getQueue().clear();
 		killArenaRegionCheck();
 		this.state.keySet().forEach(player -> {
+			showSpectators(player);
 			if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
 				player.teleport((Location) getVariable("lobby"));
 				player.getInventory().clear();
@@ -101,6 +186,14 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 				if (!gameRegion.containsPlayer(player)) {
 					kickPlayerFromGame(player, false);
 					player.sendMessage("§cYou have left the game!");
+					player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, .7F);
+				}
+			}
+			Set<Player> spectators = ImmutableSet.copyOf(this.spectators);
+			for (Player player : spectators) {
+				if (!gameRegion.containsPlayer(player)) {
+					player.teleport((Location) getVariable("spectator-spawn"));
+					player.sendMessage("§cYou left the playing area!");
 					player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, .7F);
 				}
 			}

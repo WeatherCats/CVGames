@@ -5,6 +5,9 @@ import org.bukkit.entity.Player;
 import org.cubeville.cvgames.enums.ArenaStatus;
 import org.cubeville.cvgames.managers.SignManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class QueueSign {
 
 	private Sign sign;
@@ -45,7 +48,17 @@ public class QueueSign {
 	}
 
 	public void displayFill() {
-		this.sign.setLine(1,"§l" + arena.getQueue().size() + "/" + arena.getQueue().getMaxPlayers());
+		if (arena.getStatus() != ArenaStatus.IN_USE) {
+			this.sign.setLine(1,"§l" + arena.getQueue().size() + "/" + arena.getQueue().getMaxPlayers());
+		}
+		else {
+			String spectatorString = "";
+			List<Player> spectators = new ArrayList<>(arena.getQueue().getGame().getSpectators());
+			spectators.removeAll(arena.getQueue().getGame().state.keySet());
+			if (arena.getQueue().getGame().spectators.size() > 0)
+				spectatorString = " §7§o(+" + spectators.size() + ")";
+			this.sign.setLine(1, "§l" + arena.getQueue().getGame().state.keySet().size() + "/" + arena.getQueue().getMaxPlayers() + spectatorString);
+		}
 		this.sign.update();
 	}
 

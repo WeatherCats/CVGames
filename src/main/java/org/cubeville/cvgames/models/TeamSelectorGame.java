@@ -1,6 +1,9 @@
 package org.cubeville.cvgames.models;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scoreboard.Scoreboard;
 import org.cubeville.cvgames.utils.GameUtils;
 
@@ -78,5 +81,19 @@ public abstract class TeamSelectorGame extends BaseGame {
         }
         scoreboard = GameUtils.createScoreboard(arena, "§b§lTeam " + getId(), scoreboardLines);
         sendScoreboardToArena(scoreboard);
+    }
+
+    //TODO Would be nice to have team game compass split players into team-based sections
+    public List<ItemStack> getPlayerCompassContents() {
+        List<ItemStack> items = new ArrayList<>();
+        state.keySet().stream().sorted(Comparator.comparingInt(o -> -1 * getState(o).getSortingValue())).forEach(p -> {
+            ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+            SkullMeta meta = (SkullMeta) item.getItemMeta();
+            meta.setDisplayName("§f" + p.getDisplayName());
+            meta.setOwningPlayer(p);
+            item.setItemMeta(meta);
+            items.add(item);
+        });
+        return items;
     }
 }

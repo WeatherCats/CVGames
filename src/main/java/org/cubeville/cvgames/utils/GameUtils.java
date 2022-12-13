@@ -89,6 +89,12 @@ public class GameUtils {
 		return tc;
 	}
 
+	public static String createColorString(String input) {
+		String inputReplaced = input.replaceAll("(\\&\\#)([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])", "&x&$2&$3&$4&$5&$6&$7");
+		String output = org.bukkit.ChatColor.translateAlternateColorCodes('&', inputReplaced);
+		return output;
+	}
+
 	public static String playerLocToString(Location location) {
 		List<String> locParameters = new ArrayList<>(
 			Arrays.asList(
