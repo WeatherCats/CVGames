@@ -119,7 +119,7 @@ public class EventHandlers implements Listener {
 	}
 	private boolean spectatorCancel(Player player) {
 		Arena arena = PlayerManager.getPlayerArena(player);
-		if (arena == null || !arena.getQueue().getGame().getSpectators().contains(player)) return false;
+		if (arena == null || arena.getQueue().getGame() == null || !arena.getQueue().getGame().getSpectators().contains(player)) return false;
 		return true;
 	}
 	@EventHandler(priority = EventPriority.LOW)

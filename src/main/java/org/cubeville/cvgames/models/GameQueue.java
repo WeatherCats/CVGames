@@ -99,10 +99,10 @@ public class GameQueue implements PlayerContainer {
 	}
 
 	public boolean join(Player p, @Nullable String gameName) {
-		if (!Objects.isNull(arena.getQueue().getGame()) && arena.getQueue().getGame().isRunningGame) {
+		if (!Objects.isNull(this.getGame()) && this.getGame().isRunningGame) {
 			PlayerManager.setPlayer(p, arena.getName());
-			arena.getQueue().setSpectatorToLobby(p);
-			arena.getGame(gameName).addSpectator(p);
+			this.setSpectatorToLobby(p);
+			this.getGame().addSpectator(p);
 			return false;
 		}
 		if (!canJoinQueue(p)) {
@@ -217,7 +217,7 @@ public class GameQueue implements PlayerContainer {
 	}
 
 	private void removePlayerFromLobby(Player p, boolean shouldSendToExit) {
-		if (getGame().getSpectators().contains(p)) {
+		if (getGame() != null && getGame().getSpectators().contains(p)) {
 			getGame().removeSpectator(p);
 			removeSpectatorFromLobby(p);
 		}
@@ -228,6 +228,12 @@ public class GameQueue implements PlayerContainer {
 			killArenaLobbyRegionCheck();
 		}
 		SignManager.updateArenaSignsFill(arena.getName());
+
+		if (getPlayerSet().size() == 0 && host == null) {
+			setSelectedGame(null);
+			return;
+		}
+
 		p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 	}
 

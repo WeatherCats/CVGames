@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.models;
 
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -85,15 +86,19 @@ public abstract class TeamSelectorGame extends BaseGame {
 
     //TODO Would be nice to have team game compass split players into team-based sections
     public List<ItemStack> getPlayerCompassContents() {
+        List<HashMap<String, Object>> teams = getTeamVariable();
         List<ItemStack> items = new ArrayList<>();
         state.keySet().stream().sorted(Comparator.comparingInt(o -> -1 * getState(o).getSortingValue())).forEach(p -> {
             ItemStack item = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) item.getItemMeta();
-            meta.setDisplayName("§f" + p.getDisplayName());
+            ChatColor color = (ChatColor) teams.get(getPlayerTeamIndex(p)).get("chat-color");
+            meta.setDisplayName(color + p.getDisplayName());
             meta.setOwningPlayer(p);
             item.setItemMeta(meta);
             items.add(item);
         });
         return items;
     }
+
+    public abstract int getPlayerTeamIndex(Player player);
 }

@@ -48,7 +48,7 @@ public class QueueSign {
 	}
 
 	public void displayFill() {
-		if (arena.getStatus() != ArenaStatus.IN_USE) {
+		if (arena.getStatus() != ArenaStatus.IN_USE || arena.getQueue().getGame() == null) {
 			this.sign.setLine(1,"§l" + arena.getQueue().size() + "/" + arena.getQueue().getMaxPlayers());
 		}
 		else {
