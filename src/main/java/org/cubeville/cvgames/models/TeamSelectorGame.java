@@ -82,6 +82,8 @@ public abstract class TeamSelectorGame extends BaseGame {
         scoreboard = GameUtils.createScoreboard(arena, "§b§lTeam " + getId(), scoreboardLines);
         sendScoreboardToArena(scoreboard);
     }
+
+    //TODO Would be nice to have team game compass split players into team-based sections
     public List<ItemStack> getPlayerCompassContents() {
         List<ItemStack> items = new ArrayList<>();
         state.keySet().stream().sorted(Comparator.comparingInt(o -> -1 * getState(o).getSortingValue())).forEach(p -> {

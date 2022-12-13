@@ -105,17 +105,20 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 			inv.setItem(i, item);
 			i++;
 		}
-		//TODO Page logic (If I really need to bother)
+		/* TODO Page logic (If I really need to bother)
 		if (invSize > 45) {
 			for (i = invSize - 9; i < invSize; i++) {
 				if (i == 45) {
 
 				}
 			}
-		}
+		} */
 		return inv;
 	}
+
+	//TODO Would be nice to have team game compass split players into team-based sections
 	public abstract List<ItemStack> getPlayerCompassContents();
+
 	public void startGame(Map<Integer, List<Player>> playerTeamMap) {
 		playerTeamMap.values().forEach(players ->
 				players.forEach(player -> {
