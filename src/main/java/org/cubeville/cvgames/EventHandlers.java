@@ -25,148 +25,148 @@ import java.util.Objects;
 
 public class EventHandlers implements Listener {
 
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerInteract(PlayerInteractEvent event) {
-		Event.Result result;
-		if (spectatorCancel(event.getPlayer())) result = Event.Result.DENY;
-		else result = Event.Result.DEFAULT;
-		event.setUseInteractedBlock(result);
-		if (event.getClickedBlock() != null &&
-			(event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) &&
-			SignManager.signMaterials.contains(event.getClickedBlock().getType())
-		) {
-			QueueSign sign = SignManager.getSign(event.getClickedBlock().getLocation());
-			if (sign == null) {
-				return;
-			}
-			sign.onRightClick(event.getPlayer());
-		}
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        Event.Result result;
+        if (spectatorCancel(event.getPlayer())) result = Event.Result.DENY;
+        else result = Event.Result.DEFAULT;
+        event.setUseInteractedBlock(result);
+        if (event.getClickedBlock() != null &&
+            (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) &&
+            SignManager.signMaterials.contains(event.getClickedBlock().getType())
+        ) {
+            QueueSign sign = SignManager.getSign(event.getClickedBlock().getLocation());
+            if (sign == null) {
+                return;
+            }
+            sign.onRightClick(event.getPlayer());
+        }
 
-		// Is the player in a queue for an arena
-		Arena arena = PlayerManager.getPlayerArena(event.getPlayer());
-		if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_QUEUE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
-			if (event.getItem() != null) {
-				// If the player is holding the item to leave the queue, have them leave it
-				if (arena.getQueue().queueLeaveItem().isSimilar(event.getItem())) {
-					event.setCancelled(true);
-					arena.getQueue().leave(event.getPlayer());
-				// If the player is holding the team selector item, open the team selector
-				} else if (arena.getQueue().teamSelectorItem().isSimilar(event.getItem())) {
-					event.setCancelled(true);
-					arena.getQueue().openTeamSelector(event.getPlayer());
-				}
-			}
-		}
-		if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_USE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
-			if (event.getItem() != null) {
-				if (arena.getQueue().spectatorLeaveItem().isSimilar(event.getItem())) {
-					event.setCancelled(true);
-					arena.getQueue().getGame().removeSpectator(event.getPlayer());
-					arena.getQueue().removeSpectatorFromLobby(event.getPlayer());
-				}
-				if (arena.getQueue().playerCompassItem().isSimilar(event.getItem())) {
-					event.setCancelled(true);
-					event.getPlayer().openInventory(arena.getQueue().getGame().getPlayerCompassInventory(event.getPlayer(), 1));
-				}
-			}
-		}
-	}
+        // Is the player in a queue for an arena
+        Arena arena = PlayerManager.getPlayerArena(event.getPlayer());
+        if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_QUEUE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
+            if (event.getItem() != null) {
+                // If the player is holding the item to leave the queue, have them leave it
+                if (arena.getQueue().queueLeaveItem().isSimilar(event.getItem())) {
+                    event.setCancelled(true);
+                    arena.getQueue().leave(event.getPlayer());
+                // If the player is holding the team selector item, open the team selector
+                } else if (arena.getQueue().teamSelectorItem().isSimilar(event.getItem())) {
+                    event.setCancelled(true);
+                    arena.getQueue().openTeamSelector(event.getPlayer());
+                }
+            }
+        }
+        if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_USE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
+            if (event.getItem() != null) {
+                if (arena.getQueue().spectatorLeaveItem().isSimilar(event.getItem())) {
+                    event.setCancelled(true);
+                    arena.getQueue().getGame().removeSpectator(event.getPlayer());
+                    arena.getQueue().removeSpectatorFromLobby(event.getPlayer());
+                }
+                if (arena.getQueue().playerCompassItem().isSimilar(event.getItem())) {
+                    event.setCancelled(true);
+                    event.getPlayer().openInventory(arena.getQueue().getGame().getPlayerCompassInventory(event.getPlayer(), 1));
+                }
+            }
+        }
+    }
 
-	@EventHandler
-	public void onPlayerQuit(PlayerQuitEvent e) {
-		Arena arena = PlayerManager.getPlayerArena(e.getPlayer());
-		if (arena != null) {
-			arena.playerLogoutCleanup(e.getPlayer());
-			PlayerManager.removePlayer(e.getPlayer());
-		}
-	}
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent e) {
+        Arena arena = PlayerManager.getPlayerArena(e.getPlayer());
+        if (arena != null) {
+            arena.playerLogoutCleanup(e.getPlayer());
+            PlayerManager.removePlayer(e.getPlayer());
+        }
+    }
 
-	@EventHandler
-	public void onInventoryClick(InventoryClickEvent event) {
-		if (event.getView().getTitle().contains(GameUtils.teamSelectorPrefix)) {
-			if (event.getWhoClicked() instanceof Player && event.getClick().isLeftClick() && event.getSlot() >= 0) {
-				Arena arena = PlayerManager.getPlayerArena((Player) event.getWhoClicked());
-				if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_QUEUE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
-					arena.getQueue().setSelectedTeam((Player) event.getWhoClicked(), event.getSlot());
-					event.setCancelled(true);
-					event.getWhoClicked().closeInventory();
-				}
-			}
-		}
-		if (event.getView().getTitle().contains("Player Compass")) {
-			if (event.getWhoClicked() instanceof Player && event.getSlot() >= 0) {
-				Arena arena = PlayerManager.getPlayerArena((Player) event.getWhoClicked());
-				if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_USE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
-					event.setCancelled(true);
-					if (Objects.isNull(event.getCurrentItem()) || !(event.getCurrentItem().getItemMeta() instanceof SkullMeta)) return;
-					SkullMeta meta = (SkullMeta) event.getCurrentItem().getItemMeta();
-					if (Objects.isNull(meta.getOwningPlayer().getPlayer())) return;
-					event.getWhoClicked().teleport(meta.getOwningPlayer().getPlayer());
-					event.getWhoClicked().closeInventory();
-				}
-			}
-		}
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (event.getView().getTitle().contains(GameUtils.teamSelectorPrefix)) {
+            if (event.getWhoClicked() instanceof Player && event.getClick().isLeftClick() && event.getSlot() >= 0) {
+                Arena arena = PlayerManager.getPlayerArena((Player) event.getWhoClicked());
+                if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_QUEUE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
+                    arena.getQueue().setSelectedTeam((Player) event.getWhoClicked(), event.getSlot());
+                    event.setCancelled(true);
+                    event.getWhoClicked().closeInventory();
+                }
+            }
+        }
+        if (event.getView().getTitle().contains("Player Compass")) {
+            if (event.getWhoClicked() instanceof Player && event.getSlot() >= 0) {
+                Arena arena = PlayerManager.getPlayerArena((Player) event.getWhoClicked());
+                if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_USE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
+                    event.setCancelled(true);
+                    if (Objects.isNull(event.getCurrentItem()) || !(event.getCurrentItem().getItemMeta() instanceof SkullMeta)) return;
+                    SkullMeta meta = (SkullMeta) event.getCurrentItem().getItemMeta();
+                    if (Objects.isNull(meta.getOwningPlayer().getPlayer())) return;
+                    event.getWhoClicked().teleport(meta.getOwningPlayer().getPlayer());
+                    event.getWhoClicked().closeInventory();
+                }
+            }
+        }
 
-		if (event.getViewers().size() == 0) return;
-		// Is the player in a queue for an arena
-		Arena arena = PlayerManager.getPlayerArena((Player) event.getViewers().get(0));
-		if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_QUEUE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
-			// If the player is moving the item to leave the queue
-			if (event.getCurrentItem() != null && (event.getCurrentItem().isSimilar(arena.getQueue().queueLeaveItem()) || event.getCurrentItem().isSimilar(arena.getQueue().teamSelectorItem()))) {
-				event.setCancelled(true);
-			}
-		}
-	}
-	private boolean spectatorCancel(Player player) {
-		Arena arena = PlayerManager.getPlayerArena(player);
-		if (arena == null || arena.getQueue().getGame() == null || !arena.getQueue().getGame().getSpectators().contains(player)) return false;
-		return true;
-	}
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerHit(EntityDamageByEntityEvent event) {
-		Player player;
-		if (!(event.getDamager() instanceof Player)) {
-			if ((event.getDamager() instanceof Projectile)) {
-				Projectile projectile = (Projectile) event.getDamager();
-				if (!(projectile.getShooter() instanceof Player)) return;
-				else player = (Player) projectile.getShooter();
-			}
-			else return;
-		}
-		else player = (Player) event.getDamager();
-		event.setCancelled(spectatorCancel(player));
-	}
+        if (event.getViewers().size() == 0) return;
+        // Is the player in a queue for an arena
+        Arena arena = PlayerManager.getPlayerArena((Player) event.getViewers().get(0));
+        if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_QUEUE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
+            // If the player is moving the item to leave the queue
+            if (event.getCurrentItem() != null && (event.getCurrentItem().isSimilar(arena.getQueue().queueLeaveItem()) || event.getCurrentItem().isSimilar(arena.getQueue().teamSelectorItem()))) {
+                event.setCancelled(true);
+            }
+        }
+    }
+    private boolean spectatorCancel(Player player) {
+        Arena arena = PlayerManager.getPlayerArena(player);
+        if (arena == null || arena.getQueue().getGame() == null || !arena.getQueue().getGame().getSpectators().contains(player)) return false;
+        return true;
+    }
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerHit(EntityDamageByEntityEvent event) {
+        Player player;
+        if (!(event.getDamager() instanceof Player)) {
+            if ((event.getDamager() instanceof Projectile)) {
+                Projectile projectile = (Projectile) event.getDamager();
+                if (!(projectile.getShooter() instanceof Player)) return;
+                else player = (Player) projectile.getShooter();
+            }
+            else return;
+        }
+        else player = (Player) event.getDamager();
+        event.setCancelled(spectatorCancel(player));
+    }
 
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerBreak(PlayerHarvestBlockEvent event) {
-		event.setCancelled(spectatorCancel(event.getPlayer()));
-	}
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerBreak(PlayerHarvestBlockEvent event) {
+        event.setCancelled(spectatorCancel(event.getPlayer()));
+    }
 
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerPlace(BlockPlaceEvent event) {
-		event.setCancelled(spectatorCancel(event.getPlayer()));
-	}
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerPlace(BlockPlaceEvent event) {
+        event.setCancelled(spectatorCancel(event.getPlayer()));
+    }
 
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerPickupArrow(PlayerPickupArrowEvent event) {
-		event.setCancelled(spectatorCancel(event.getPlayer()));
-	}
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerPickupArrow(PlayerPickupArrowEvent event) {
+        event.setCancelled(spectatorCancel(event.getPlayer()));
+    }
 
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerPickupItem(EntityPickupItemEvent event) {
-		if (!(event.getEntity() instanceof Player)) return;
-		event.setCancelled(spectatorCancel((Player) event.getEntity()));
-	}
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerPickupItem(EntityPickupItemEvent event) {
+        if (!(event.getEntity() instanceof Player)) return;
+        event.setCancelled(spectatorCancel((Player) event.getEntity()));
+    }
 
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerDropItem(PlayerDropItemEvent event) {
-		if (!(event.getPlayer() instanceof Player)) return;
-		event.setCancelled(spectatorCancel((Player) event.getPlayer()));
-	}
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
+        if (!(event.getPlayer() instanceof Player)) return;
+        event.setCancelled(spectatorCancel((Player) event.getPlayer()));
+    }
 
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerShoot(EntityShootBowEvent event) {
-		if (!(event.getEntity() instanceof Player)) return;
-		event.setCancelled(spectatorCancel((Player) event.getEntity()));
-	}
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerShoot(EntityShootBowEvent event) {
+        if (!(event.getEntity() instanceof Player)) return;
+        event.setCancelled(spectatorCancel((Player) event.getEntity()));
+    }
 }

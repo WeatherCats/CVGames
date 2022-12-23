@@ -15,34 +15,34 @@ import java.util.List;
 
 public class RemoveArenaVariable extends RunnableCommand {
 
-	@Override
-	public TextComponent execute(CommandSender sender, List<Object> baseParameters)
-		throws Error {
-		if (!(sender instanceof Player)) throw new Error("You cannot run this command from console!");
-		Player player = (Player) sender;
-		Arena arena = (Arena) baseParameters.get(0);
-		String variable = ((String) baseParameters.get(1)).toLowerCase();
-		GameVariableObject gameVariableObject = EditingManager.getEditObject(arena, player);
-		GameVariable gameVariable;
-		if (gameVariableObject == null) {
-			if (!arena.hasVariable(variable))
-				throw new Error("That variable does not exist for the arena " + arena);
-			gameVariable = arena.getGameVariable(variable);
-		} else {
-			if (gameVariableObject.getVariableAtField(variable) == null) throw new Error("That variable does not exist for your selected object!");
-			gameVariable = gameVariableObject.getVariableAtField(variable);
-		}
-		if (!(gameVariable instanceof GameVariableList)) throw new Error("The variable " + variable +" is not a list");
-		int index;
-		try {
-			index = Integer.parseInt((String) baseParameters.get(2));
-		} catch (NumberFormatException e) {
-			throw new Error(baseParameters.get(2) + " is not a valid index!");
-		}
-		GameVariableList<?> list = (GameVariableList<?>) gameVariable;
-		if (list.getVariableAtIndex(index - 1) == null) throw new Error("The list " + variable +" does not have an index of " + index);
+    @Override
+    public TextComponent execute(CommandSender sender, List<Object> baseParameters)
+        throws Error {
+        if (!(sender instanceof Player)) throw new Error("You cannot run this command from console!");
+        Player player = (Player) sender;
+        Arena arena = (Arena) baseParameters.get(0);
+        String variable = ((String) baseParameters.get(1)).toLowerCase();
+        GameVariableObject gameVariableObject = EditingManager.getEditObject(arena, player);
+        GameVariable gameVariable;
+        if (gameVariableObject == null) {
+            if (!arena.hasVariable(variable))
+                throw new Error("That variable does not exist for the arena " + arena);
+            gameVariable = arena.getGameVariable(variable);
+        } else {
+            if (gameVariableObject.getVariableAtField(variable) == null) throw new Error("That variable does not exist for your selected object!");
+            gameVariable = gameVariableObject.getVariableAtField(variable);
+        }
+        if (!(gameVariable instanceof GameVariableList)) throw new Error("The variable " + variable +" is not a list");
+        int index;
+        try {
+            index = Integer.parseInt((String) baseParameters.get(2));
+        } catch (NumberFormatException e) {
+            throw new Error(baseParameters.get(2) + " is not a valid index!");
+        }
+        GameVariableList<?> list = (GameVariableList<?>) gameVariable;
+        if (list.getVariableAtIndex(index - 1) == null) throw new Error("The list " + variable +" does not have an index of " + index);
 
-		list.removeVariable(arena.getName(), gameVariableObject == null ? variable : EditingManager.getEditPath(arena.getName(), player) + "." + variable, index - 1);
-		return new TextComponent("§bSuccessfully removed index " + index + " from variable " + variable);
-	}
+        list.removeVariable(arena.getName(), gameVariableObject == null ? variable : EditingManager.getEditPath(arena.getName(), player) + "." + variable, index - 1);
+        return new TextComponent("§bSuccessfully removed index " + index + " from variable " + variable);
+    }
 }

@@ -3,5 +3,5 @@ import org.bukkit.entity.Player;
 import org.cubeville.cvgames.models.Arena;
 
 public interface PlayerContainer {
-	 void whenPlayerLogout(Player p, Arena a);
+     void whenPlayerLogout(Player p, Arena a);
 }

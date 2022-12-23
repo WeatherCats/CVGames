@@ -9,15 +9,15 @@ import java.util.List;
 
 public class CreateArena extends RunnableCommand {
 
-	@Override
-	public TextComponent execute(CommandSender sender, List<Object> parameters) throws Error {
-		String arenaName = ((String) parameters.get(0)).toLowerCase();
+    @Override
+    public TextComponent execute(CommandSender sender, List<Object> parameters) throws Error {
+        String arenaName = ((String) parameters.get(0)).toLowerCase();
 
-		if (ArenaManager.hasArena(arenaName)) {
-			throw new Error("Arena with name " + arenaName + " already exists!");
-		}
+        if (ArenaManager.hasArena(arenaName)) {
+            throw new Error("Arena with name " + arenaName + " already exists!");
+        }
 
-		ArenaManager.createArena(arenaName);
-		return new TextComponent("§aCreated the arena " + arenaName + "!");
-	}
+        ArenaManager.createArena(arenaName);
+        return new TextComponent("§aCreated the arena " + arenaName + "!");
+    }
 }
