@@ -8,49 +8,49 @@ import javax.annotation.Nullable;
 
 public class GameVariableLocation extends GameVariable {
 
-	private Location tpLoc;
+    private Location tpLoc;
 
-	public GameVariableLocation() {}
+    public GameVariableLocation() {}
 
-	public GameVariableLocation(String description) {
-		super(description);
-	}
+    public GameVariableLocation(String description) {
+        super(description);
+    }
 
-	@Override
-	public void setItem(Player player, String input, String arenaName) {
-		tpLoc = player.getLocation();
-	}
+    @Override
+    public void setItem(Player player, String input, String arenaName) {
+        tpLoc = player.getLocation();
+    }
 
-	@Override
-	public Location getItem() {
-		return tpLoc;
-	}
+    @Override
+    public Location getItem() {
+        return tpLoc;
+    }
 
-	@Override
-	public String typeString() {
-		return "Location";
-	}
+    @Override
+    public String typeString() {
+        return "Location";
+    }
 
-	@Override
-	public String itemString() {
-		if (tpLoc == null) {
-			return null;
-		}
-		return GameUtils.playerLocToString(tpLoc);
-	}
+    @Override
+    public String itemString() {
+        if (tpLoc == null) {
+            return null;
+        }
+        return GameUtils.playerLocToString(tpLoc);
+    }
 
-	@Override
-	public void setItem(@Nullable Object string, String arenaName) {
-		if (!(string instanceof String)) {
-			tpLoc = null;
-		} else {
-			tpLoc = GameUtils.parsePlayerLocation((String) string);
-		}
-	}
+    @Override
+    public void setItem(@Nullable Object string, String arenaName) {
+        if (!(string instanceof String)) {
+            tpLoc = null;
+        } else {
+            tpLoc = GameUtils.parsePlayerLocation((String) string);
+        }
+    }
 
-	@Override
-	public boolean isValid() {
-		return tpLoc != null;
-	}
+    @Override
+    public boolean isValid() {
+        return tpLoc != null;
+    }
 
 }

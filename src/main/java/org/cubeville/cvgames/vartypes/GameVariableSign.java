@@ -17,61 +17,61 @@ import java.util.logging.Level;
 
 public class GameVariableSign extends GameVariable {
 
-	Sign sign;
+    Sign sign;
 
-	static Set<Material> transparentMaterials = new HashSet<>(Arrays.asList(Material.AIR, Material.LIGHT));
+    static Set<Material> transparentMaterials = new HashSet<>(Arrays.asList(Material.AIR, Material.LIGHT));
 
-	public GameVariableSign() {}
+    public GameVariableSign() {}
 
-	public GameVariableSign(String description) {
-		super(description);
-	}
+    public GameVariableSign(String description) {
+        super(description);
+    }
 
-	@Override
-	public void setItem(Player player, String input, String arenaName) throws Error {
-		Block block = player.getTargetBlock(transparentMaterials, 20);
-		if (block.isEmpty()) throw new Error("You need to be looking at a block to execute this command");
-		if (!SignManager.signMaterials.contains(block.getType())) throw new Error("You need to be looking at a sign to execute this command");
-		sign = (Sign) block.getState();
-	}
+    @Override
+    public void setItem(Player player, String input, String arenaName) throws Error {
+            Block block = player.getTargetBlock(transparentMaterials, 20);
+            if (block.isEmpty()) throw new Error("You need to be looking at a block to execute this command");
+            if (!SignManager.signMaterials.contains(block.getType())) throw new Error("You need to be looking at a sign to execute this command");
+            sign = (Sign) block.getState();
+    }
 
-	@Override
-	public void setItem(@Nullable Object object, String arenaName) {
-		if (!(object instanceof String)) {
-			sign = null;
-		} else {
-			Location signLoc = GameUtils.parseBlockLocation((String) object);
-			if (!SignManager.signMaterials.contains(signLoc.getBlock().getType())) {
-				sign = null;
-				Bukkit.getLogger().log(Level.WARNING,
-					"Sign variable for arena " + arenaName + " pointing to location " + object
-						+ " is not a sign. Please remove this variable from the configuration for " + arenaName + ".");
-			} else {
-				sign = (Sign) signLoc.getBlock().getState();
-			}
-		}
-	}
+    @Override
+    public void setItem(@Nullable Object object, String arenaName) {
+        if (!(object instanceof String)) {
+            sign = null;
+        } else {
+            Location signLoc = GameUtils.parseBlockLocation((String) object);
+            if (!SignManager.signMaterials.contains(signLoc.getBlock().getType())) {
+                sign = null;
+                Bukkit.getLogger().log(Level.WARNING,
+                    "Sign variable for arena " + arenaName + " pointing to location " + object
+                        + " is not a sign. Please remove this variable from the configuration for " + arenaName + ".");
+            } else {
+                sign = (Sign) signLoc.getBlock().getState();
+            }
+        }
+    }
 
-	public String typeString() {
-		return "Sign";
-	}
+    public String typeString() {
+        return "Sign";
+    }
 
-	@Override
-	public Sign getItem() {
-		return sign;
-	}
+    @Override
+    public Sign getItem() {
+        return sign;
+    }
 
-	@Override
-	public String itemString() {
-		if (sign == null) {
-			return "<INVALID SIGN>";
-		}
-		return GameUtils.blockLocToString(sign.getLocation());
-	}
+    @Override
+    public String itemString() {
+        if (sign == null) {
+            return "<INVALID SIGN>";
+        }
+        return GameUtils.blockLocToString(sign.getLocation());
+    }
 
-	@Override
-	public boolean isValid() {
-		return sign != null;
-	}
+    @Override
+    public boolean isValid() {
+        return sign != null;
+    }
 
 }

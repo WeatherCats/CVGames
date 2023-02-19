@@ -9,51 +9,51 @@ import javax.annotation.Nullable;
 
 public class GameVariableBlock extends GameVariable {
 
-	private Block block;
-	private Material material;
+    private Block block;
+    private Material material;
 
-	public GameVariableBlock() {}
+    public GameVariableBlock() {}
 
-	public GameVariableBlock(String description) {
-		super(description);
-	}
+    public GameVariableBlock(String description) {
+        super(description);
+    }
 
-	@Override
-	public void setItem(Player player, String input, String arenaName) throws Error {
-		Block b = player.getTargetBlock(null, 20);
-		if (b.isEmpty()) throw new Error("You need to be looking at a block to execute this command");
-		block = b;
-	}
+    @Override
+    public void setItem(Player player, String input, String arenaName) throws Error {
+        Block b = player.getTargetBlock(null, 20);
+        if (b.isEmpty()) throw new Error("You need to be looking at a block to execute this command");
+        block = b;
+    }
 
-	@Override
-	public void setItem(@Nullable Object string, String arenaName) {
-		if (!(string instanceof String)) {
-			block = null;
-		} else {
-			block = GameUtils.parseBlockLocation((String) string).getBlock();
-		}
-	}
+    @Override
+    public void setItem(@Nullable Object string, String arenaName) {
+        if (!(string instanceof String)) {
+            block = null;
+        } else {
+            block = GameUtils.parseBlockLocation((String) string).getBlock();
+        }
+    }
 
-	public final String typeString() {
-		return "Block";
-	}
+    public final String typeString() {
+        return "Block";
+    }
 
-	@Override
-	public Block getItem() {
-		return block;
-	}
+    @Override
+    public Block getItem() {
+        return block;
+    }
 
-	@Override
-	public String itemString() {
-		if (block == null) {
-			return null;
-		}
-		return GameUtils.blockLocToString(block.getLocation());
-	}
+    @Override
+    public String itemString() {
+        if (block == null) {
+            return null;
+        }
+        return GameUtils.blockLocToString(block.getLocation());
+    }
 
-	@Override
-	public boolean isValid() {
-		return block != null;
-	}
+    @Override
+    public boolean isValid() {
+        return block != null;
+    }
 
 }

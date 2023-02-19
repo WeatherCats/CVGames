@@ -8,18 +8,18 @@ import java.util.UUID;
 
 public class PlayerManager {
 
-	private static HashMap<UUID, String> uuidToArenaName = new HashMap<>();
+    private static HashMap<UUID, String> uuidToArenaName = new HashMap<>();
 
-	public static void setPlayer(Player p, String name) {
-		uuidToArenaName.put(p.getUniqueId(), name);
-	}
+    public static void setPlayer(Player p, String name) {
+        uuidToArenaName.put(p.getUniqueId(), name);
+    }
 
-	public static void removePlayer(Player p) {
-		uuidToArenaName.remove(p.getUniqueId());
-	}
+    public static void removePlayer(Player p) {
+        uuidToArenaName.remove(p.getUniqueId());
+    }
 
-	public static Arena getPlayerArena(Player p) {
-		Arena result = ArenaManager.getArena(uuidToArenaName.get(p.getUniqueId()));
-		return result;
-	}
+    public static Arena getPlayerArena(Player p) {
+        Arena result = ArenaManager.getArena(uuidToArenaName.get(p.getUniqueId()));
+        return result;
+    }
 }
