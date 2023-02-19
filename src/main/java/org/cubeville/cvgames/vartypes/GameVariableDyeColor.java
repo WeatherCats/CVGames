@@ -1,9 +1,7 @@
 package org.cubeville.cvgames.vartypes;
 
 import org.bukkit.DyeColor;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.cubeville.cvgames.utils.GameUtils;
 
 import javax.annotation.Nullable;
 
@@ -23,7 +21,7 @@ public class GameVariableDyeColor extends GameVariable {
                         if (input == null) {
                                 dyeColor = null;
                         } else {
-                                dyeColor = DyeColor.valueOf(input);
+                                dyeColor = DyeColor.valueOf(input.toUpperCase());
                         }
                 } catch (IllegalArgumentException e) {
                         throw new Error("Dye color with name " + input + " does not exist.");

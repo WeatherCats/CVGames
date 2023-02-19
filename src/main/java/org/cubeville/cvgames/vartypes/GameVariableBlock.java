@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.vartypes;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.utils.GameUtils;
@@ -9,6 +10,7 @@ import javax.annotation.Nullable;
 public class GameVariableBlock extends GameVariable {
 
 	private Block block;
+	private Material material;
 
 	public GameVariableBlock() {}
 

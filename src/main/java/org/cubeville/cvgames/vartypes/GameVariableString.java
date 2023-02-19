@@ -45,6 +45,7 @@ public class GameVariableString extends GameVariable {
 
 	@Override
 	public Object getItem() {
+		if (item == null) return null;
 		return GameUtils.createColorString(item);
 	}
 

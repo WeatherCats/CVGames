@@ -2,6 +2,7 @@ package org.cubeville.cvgames.vartypes;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -9,11 +10,16 @@ import org.cubeville.cvgames.utils.GameUtils;
 import org.cubeville.cvgames.managers.SignManager;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class GameVariableSign extends GameVariable {
 
 	Sign sign;
+
+	static Set<Material> transparentMaterials = new HashSet<>(Arrays.asList(Material.AIR, Material.LIGHT));
 
 	public GameVariableSign() {}
 
@@ -23,7 +29,7 @@ public class GameVariableSign extends GameVariable {
 
 	@Override
 	public void setItem(Player player, String input, String arenaName) throws Error {
-		Block block = player.getTargetBlock(null, 20);
+		Block block = player.getTargetBlock(transparentMaterials, 20);
 		if (block.isEmpty()) throw new Error("You need to be looking at a block to execute this command");
 		if (!SignManager.signMaterials.contains(block.getType())) throw new Error("You need to be looking at a sign to execute this command");
 		sign = (Sign) block.getState();

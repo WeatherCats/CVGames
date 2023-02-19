@@ -33,7 +33,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 		this.arena = ArenaManager.getArena(arenaName);
 		this.arena.addGameVariable("region", new GameVariableRegion("A region surrounding both the game and the lobby of an arena -- if players leave this arena, they will automatically be removed from the game and queue"));
 		this.arena.addGameVariable("spectator-spawn", new GameVariableLocation("The location spectators spawn at."));
-
+		this.arena.addGameVariable("spectate-enabled", new GameVariableFlag("Is spectate enabled?"), false);
 	}
 
 	@Override
@@ -259,5 +259,9 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 	}
 
 	public void onCountdown(int counter) {}
+
+	public void onPlayerJoinGame(Player player) {}
+
+	public void onPlayerLeaveGame(Player player) {}
 
 }

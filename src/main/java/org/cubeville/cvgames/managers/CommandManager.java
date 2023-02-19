@@ -92,6 +92,7 @@ public class CommandManager {
 
                 }
             case "center":
+            case "centre":
                 if (!sender.hasPermission("cvgames.setup.center")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
                 return runCommand("center", sender, new ArrayList<>());
             case "giveitem":

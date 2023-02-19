@@ -25,7 +25,6 @@ public class Arena {
 	private final GameQueue queue;
 	private ArenaStatus status;
 
-
 	public Arena(String name) {
 		this.name = name;
 		this.queue = new GameQueue(this);
@@ -102,6 +101,7 @@ public class Arena {
 	public GameVariable getGameVariable(String var) {
 		String firstVar = var.split("\\.")[0];
 		GameVariable gv = verificationMap.get(firstVar);
+		if (gv == null) { return null; }
 		if (gv instanceof GameVariableList || gv instanceof GameVariableObject) {
 			// fuck
 			if (shouldRedefine.containsKey(firstVar) && shouldRedefine.get(firstVar)) {
@@ -158,7 +158,9 @@ public class Arena {
 	}
 
 	public Object getVariable(String var) {
-		return getGameVariable(var.toLowerCase()).getItem();
+		GameVariable gv = getGameVariable(var.toLowerCase());
+		if (gv == null) return null;
+		return gv.getItem();
 	}
 
 	public boolean hasVariable(String var) {

@@ -41,6 +41,7 @@ public class GameQueue implements PlayerContainer {
 		arena.addGameVariable("lobby", new GameVariableLocation("The waiting lobby for players"));
 		arena.addGameVariable("exit", new GameVariableLocation("The exit location for players leaving the arena"));
 		arena.addGameVariable("signs", new GameVariableList<>(GameVariableQueueSign.class, "The signs that players can right click to join this arena"));
+		arena.addGameVariable("countdown-length", new GameVariableInt("The time it takes for a countdown when the minimum is reached"), 20);
 		if (game instanceof TeamSelectorGame) {
 			arena.addGameVariable("team-selector", new GameVariableFlag("If true, players will be able to select their own teams in this game"), true);
 		}
@@ -99,7 +100,7 @@ public class GameQueue implements PlayerContainer {
 	}
 
 	public boolean join(Player p, @Nullable String gameName) {
-		if (!Objects.isNull(this.getGame()) && this.getGame().isRunningGame) {
+		if ((boolean) arena.getVariable("spectate-enabled") && !Objects.isNull(this.getGame()) && this.getGame().isRunningGame) {
 			PlayerManager.setPlayer(p, arena.getName());
 			this.setSpectatorToLobby(p);
 			this.getGame().addSpectator(p);
@@ -130,9 +131,16 @@ public class GameQueue implements PlayerContainer {
 		PlayerManager.setPlayer(p, arena.getName());
 		if (!arena.getStatus().equals(ArenaStatus.HOSTING)) {
 			playerTeams.get(-1).add(p);
+			getGame().onPlayerJoinGame(p);
 			Set<Player> players = getPlayerSet();
 			if (players.size() == getMinPlayers()) {
-				startCountdown(20);
+				int countdownLength = 20;
+				if (arena.getVariable("countdown-length") != null) {
+					if (arena.getGameVariable("countdown-length") instanceof GameVariableInt) {
+						countdownLength = (int) arena.getVariable("countdown-length");
+					}
+				}
+				startCountdown(countdownLength);
 			}
 			final int SPEED_COUNTDOWN = 6;
 			if (players.size() == getMaxPlayers() && counter > SPEED_COUNTDOWN) {
@@ -151,6 +159,7 @@ public class GameQueue implements PlayerContainer {
 		}
 		playerTeams.computeIfAbsent(-1, k -> new ArrayList<>());
 		playerTeams.get(-1).add(p);
+		getGame().onPlayerJoinGame(p);
 		GameUtils.messagePlayerList(getPlayerSet(),"§b" + p.getName() + " will be playing in the next game!");
 	}
 
@@ -160,6 +169,7 @@ public class GameQueue implements PlayerContainer {
 			throw new Error("Player " + p.getDisplayName() + " is already absent from the next game!");
 		}
 		playerTeams.keySet().forEach(i -> playerTeams.get(i).remove(p));
+		getGame().onPlayerLeaveGame(p);
 		GameUtils.messagePlayerList(getPlayerSet(),"§b" + p.getName() + " will no longer be playing in the next game!");
 	}
 
@@ -252,6 +262,7 @@ public class GameQueue implements PlayerContainer {
 	public void leave( Player p, boolean shouldSendToExit ) {
 		if (!getPlayerSet().contains(p)) { return; }
 		playerTeams.values().forEach(playerSet -> playerSet.remove(p));
+		getGame().onPlayerLeaveGame(p);
 		Set<Player> players = getPlayerSet();
 		PlayerManager.removePlayer(p);
 		if (arena.getStatus() != ArenaStatus.IN_QUEUE && arena.getStatus() != ArenaStatus.HOSTING) { return; }
