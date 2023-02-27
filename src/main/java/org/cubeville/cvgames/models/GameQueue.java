@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.cubeville.cvgames.CVGames;
+import org.cubeville.cvgames.InterfaceItems;
 import org.cubeville.cvgames.utils.GameUtils;
 import org.cubeville.cvgames.enums.ArenaStatus;
 import org.cubeville.cvgames.managers.PlayerManager;
@@ -197,6 +198,9 @@ public class GameQueue implements PlayerContainer {
         } else {
             host.sendMessage(lobbyJoinMessage);
         }
+        p.setHealth(20);
+        p.setFoodLevel(20);
+        p.setSaturation(20);
     }
 
     public void setSpectatorToLobby(Player p) {
@@ -213,12 +217,18 @@ public class GameQueue implements PlayerContainer {
         if (getGame() instanceof TeamSelectorGame) {
             numberOfTeams = ((TeamSelectorGame) getGame()).getTeamVariable().size();
         }
-        if (numberOfTeams > 1 && (Boolean) arena.getVariable("team-selector") && !arena.getStatus().equals(ArenaStatus.HOSTING)) inv.setItem(7, teamSelectorItem());
-        inv.setItem(8, queueLeaveItem());
+        if (numberOfTeams > 1 && (Boolean) arena.getVariable("team-selector") && !arena.getStatus().equals(ArenaStatus.HOSTING)) inv.setItem(7, InterfaceItems.TEAM_SELECTOR_ITEM);
+        inv.setItem(8, InterfaceItems.QUEUE_LEAVE_ITEM);
     }
-    public void setSpectatorInventory(PlayerInventory inv) {
-        inv.setItem(8, spectatorLeaveItem());
-        inv.setItem(0, playerCompassItem());
+
+    public void setSpectatorInventory(PlayerInventory inventory) {
+        setSpectatorInventory(inventory, true);
+    }
+
+    public void setSpectatorInventory(PlayerInventory inv, boolean includeLeaveItem) {
+        inv.setItem(0, InterfaceItems.SPECTATE_PLAYER_NAV_ITEM);
+        if (!includeLeaveItem) return;
+        inv.setItem(8, InterfaceItems.SPECTATE_LEAVE_ITEM);
     }
 
     private void removePlayerFromLobby(Player p) {
@@ -359,26 +369,6 @@ public class GameQueue implements PlayerContainer {
         leave(p);
     }
 
-    public ItemStack queueLeaveItem() {
-        return GameUtils.customItem(Material.RED_BED, "§c§l§oLeave Queue §7§o(Right Click)");
-    }
-
-    public ItemStack spectatorLeaveItem() {
-        return GameUtils.customItem(Material.RED_BED, "§c§l§oLeave §7§o(Right Click)");
-    }
-
-    public ItemStack playerCompassItem() {
-        return GameUtils.customItem(Material.COMPASS, "§e§l§oPlayer Compass §7§o(Right Click)");
-    }
-
-    public ItemStack teamSelectorItem() {
-        return GameUtils.customItem(Material.GHAST_TEAR, "§b§l§oSelect Team §7§o(Right Click)");
-    }
-
-    public ItemStack removeTeamSelectionItem() {
-        return GameUtils.customItem(Material.BARRIER, "§c§l§oRandomized Team");
-    }
-
     public void clear() {
         playerTeams.keySet().forEach(key -> playerTeams.get(key).clear());
         if (!arena.getStatus().equals(ArenaStatus.HOSTING)) {
@@ -472,7 +462,7 @@ public class GameQueue implements PlayerContainer {
             teamItem.setItemMeta(teamItemMeta);
             inv.setItem(i, teamItem);
         }
-        inv.setItem(invSize - 1, removeTeamSelectionItem());
+        inv.setItem(invSize - 1, InterfaceItems.RANDOMIZE_TEAM_ITEM);
         return inv;
     }
 

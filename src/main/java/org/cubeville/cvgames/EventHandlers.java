@@ -47,11 +47,11 @@ public class EventHandlers implements Listener {
         if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_QUEUE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
             if (event.getItem() != null) {
                 // If the player is holding the item to leave the queue, have them leave it
-                if (arena.getQueue().queueLeaveItem().isSimilar(event.getItem())) {
+                if (InterfaceItems.QUEUE_LEAVE_ITEM.isSimilar(event.getItem())) {
                     event.setCancelled(true);
                     arena.getQueue().leave(event.getPlayer());
                 // If the player is holding the team selector item, open the team selector
-                } else if (arena.getQueue().teamSelectorItem().isSimilar(event.getItem())) {
+                } else if (InterfaceItems.TEAM_SELECTOR_ITEM.isSimilar(event.getItem())) {
                     event.setCancelled(true);
                     arena.getQueue().openTeamSelector(event.getPlayer());
                 }
@@ -59,12 +59,12 @@ public class EventHandlers implements Listener {
         }
         if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_USE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
             if (event.getItem() != null) {
-                if (arena.getQueue().spectatorLeaveItem().isSimilar(event.getItem())) {
+                if (InterfaceItems.SPECTATE_LEAVE_ITEM.isSimilar(event.getItem())) {
                     event.setCancelled(true);
                     arena.getQueue().getGame().removeSpectator(event.getPlayer());
                     arena.getQueue().removeSpectatorFromLobby(event.getPlayer());
                 }
-                if (arena.getQueue().playerCompassItem().isSimilar(event.getItem())) {
+                if (InterfaceItems.SPECTATE_PLAYER_NAV_ITEM.isSimilar(event.getItem())) {
                     event.setCancelled(true);
                     event.getPlayer().openInventory(arena.getQueue().getGame().getPlayerCompassInventory(event.getPlayer(), 1));
                 }
@@ -112,7 +112,12 @@ public class EventHandlers implements Listener {
         Arena arena = PlayerManager.getPlayerArena((Player) event.getViewers().get(0));
         if (arena != null && arena.getQueue() != null && (arena.getStatus().equals(ArenaStatus.IN_QUEUE) || arena.getStatus().equals(ArenaStatus.HOSTING))) {
             // If the player is moving the item to leave the queue
-            if (event.getCurrentItem() != null && (event.getCurrentItem().isSimilar(arena.getQueue().queueLeaveItem()) || event.getCurrentItem().isSimilar(arena.getQueue().teamSelectorItem()))) {
+            if (event.getCurrentItem() != null && (
+                event.getCurrentItem().isSimilar(InterfaceItems.QUEUE_LEAVE_ITEM) ||
+                event.getCurrentItem().isSimilar(InterfaceItems.TEAM_SELECTOR_ITEM) ||
+                event.getCurrentItem().isSimilar(InterfaceItems.SPECTATE_LEAVE_ITEM) ||
+                event.getCurrentItem().isSimilar(InterfaceItems.SPECTATE_PLAYER_NAV_ITEM)
+            )) {
                 event.setCancelled(true);
             }
         }

@@ -55,9 +55,7 @@ public abstract class GameVariable {
         throw new Error("Cannot add an item to a variable that is not a list. Use set instead.");
     }
 
-    public void clearItem() {
-        return;
-    }
+    public void clearItem() {}
 
     public Object getFromPath(String path) {
         return getInstance().getConfig().getString(path);

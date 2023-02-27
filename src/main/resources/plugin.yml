@@ -1,6 +1,6 @@
 name: CVGames
 main: org.cubeville.cvgames.CVGames
-authors: [Ptown16]
+authors: [Ptown16, WeatherCats, FrediW]
 version: 0.1
 api-version: 1.18
 depend: []

@@ -12,6 +12,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.profile.PlayerProfile;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -217,5 +219,23 @@ public class GameUtils {
                 }
             }
         }
+    }
+
+    public static ItemStack customHead(String base64, String name) {
+        return customHead(base64, name, null);
+    }
+
+    // This uses the same base64 CVTools head command
+    public static ItemStack customHead(String base64, String headName, Integer amount) {
+        if (amount == null) { amount = 1; }
+        // This is unsafe and deprecated, but spigot doesn't have a better option right now to support this
+        ItemStack head = Bukkit.getUnsafe().modifyItemStack(
+            new ItemStack(Material.PLAYER_HEAD, amount),
+            "{SkullOwner:{Id:\"" + UUID.nameUUIDFromBytes(base64.getBytes()) + "\",Properties:{textures:[{Value:\"" + base64 + "\"}]}}}"
+        );
+        ItemMeta headMeta = head.getItemMeta();
+        headMeta.setDisplayName(headName);
+        head.setItemMeta(headMeta);
+        return head;
     }
 }

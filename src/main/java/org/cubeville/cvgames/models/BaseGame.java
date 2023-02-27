@@ -42,8 +42,9 @@ abstract public class BaseGame implements PlayerContainer, Listener {
     }
 
     private void kickPlayerFromGame(Player p, boolean teleportToExit) {
-        if (spectators.contains(p)) removeSpectator(p);
-        if (state.containsKey(p)) {
+        if (spectators.contains(p)) {
+            removeSpectator(p);
+        } else {
             PlayerManager.removePlayer(p);
             onPlayerLeave(p);
             state.remove(p);
@@ -131,7 +132,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
         if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
             arena.getQueue().getPlayerSet().forEach(player -> {
                 if (state.keySet().contains(player)) return;
-                player.getInventory().setItem(0, this.getArena().getQueue().playerCompassItem());
+                arena.getQueue().setSpectatorInventory(player.getInventory(), false);
                 addSpectator(player);
             });
         }
@@ -154,7 +155,6 @@ abstract public class BaseGame implements PlayerContainer, Listener {
                 player.getInventory().clear();
             }
         });
-        arena.getQueue().clear();
         killArenaRegionCheck();
         this.state.keySet().forEach(player -> {
             showSpectators(player);
@@ -169,6 +169,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
             }
         });
         onGameFinish();
+        arena.getQueue().clear();
         state.clear();
         isRunningGame = false;
     };
@@ -182,18 +183,19 @@ abstract public class BaseGame implements PlayerContainer, Listener {
 
         arenaRegionTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(CVGames.getInstance(), () -> {
             Set<Player> players = ImmutableSet.copyOf(state.keySet());
+            Set<Player> spectators = ImmutableSet.copyOf(this.spectators);
+            for (Player player : spectators) {
+                // we don't want to remove the player twice if they are a spectator as a result of the game
+                if (!gameRegion.containsPlayer(player) && !players.contains(player)) {
+                    player.teleport((Location) getVariable("spectator-spawn"));
+                    player.sendMessage("§cYou left the playing area!");
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, .7F);
+                }
+            }
             for (Player player : players) {
                 if (!gameRegion.containsPlayer(player)) {
                     kickPlayerFromGame(player, false);
                     player.sendMessage("§cYou have left the game!");
-                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, .7F);
-                }
-            }
-            Set<Player> spectators = ImmutableSet.copyOf(this.spectators);
-            for (Player player : spectators) {
-                if (!gameRegion.containsPlayer(player)) {
-                    player.teleport((Location) getVariable("spectator-spawn"));
-                    player.sendMessage("§cYou left the playing area!");
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, .7F);
                 }
             }

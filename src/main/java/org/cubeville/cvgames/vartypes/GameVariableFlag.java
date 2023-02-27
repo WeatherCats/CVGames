@@ -33,9 +33,7 @@ public class GameVariableFlag extends GameVariable {
     }
 
     @Override
-    public Object itemString() {
-        return bool.toString();
-    }
+    public Object itemString() { return bool; }
 
     @Override
     public boolean isValid() {
