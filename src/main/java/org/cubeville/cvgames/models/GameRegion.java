@@ -11,7 +11,7 @@ public class GameRegion {
     public GameRegion(Location min, Location max) {
         this.min = min;
         this.max = max;
-        this.entityMax = max.add(1, .9999, 1);
+        this.entityMax = max.clone().add(1, .9999, 1);
     }
 
     public Location getMin() {
