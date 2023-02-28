@@ -43,6 +43,7 @@ public class CommandManager {
         put("hostlobby", new HostLobby());
         put("hostcountdown", new HostCountdown());
         put("arenas", new Arenas());
+        put("selectrg", new SelectRegion());
     }};
 
     public static boolean parse(CommandSender sender, String[] argsIn) {
@@ -99,6 +100,10 @@ public class CommandManager {
                 if (!sender.hasPermission("cvgames.setup.giveitem")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
                 if (args.length != 2) return sendErrorMessage(sender, "Error: Invalid parameter size. Did you mean \"/cvgames giveitem <path>\" ?");
                 return runCommand("giveitem", sender, List.of(args[1].toLowerCase()));
+            case "selectrg":
+                if (!sender.hasPermission("cvgames.setup.selectrg")) { return sendErrorMessage(sender, DEFAULT_PERMISSIONS_ERROR); }
+                if (args.length != 2) return sendErrorMessage(sender, "Error: Invalid parameter size. Did you mean \"/cvgames selectrg <path>\" ?");
+                return runCommand("selectrg", sender, List.of(args[1].toLowerCase()));
             case "arena":
                 if (args.length < 3) return sendErrorMessage(sender, DEFAULT_ERROR);
                 // GAMES ARENA COMMANDS

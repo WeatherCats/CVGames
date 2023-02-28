@@ -1,5 +1,10 @@
 package org.cubeville.cvgames.vartypes;
 
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.utils.BlockUtils;
@@ -21,7 +26,7 @@ public class GameVariableRegion extends GameVariable {
     public void setItem(Player player, String input, String arenaName) throws Error {
         try {
             Location min = BlockUtils.getWESelectionMin(player);
-            Location max = BlockUtils.getWESelectionMax(player).add(1.0, 1.0, 1.0);
+            Location max = BlockUtils.getWESelectionMax(player);
             region = new GameRegion(min, max);
         }
         catch(IllegalArgumentException e) {
@@ -38,6 +43,18 @@ public class GameVariableRegion extends GameVariable {
     public Object itemString() {
         if (region == null) return null;
         return GameUtils.blockLocToString(region.getMin()) + " ~ " + GameUtils.blockLocToString(region.getMax());
+    }
+
+    @Override
+    public TextComponent displayString(String arenaName) {
+        if (region == null) { return new TextComponent("null"); }
+        TextComponent tc = new TextComponent("[Select Region]");
+        tc.setBold(true);
+        tc.setColor(ChatColor.AQUA);
+        String fullPath = "arenas." + arenaName + ".variables." + path;
+        tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cvgames selectrg " + fullPath));
+        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to select this region")));
+        return tc;
     }
 
     @Override

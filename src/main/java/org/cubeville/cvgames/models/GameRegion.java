@@ -3,14 +3,15 @@ package org.cubeville.cvgames.models;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.cubeville.cvgames.utils.BlockUtils;
 
 public class GameRegion {
-    Location min;
-    Location max;
+    Location min, max, entityMax;
 
     public GameRegion(Location min, Location max) {
         this.min = min;
         this.max = max;
+        this.entityMax = max.add(1, .9999, 1);
     }
 
     public Location getMin() {
@@ -22,14 +23,20 @@ public class GameRegion {
     }
 
     public boolean containsPlayer(Player player) {
-        return containsLocation(player.getLocation());
+        // for players and entities, we need to add 1 to the x and z values
+        return containsLocation(player.getLocation(), min, entityMax);
     }
 
     public boolean containsEntity(Entity entity) {
-        return containsLocation(entity.getLocation());
+        // for players and entities, we need to add 1 to the x and z values
+        return containsLocation(entity.getLocation(), min, entityMax);
     }
 
     public boolean containsLocation(Location location) {
+        return containsLocation(location, min, max);
+    }
+
+    public boolean containsLocation(Location location, Location min, Location max) {
         return (max.getX() >= location.getX() && location.getX() >= min.getX()) &&
                 (max.getY() >= location.getY() && location.getY() >= min.getY()) &&
                 (max.getZ() >= location.getZ() && location.getZ() >= min.getZ());
