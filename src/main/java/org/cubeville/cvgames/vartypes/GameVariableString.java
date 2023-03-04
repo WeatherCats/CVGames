@@ -1,16 +1,10 @@
 package org.cubeville.cvgames.vartypes;
 
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.utils.GameUtils;
-import org.w3c.dom.Text;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.regex.Matcher;
 
 import static org.cubeville.cvgames.utils.GameUtils.createColorTextComponent;
 

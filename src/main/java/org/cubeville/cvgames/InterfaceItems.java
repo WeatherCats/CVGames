@@ -1,5 +1,4 @@
 package org.cubeville.cvgames;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.cubeville.cvgames.utils.GameUtils;
 

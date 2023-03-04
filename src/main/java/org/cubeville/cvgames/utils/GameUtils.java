@@ -22,11 +22,14 @@ import org.cubeville.cvgames.models.Arena;
 import org.cubeville.cvgames.vartypes.GameVariable;
 import org.cubeville.cvgames.vartypes.GameVariableList;
 import org.cubeville.cvgames.vartypes.GameVariableObject;
+import org.cubeville.cvstats.CVStats;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.bukkit.Bukkit.getServer;
 
 public class GameUtils {
 
@@ -237,5 +240,11 @@ public class GameUtils {
         headMeta.setDisplayName(headName);
         head.setItemMeta(headMeta);
         return head;
+    }
+
+    public static void sendMetricToCVStats(String metricName, Map<String, String> fields) {
+        if (getServer().getPluginManager().getPlugin("CVStats") != null) {
+            CVStats.getInstance().sendMetric(metricName, fields);
+        }
     }
 }
