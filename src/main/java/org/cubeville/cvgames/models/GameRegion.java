@@ -3,7 +3,6 @@ package org.cubeville.cvgames.models;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.cubeville.cvgames.utils.BlockUtils;
 
 public class GameRegion {
     Location min, max, entityMax;

@@ -3,7 +3,6 @@ package org.cubeville.cvgames.commands;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.cubeville.cvgames.managers.ArenaManager;
-import org.cubeville.cvgames.CVGames;
 import org.cubeville.cvgames.models.Arena;
 
 import java.util.List;

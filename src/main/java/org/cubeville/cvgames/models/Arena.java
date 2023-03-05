@@ -1,8 +1,8 @@
 package org.cubeville.cvgames.models;
 
 import org.bukkit.entity.Player;
-import org.cubeville.cvgames.managers.SignManager;
 import org.cubeville.cvgames.enums.ArenaStatus;
+import org.cubeville.cvgames.managers.SignManager;
 import org.cubeville.cvgames.utils.GameUtils;
 import org.cubeville.cvgames.vartypes.GameVariable;
 import org.cubeville.cvgames.vartypes.GameVariableList;
@@ -10,9 +10,10 @@ import org.cubeville.cvgames.vartypes.GameVariableObject;
 import org.cubeville.cvgames.vartypes.GameVariableTeam;
 
 import javax.annotation.Nullable;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Arena {
 

@@ -3,7 +3,6 @@ package org.cubeville.cvgames.models;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -12,10 +11,10 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.cubeville.cvgames.CVGames;
 import org.cubeville.cvgames.InterfaceItems;
-import org.cubeville.cvgames.utils.GameUtils;
 import org.cubeville.cvgames.enums.ArenaStatus;
 import org.cubeville.cvgames.managers.PlayerManager;
 import org.cubeville.cvgames.managers.SignManager;
+import org.cubeville.cvgames.utils.GameUtils;
 import org.cubeville.cvgames.vartypes.*;
 
 import javax.annotation.Nullable;
@@ -127,8 +126,8 @@ public class GameQueue implements PlayerContainer {
         } else {
             playerTeams.putIfAbsent(-1, new ArrayList<>());
         }
-        setPlayerToLobby(p);
         PlayerManager.setPlayer(p, arena.getName());
+        setPlayerToLobby(p);
         if (!arena.getStatus().equals(ArenaStatus.HOSTING)) {
             playerTeams.get(-1).add(p);
             getGame().onPlayerJoinGame(p);
@@ -241,7 +240,6 @@ public class GameQueue implements PlayerContainer {
             removeSpectatorFromLobby(p);
         }
         if (shouldSendToExit) { p.teleport((Location) arena.getVariable("exit")); }
-        p.getInventory().clear();
         playerLobby.remove(p);
         if (playerLobby.size() == 0 && arenaLobbyRegionTask != null) {
             killArenaLobbyRegionCheck();
@@ -257,7 +255,6 @@ public class GameQueue implements PlayerContainer {
     }
 
     public void removeSpectatorFromLobby(Player p) {
-        p.getInventory().clear();
         playerLobby.remove(p);
         p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
         SignManager.updateArenaSignsFill(arena.getName());

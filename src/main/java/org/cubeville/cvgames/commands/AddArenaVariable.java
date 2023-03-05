@@ -3,10 +3,8 @@ package org.cubeville.cvgames.commands;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.managers.EditingManager;
 import org.cubeville.cvgames.models.Arena;
-import org.cubeville.cvgames.models.BaseGame;
 import org.cubeville.cvgames.vartypes.GameVariableObject;
 
 import java.util.List;

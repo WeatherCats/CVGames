@@ -1,7 +1,6 @@
 package org.cubeville.cvgames.models;
 
 import com.google.common.collect.ImmutableSet;
-import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -15,7 +14,10 @@ import org.cubeville.cvgames.enums.ArenaStatus;
 import org.cubeville.cvgames.managers.ArenaManager;
 import org.cubeville.cvgames.managers.PlayerManager;
 import org.cubeville.cvgames.utils.GameUtils;
-import org.cubeville.cvgames.vartypes.*;
+import org.cubeville.cvgames.vartypes.GameVariable;
+import org.cubeville.cvgames.vartypes.GameVariableFlag;
+import org.cubeville.cvgames.vartypes.GameVariableLocation;
+import org.cubeville.cvgames.vartypes.GameVariableRegion;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -45,10 +47,9 @@ abstract public class BaseGame implements PlayerContainer, Listener {
         if (spectators.contains(p)) {
             removeSpectator(p);
         } else {
-            PlayerManager.removePlayer(p);
             onPlayerLeave(p);
             state.remove(p);
-            p.getInventory().clear();
+            PlayerManager.removePlayer(p);
             showSpectators(p);
         }
         if (teleportToExit) { p.teleport((Location) this.getVariable("exit")); }
@@ -135,11 +136,13 @@ abstract public class BaseGame implements PlayerContainer, Listener {
         startArenaRegionCheck();
         processPlayerMap(playerTeamMap);
         if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
-            arena.getQueue().getPlayerSet().forEach(player -> {
-                if (state.keySet().contains(player)) return;
-                arena.getQueue().setSpectatorInventory(player.getInventory(), false);
-                addSpectator(player);
-            });
+            if ((boolean) arena.getVariable("spectate-enabled")) {
+                arena.getQueue().getPlayerSet().forEach(player -> {
+                    if (state.keySet().contains(player)) return;
+                    arena.getQueue().setSpectatorInventory(player.getInventory(), false);
+                    addSpectator(player);
+                });
+            }
         }
         isRunningGame = true;
         GameUtils.sendMetricToCVStats("game_start", Map.of(
@@ -153,35 +156,29 @@ abstract public class BaseGame implements PlayerContainer, Listener {
         List<Player> spectatorList = new ArrayList<>(this.spectators);
         spectatorList.forEach(player -> {
             removeSpectator(player);
-            if (state.containsKey(player)) return;
-            if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
-                player.teleport((Location) getVariable("lobby"));
-                player.getInventory().clear();
-                arena.getQueue().setLobbyInventory(player.getInventory());
-            } else {
-                PlayerManager.removePlayer(player);
-                player.teleport((Location) getVariable("exit"));
-                player.getInventory().clear();
-            }
+            if (!state.containsKey(player)) finishGameForPlayer(player);
         });
         killArenaRegionCheck();
         this.state.keySet().forEach(player -> {
             showSpectators(player);
-            if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
-                player.teleport((Location) getVariable("lobby"));
-                player.getInventory().clear();
-                arena.getQueue().setLobbyInventory(player.getInventory());
-            } else {
-                PlayerManager.removePlayer(player);
-                player.teleport((Location) getVariable("exit"));
-                player.getInventory().clear();
-            }
+            finishGameForPlayer(player);
         });
         onGameFinish();
         arena.getQueue().clear();
         state.clear();
         isRunningGame = false;
-    };
+    }
+
+    private void finishGameForPlayer(Player player) {
+        if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
+            player.teleport((Location) getVariable("lobby"));
+            player.getInventory().clear();
+            arena.getQueue().setLobbyInventory(player.getInventory());
+        } else {
+            player.teleport((Location) getVariable("exit"));
+            PlayerManager.removePlayer(player);
+        }
+    }
 
     public abstract void processPlayerMap(Map<Integer, List<Player>> playerTeamMap);
 
