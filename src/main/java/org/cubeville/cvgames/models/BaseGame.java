@@ -125,6 +125,11 @@ abstract public class BaseGame implements PlayerContainer, Listener {
                 players.forEach(player -> {
                     player.closeInventory();
                     player.getInventory().clear();
+                    GameUtils.sendMetricToCVStats("player_game_start", Map.of(
+                        "arena", arena.getName(),
+                        "game", this.id,
+                        "player", player.getUniqueId().toString()
+                    ));
                 })
         );
         startArenaRegionCheck();
@@ -137,6 +142,10 @@ abstract public class BaseGame implements PlayerContainer, Listener {
             });
         }
         isRunningGame = true;
+        GameUtils.sendMetricToCVStats("game_start", Map.of(
+            "arena", arena.getName(),
+            "game", this.id
+        ));
     };
 
     public void finishGame() {
