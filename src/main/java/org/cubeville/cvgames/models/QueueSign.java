@@ -48,6 +48,11 @@ public class QueueSign {
     }
 
     public void displayFill() {
+        if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
+            this.sign.setLine(1,"§l" + arena.getQueue().size() + " in lobby");
+            this.sign.update();
+            return;
+        }
         if (arena.getStatus() != ArenaStatus.IN_USE || arena.getQueue().getGame() == null || !((boolean) arena.getVariable("spectate-enabled"))) {
             this.sign.setLine(1,"§l" + arena.getQueue().size() + "/" + arena.getQueue().getMaxPlayers());
         }

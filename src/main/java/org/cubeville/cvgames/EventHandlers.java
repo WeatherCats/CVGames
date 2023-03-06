@@ -165,8 +165,7 @@ public class EventHandlers implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerDropItem(PlayerDropItemEvent event) {
-        if (!(event.getPlayer() instanceof Player)) return;
-        event.setCancelled(spectatorCancel((Player) event.getPlayer()));
+        event.setCancelled(spectatorCancel(event.getPlayer()));
     }
 
     @EventHandler(priority = EventPriority.LOW)

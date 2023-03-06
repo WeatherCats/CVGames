@@ -61,7 +61,7 @@ public class GameQueue implements PlayerContainer {
             p.sendMessage(ChatColor.RED + "You are already in this queue!");
             return false;
         }
-        if (players.size() >= getMaxPlayers()) {
+        if (players.size() >= getMaxPlayers() && !arena.getStatus().equals(ArenaStatus.HOSTING)) {
             p.sendMessage(ChatColor.RED + "This arena is full!");
             return false;
         }
@@ -73,7 +73,7 @@ public class GameQueue implements PlayerContainer {
 
         arenaLobbyRegionTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(CVGames.getInstance(), () -> {
             for (Player player : playerLobby) {
-                if (!gameRegion.containsPlayer(player) && !getGame().isRunningGame) {
+                if (!gameRegion.containsPlayer(player) && (getGame() == null || !getGame().isRunningGame)) {
                     leave(player, false);
                 }
             }
@@ -101,7 +101,6 @@ public class GameQueue implements PlayerContainer {
 
     public boolean join(Player p, @Nullable String gameName) {
         if ((boolean) arena.getVariable("spectate-enabled") && !Objects.isNull(this.getGame()) && this.getGame().isRunningGame) {
-            PlayerManager.setPlayer(p, arena.getName());
             this.setSpectatorToLobby(p);
             this.getGame().addSpectator(p);
             return false;
@@ -153,8 +152,9 @@ public class GameQueue implements PlayerContainer {
 
     public void addToHostedGame(Player p) throws Error {
         if (!getPlayerSet().contains(p)) throw new Error("Player " + p.getDisplayName() + " is not in the lobby!");
+        if (getPlayerSet().size() >= getMaxPlayers()) throw new Error("The next game is at capacity!");
         if (playerTeams.keySet().stream().anyMatch(key -> playerTeams.get(key).contains(p))) {
-                throw new Error("Player " + p.getDisplayName() + " is already in the next game!");
+            throw new Error("Player " + p.getDisplayName() + " is already in the next game!");
         }
         playerTeams.computeIfAbsent(-1, k -> new ArrayList<>());
         playerTeams.get(-1).add(p);
@@ -204,6 +204,7 @@ public class GameQueue implements PlayerContainer {
 
     public void setSpectatorToLobby(Player p) {
         playerLobby.add(p);
+        PlayerManager.setPlayer(p, arena.getName());
         PlayerInventory inv = p.getInventory();
         inv.clear();
         SignManager.updateArenaSignsFill(arena.getName());
@@ -256,6 +257,7 @@ public class GameQueue implements PlayerContainer {
 
     public void removeSpectatorFromLobby(Player p) {
         playerLobby.remove(p);
+        PlayerManager.removePlayer(p);
         p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
         SignManager.updateArenaSignsFill(arena.getName());
         p.teleport((Location) arena.getVariable("exit"));
@@ -470,8 +472,8 @@ public class GameQueue implements PlayerContainer {
     public void setHostedLobby(Player player, String selectedGame) {
         this.host = player;
         setSelectedGame(selectedGame);
-        playerLobby.add(player);
         arena.setStatus(ArenaStatus.HOSTING);
+        playerLobby.add(player);
         SignManager.updateArenaSignsFill(arena.getName());
         setLobbyInventory(player.getInventory());
 
@@ -485,8 +487,8 @@ public class GameQueue implements PlayerContainer {
         }
         playerTeams.clear();
         setSelectedGame(null);
-        SignManager.updateArenaSignsFill(arena.getName());
         arena.setStatus(ArenaStatus.OPEN);
+        SignManager.updateArenaSignsFill(arena.getName());
     }
 
     public Map<Integer, List<Player>> getPlayerTeams() {

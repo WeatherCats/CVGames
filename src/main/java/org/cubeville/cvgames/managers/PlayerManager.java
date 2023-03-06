@@ -21,8 +21,9 @@ public class PlayerManager {
 
     public static void removePlayer(Player p) {
         uuidToArenaName.remove(p.getUniqueId());
-        if (playerInventories.containsKey(p.getUniqueId())) {
-            p.getInventory().setContents(playerInventories.get(p.getUniqueId()));
+        ItemStack[] restoredInv = playerInventories.get(p.getUniqueId());
+        if (restoredInv != null) {
+            p.getInventory().setContents(restoredInv);
             playerInventories.remove(p.getUniqueId());
         } else {
             p.getInventory().clear();
