@@ -16,7 +16,6 @@ public class QueueJoin extends RunnableCommand {
         Arena arena = (Arena) params.get(0);
         Player playerToAdd = (Player) params.get(1);
         String gameName = (String) params.get(2);
-        System.out.println(arena.getName() + " " + playerToAdd.getName() + " " + gameName);
         if (arena.getGame(gameName) == null) {
             throw new Error("Arena " + arena.getName() + " does not have a game named " + gameName);
         }

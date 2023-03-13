@@ -152,7 +152,11 @@ public class GameQueue implements PlayerContainer {
 
     public void addToHostedGame(Player p) throws Error {
         if (!getPlayerSet().contains(p)) throw new Error("Player " + p.getDisplayName() + " is not in the lobby!");
-        if (getPlayerSet().size() >= getMaxPlayers()) throw new Error("The next game is at capacity!");
+        int playerLobbySize = 0;
+        for (Integer key : playerTeams.keySet()) {
+            playerLobbySize += playerTeams.get(key).size();
+        }
+        if (playerLobbySize >= getMaxPlayers()) throw new Error("The next game is at capacity!");
         if (playerTeams.keySet().stream().anyMatch(key -> playerTeams.get(key).contains(p))) {
             throw new Error("Player " + p.getDisplayName() + " is already in the next game!");
         }
