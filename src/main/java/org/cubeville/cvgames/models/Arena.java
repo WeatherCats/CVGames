@@ -73,7 +73,8 @@ public class Arena {
 
     public void playerLogoutCleanup(Player p) {
         queue.whenPlayerLogout(p, this);
-        if (status.equals(ArenaStatus.IN_USE)) {
+        // If the game is being played currently, whether that's while it's being hosted or not.
+        if (status.equals(ArenaStatus.IN_USE) || (status.equals(ArenaStatus.HOSTING) && games.get(usingGame).isRunningGame)) {
             games.get(usingGame).whenPlayerLogout(p, this);
         }
     }

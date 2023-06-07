@@ -103,7 +103,8 @@ public class GameQueue implements PlayerContainer {
         if ((boolean) arena.getVariable("spectate-enabled") && !Objects.isNull(this.getGame()) && this.getGame().isRunningGame) {
             this.setSpectatorToLobby(p);
             this.getGame().addSpectator(p);
-            return false;
+            // they successfully joined the game as a spectator, so don't do error handling
+            return true;
         }
         if (!canJoinQueue(p)) {
             return false;
