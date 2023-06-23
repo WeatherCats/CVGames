@@ -141,44 +141,44 @@ public class EventHandlers implements Listener {
             else return;
         }
         else player = (Player) event.getDamager();
-        event.setCancelled(spectatorCancel(player));
+        if (spectatorCancel(player)) event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerHit(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) { return; }
-        event.setCancelled(spectatorCancel((Player) event.getEntity()));
+        if (spectatorCancel((Player) event.getEntity())) event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerBreak(PlayerHarvestBlockEvent event) {
-        event.setCancelled(spectatorCancel(event.getPlayer()));
+        if (spectatorCancel(event.getPlayer())) event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerPlace(BlockPlaceEvent event) {
-        event.setCancelled(spectatorCancel(event.getPlayer()));
+        if (spectatorCancel(event.getPlayer())) event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerPickupArrow(PlayerPickupArrowEvent event) {
-        event.setCancelled(spectatorCancel(event.getPlayer()));
+        if (spectatorCancel(event.getPlayer())) event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerPickupItem(EntityPickupItemEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
-        event.setCancelled(spectatorCancel((Player) event.getEntity()));
+        if (spectatorCancel((Player) event.getEntity())) event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerDropItem(PlayerDropItemEvent event) {
-        event.setCancelled(spectatorCancel(event.getPlayer()));
+        if (spectatorCancel(event.getPlayer())) event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerShoot(EntityShootBowEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
-        event.setCancelled(spectatorCancel((Player) event.getEntity()));
+        if (spectatorCancel((Player) event.getEntity())) event.setCancelled(true);
     }
 }
