@@ -199,6 +199,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
                 }
             }
             for (Player player : players) {
+                if (state.get(player) == null) { continue; }
                 if (!gameRegion.containsPlayer(player)) {
                     kickPlayerFromGame(player, false);
                     player.sendMessage("§cYou have left the game!");
