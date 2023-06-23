@@ -130,6 +130,7 @@ public class EventHandlers implements Listener {
     }
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerHitByPlayer(EntityDamageByEntityEvent event) {
+        if (event.isCancelled()) { return; }
         Player player;
         if (!(event.getDamager() instanceof Player)) {
             if ((event.getDamager() instanceof Projectile)) {

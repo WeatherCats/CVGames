@@ -45,7 +45,7 @@ public class GameVariableBlockData extends GameVariable {
 
         @Override
         public boolean isValid() {
-                return blockData == null;
+                return blockData != null;
         }
 
         @Override
