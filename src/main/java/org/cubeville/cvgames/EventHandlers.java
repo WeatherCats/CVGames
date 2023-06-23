@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -128,7 +129,7 @@ public class EventHandlers implements Listener {
         return true;
     }
     @EventHandler(priority = EventPriority.LOW)
-    public void onPlayerHit(EntityDamageByEntityEvent event) {
+    public void onPlayerHitByPlayer(EntityDamageByEntityEvent event) {
         Player player;
         if (!(event.getDamager() instanceof Player)) {
             if ((event.getDamager() instanceof Projectile)) {
@@ -140,6 +141,12 @@ public class EventHandlers implements Listener {
         }
         else player = (Player) event.getDamager();
         event.setCancelled(spectatorCancel(player));
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerHit(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player)) { return; }
+        event.setCancelled(spectatorCancel((Player) event.getEntity()));
     }
 
     @EventHandler(priority = EventPriority.LOW)
