@@ -1,5 +1,6 @@
 package org.cubeville.cvgames.models;
 
+import com.google.common.collect.ImmutableSet;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -72,7 +73,11 @@ public class GameQueue implements PlayerContainer {
         GameRegion gameRegion = (GameRegion) arena.getVariable("region");
 
         arenaLobbyRegionTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(CVGames.getInstance(), () -> {
-            for (Player player : playerLobby) {
+            Set<Player> lobby = ImmutableSet.copyOf(playerLobby);
+
+            for (Player player : lobby) {
+                // Catches the case where a host leaves and kicks the players out, so they are no longer in the lobby.
+                if (!playerLobby.contains(player)) { continue; }
                 if (!gameRegion.containsPlayer(player) && (getGame() == null || !getGame().isRunningGame)) {
                     leave(player, false);
                 }
