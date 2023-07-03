@@ -36,12 +36,14 @@ public class GameQueue implements PlayerContainer {
     }
 
     public void setGameQueueVariables(BaseGame game) {
-        arena.addGameVariable("queue-min", new GameVariableInt("The minimum players needed to start the game"));
-        arena.addGameVariable("queue-max", new GameVariableInt("The maximum players the game can hold"));
-        arena.addGameVariable("lobby", new GameVariableLocation("The waiting lobby for players"));
+        if (!(game instanceof SoloGame)) {
+            arena.addGameVariable("queue-min", new GameVariableInt("The minimum players needed to start the game"));
+            arena.addGameVariable("queue-max", new GameVariableInt("The maximum players the game can hold"));
+            arena.addGameVariable("lobby", new GameVariableLocation("The waiting lobby for players"));
+            arena.addGameVariable("countdown-length", new GameVariableInt("The time it takes for a countdown when the minimum is reached"), 20);
+        }
         arena.addGameVariable("exit", new GameVariableLocation("The exit location for players leaving the arena"));
         arena.addGameVariable("signs", new GameVariableList<>(GameVariableQueueSign.class, "The signs that players can right click to join this arena"));
-        arena.addGameVariable("countdown-length", new GameVariableInt("The time it takes for a countdown when the minimum is reached"), 20);
         if (game instanceof TeamSelectorGame) {
             arena.addGameVariable("team-selector", new GameVariableFlag("If true, players will be able to select their own teams in this game"), true);
         }
@@ -111,6 +113,12 @@ public class GameQueue implements PlayerContainer {
         }
         if (selectedGame == null && gameName != null) {
             setSelectedGame(gameName);
+        }
+        if (getGame() instanceof SoloGame) {
+            // Start the game with the single player
+            this.startGame(Map.of(-1, List.of(p)));
+            // they successfully joined the solo game, so don't do error handling
+            return true;
         }
 
         if (arena.getStatus().equals(ArenaStatus.OPEN)) {
@@ -356,11 +364,15 @@ public class GameQueue implements PlayerContainer {
                 counter--;
             } else {
                 endCountdown();
-                arena.setUsingGame(selectedGame);
-                getGame().startGame(playerTeams);
-                if (!arena.getStatus().equals(ArenaStatus.HOSTING)) { arena.setStatus(ArenaStatus.IN_USE); }
+                this.startGame(playerTeams);
             }
         }, 0L, 20L);
+    }
+
+    private void startGame(Map<Integer, List<Player>> playerTeamMap) {
+        arena.setUsingGame(selectedGame);
+        getGame().startGame(playerTeamMap);
+        if (!arena.getStatus().equals(ArenaStatus.HOSTING)) { arena.setStatus(ArenaStatus.IN_USE); }
     }
 
     private void endCountdown() {
@@ -474,15 +486,23 @@ public class GameQueue implements PlayerContainer {
         return host;
     }
 
-    public void setHostedLobby(Player player, String selectedGame) {
+    public void setHostedLobby(Player player, String selectedGame) throws Error {
+        if (!this.arena.getGameNames().contains(selectedGame)) {
+            throw new Error("Game with name \"" + selectedGame + "\" is not on this arena!");
+        }
+        if (this.arena.getGame(selectedGame) instanceof SoloGame) {
+            throw new Error("You cannot host a solo game!");
+        }
+        PlayerManager.setPlayer(player, arena.getName());
         this.host = player;
         setSelectedGame(selectedGame);
         arena.setStatus(ArenaStatus.HOSTING);
         playerLobby.add(player);
         SignManager.updateArenaSignsFill(arena.getName());
         setLobbyInventory(player.getInventory());
-
+        player.teleport((Location) arena.getVariable("lobby"));
     }
+
     public void clearHostedLobby() {
         this.host = null;
         Set<Player> playerSet = new HashSet<>(getPlayerSet());

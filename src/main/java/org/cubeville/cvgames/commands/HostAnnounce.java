@@ -24,7 +24,7 @@ public class HostAnnounce extends RunnableCommand {
                 startingTime = "in " + minutes + " minutes";
             }
         }
-        String announcement = "&e&l[&c&lC&9&lV&f&lGames&e&l]&e A game of " + gameName + " on the arena " + arena.getName() + " is starting " + startingTime + "!";
+        String announcement = "&e&l[&c&lC&9&lV&f&lGames&e&l]&e A game of " + gameName + " on the arena " + arena.getDisplayName() + "&e is starting " + startingTime + "!";
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pcmd tr " + announcement);
         return new TextComponent();
     }
