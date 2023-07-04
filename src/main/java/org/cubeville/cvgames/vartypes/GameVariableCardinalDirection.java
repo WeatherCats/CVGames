@@ -6,6 +6,12 @@ import org.cubeville.cvgames.enums.CardinalDirection;
 import javax.annotation.Nullable;
 
 public class GameVariableCardinalDirection extends GameVariable {
+
+    public GameVariableCardinalDirection() {}
+
+    public GameVariableCardinalDirection(String description) {
+        super(description);
+    }
     
     CardinalDirection direction;
     @Override
