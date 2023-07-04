@@ -338,7 +338,7 @@ public class GameQueue implements PlayerContainer {
 
     public int getMaxPlayers() {
         Integer max = (Integer) arena.getVariable("queue-max");
-        if (max == null) { return 0; }
+        if (max == null) { return 1; }
         return max;
     }
 
