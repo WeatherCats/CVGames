@@ -37,7 +37,7 @@ public class GameVariableCardinalDirection extends GameVariable {
 
     @Override
     public Object itemString() {
-        return direction.toString();
+        return direction == null ? null : direction.toString();
     }
 
     @Override

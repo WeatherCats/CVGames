@@ -10,8 +10,6 @@ import javax.annotation.Nullable;
 public class GameVariableBlock extends GameVariable {
 
     private Block block;
-    private Material material;
-
     public GameVariableBlock() {}
 
     public GameVariableBlock(String description) {
