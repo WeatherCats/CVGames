@@ -121,6 +121,7 @@ public class GameQueue implements PlayerContainer {
         }
         if (getGame() instanceof SoloGame) {
             // Start the game with the single player
+            PlayerManager.setPlayer(p, arena.getName());
             this.startGame(Map.of(-1, List.of(p)));
             // they successfully joined the solo game, so don't do error handling
             return true;
