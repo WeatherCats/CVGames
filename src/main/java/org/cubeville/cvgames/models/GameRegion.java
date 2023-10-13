@@ -41,7 +41,7 @@ public class GameRegion {
         return (max.getX() >= location.getX() && location.getX() >= min.getX()) &&
                 (max.getY() >= location.getY() && location.getY() >= min.getY()) &&
                 (max.getZ() >= location.getZ() && location.getZ() >= min.getZ()) &&
-                Objects.equals(max.getWorld(), min.getWorld());
+                Objects.equals(location.getWorld(), min.getWorld());
     }
 }
 
