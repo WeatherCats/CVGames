@@ -4,6 +4,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
+
 public class GameRegion {
     Location min, max, entityMax;
 
@@ -38,7 +40,8 @@ public class GameRegion {
     public boolean containsLocation(Location location, Location min, Location max) {
         return (max.getX() >= location.getX() && location.getX() >= min.getX()) &&
                 (max.getY() >= location.getY() && location.getY() >= min.getY()) &&
-                (max.getZ() >= location.getZ() && location.getZ() >= min.getZ());
+                (max.getZ() >= location.getZ() && location.getZ() >= min.getZ()) &&
+                Objects.equals(location.getWorld(), min.getWorld());
     }
 }
 

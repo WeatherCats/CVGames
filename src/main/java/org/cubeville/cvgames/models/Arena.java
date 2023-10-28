@@ -4,10 +4,7 @@ import org.bukkit.entity.Player;
 import org.cubeville.cvgames.enums.ArenaStatus;
 import org.cubeville.cvgames.managers.SignManager;
 import org.cubeville.cvgames.utils.GameUtils;
-import org.cubeville.cvgames.vartypes.GameVariable;
-import org.cubeville.cvgames.vartypes.GameVariableList;
-import org.cubeville.cvgames.vartypes.GameVariableObject;
-import org.cubeville.cvgames.vartypes.GameVariableTeam;
+import org.cubeville.cvgames.vartypes.*;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -30,6 +27,7 @@ public class Arena {
         this.name = name;
         this.queue = new GameQueue(this);
         this.status = ArenaStatus.OPEN;
+        addGameVariable("display-name", new GameVariableString("The display name for an arena used in hosting announcements"), name);
     }
 
     public void addGame(BaseGame game) {
@@ -57,6 +55,8 @@ public class Arena {
     public String getName() {
         return name;
     }
+
+    public String getDisplayName() { return (String) getVariable("display-name"); }
 
     public void setStatus(ArenaStatus status) {
         SignManager.updateArenaSignsStatus(getName(), status);

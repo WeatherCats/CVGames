@@ -22,6 +22,8 @@ public class SignManager {
             Material.OAK_WALL_SIGN,
             Material.CRIMSON_WALL_SIGN,
             Material.WARPED_WALL_SIGN,
+            Material.CHERRY_WALL_SIGN,
+            Material.BAMBOO_WALL_SIGN,
             Material.SPRUCE_SIGN,
             Material.ACACIA_SIGN,
             Material.BIRCH_SIGN,
@@ -29,7 +31,9 @@ public class SignManager {
             Material.JUNGLE_SIGN,
             Material.OAK_SIGN,
             Material.CRIMSON_SIGN,
-            Material.WARPED_SIGN
+            Material.WARPED_SIGN,
+            Material.CHERRY_SIGN,
+            Material.BAMBOO_SIGN
         )
     );
 
