@@ -1,6 +1,7 @@
 package org.cubeville.cvgames.models;
 
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.cubeville.cvgames.enums.ArenaStatus;
 import org.cubeville.cvgames.managers.SignManager;
@@ -19,7 +20,7 @@ public class QueueSign {
         this.arena = arena;
         this.gameName = gameName;
         if (this.sign != null) {
-            this.sign.setLine(0, arena.getName());
+            setLine(0, arena.getName());
             this.displayStatus(arena.getStatus());
             this.displayFill();
             this.displayGameName(null);
@@ -29,32 +30,30 @@ public class QueueSign {
     public void displayStatus(ArenaStatus status) {
         switch (status) {
             case OPEN:
-                this.sign.setLine(2, "§a§lOPEN");
+                 setLine(2, "§a§lOPEN");
                 break;
             case IN_QUEUE:
-                this.sign.setLine(2, "§e§lIN_QUEUE");
+                 setLine(2, "§e§lIN_QUEUE");
                 break;
             case IN_USE:
-                this.sign.setLine(2, "§7§lIN USE");
+                 setLine(2, "§7§lIN USE");
                 break;
             case HOSTING:
-                this.sign.setLine(2, "§b§lHOSTING");
+                 setLine(2, "§b§lHOSTING");
                 break;
             case CLOSED:
-                this.sign.setLine(2, "§c§lCLOSED");
+                 setLine(2, "§c§lCLOSED");
                 break;
         }
-        this.sign.update();
     }
 
     public void displayFill() {
         if (arena.getStatus().equals(ArenaStatus.HOSTING)) {
-            this.sign.setLine(1,"§l" + arena.getQueue().size() + " in lobby");
-            this.sign.update();
+            setLine(1,"§l" + arena.getQueue().size() + " in lobby");
             return;
         }
         if (arena.getStatus() != ArenaStatus.IN_USE || arena.getQueue().getGame() == null || !((boolean) arena.getVariable("spectate-enabled"))) {
-            this.sign.setLine(1,"§l" + arena.getQueue().size() + "/" + arena.getQueue().getMaxPlayers());
+             setLine(1,"§l" + arena.getQueue().size() + "/" + arena.getQueue().getMaxPlayers());
         }
         else {
             String spectatorString = "";
@@ -62,17 +61,22 @@ public class QueueSign {
             spectators.removeAll(arena.getQueue().getGame().state.keySet());
             if (arena.getQueue().getGame().spectators.size() > 0)
                     spectatorString = " §7§o(+" + spectators.size() + ")";
-            this.sign.setLine(1, "§l" + arena.getQueue().getGame().state.keySet().size() + "/" + arena.getQueue().getMaxPlayers() + spectatorString);
+            setLine(1, "§l" + arena.getQueue().getGame().state.keySet().size() + "/" + arena.getQueue().getMaxPlayers() + spectatorString);
         }
-        this.sign.update();
     }
 
     public void displayGameName(String selectedGame) {
         if (selectedGame == null) {
-            this.sign.setLine(3, gameName);
+             setLine(3, gameName);
         } else {
-            this.sign.setLine(3, selectedGame);
+             setLine(3, selectedGame);
         }
+    }
+
+    private void setLine(int index, String string) {
+        Sign editSign = (Sign) sign.getLocation().getBlock().getState();
+        editSign.getSide(Side.FRONT).setLine(index, string);
+        editSign.update(true, false);
     }
 
     public String getArenaName() {

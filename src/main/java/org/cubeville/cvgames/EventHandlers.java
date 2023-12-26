@@ -41,6 +41,7 @@ public class EventHandlers implements Listener {
                 return;
             }
             sign.onRightClick(event.getPlayer());
+            event.setCancelled(true);
         }
 
         // Is the player in a queue for an arena
@@ -69,6 +70,7 @@ public class EventHandlers implements Listener {
                     event.setCancelled(true);
                     event.getPlayer().openInventory(arena.getQueue().getGame().getPlayerCompassInventory(event.getPlayer(), 1));
                 }
+                if (spectatorCancel(event.getPlayer())) event.setCancelled(true);
             }
         }
     }

@@ -292,6 +292,7 @@ public class GameQueue implements PlayerContainer {
         getGame().onPlayerLeaveGame(p);
         Set<Player> players = getPlayerSet();
         PlayerManager.removePlayer(p);
+//        removePlayerFromLobby(p, shouldSendToExit);
         if (arena.getStatus() != ArenaStatus.IN_QUEUE && arena.getStatus() != ArenaStatus.HOSTING) { return; }
         p.sendMessage("§cYou have left the lobby.");
         removePlayerFromLobby(p, shouldSendToExit);

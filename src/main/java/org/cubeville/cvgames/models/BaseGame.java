@@ -44,6 +44,7 @@ abstract public class BaseGame implements PlayerContainer, Listener {
     }
 
     private void kickPlayerFromGame(Player p, boolean teleportToExit) {
+//        arena.getQueue().leave(p, false);
         if (spectators.contains(p)) {
             removeSpectator(p);
         } else {

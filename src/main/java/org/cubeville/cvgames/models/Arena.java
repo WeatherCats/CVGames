@@ -59,8 +59,8 @@ public class Arena {
     public String getDisplayName() { return (String) getVariable("display-name"); }
 
     public void setStatus(ArenaStatus status) {
-        SignManager.updateArenaSignsStatus(getName(), status);
         this.status = status;
+        SignManager.updateArenaSignsStatus(getName(), status);
     }
 
     public ArenaStatus getStatus() {
