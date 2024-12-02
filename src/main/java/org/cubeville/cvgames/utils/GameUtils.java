@@ -1,23 +1,21 @@
 package org.cubeville.cvgames.utils;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import io.papermc.paper.scoreboard.numbers.NumberFormat;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.*;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.profile.PlayerProfile;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.*;
 import org.cubeville.cvgames.models.Arena;
 import org.cubeville.cvgames.vartypes.GameVariable;
 import org.cubeville.cvgames.vartypes.GameVariableList;
@@ -25,6 +23,8 @@ import org.cubeville.cvgames.vartypes.GameVariableObject;
 import org.cubeville.cvstats.CVStats;
 
 import javax.annotation.Nullable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -165,8 +165,11 @@ public class GameUtils {
         objName = objName.substring(0, Math.min(objName.length(), 16));
         Objective pbObjective = scoreboard.registerNewObjective(objName, "dummy", title);
         pbObjective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        pbObjective.numberFormat(NumberFormat.blank());
         for (int i = 0; i < items.size(); i++) {
             pbObjective.getScore(items.get(i)).setScore(items.size() - i);
+            Score score = pbObjective.getScore(items.get(i));
+            score.customName(LegacyComponentSerializer.legacySection().deserialize(items.get(i)));
         }
         return scoreboard;
     }
@@ -224,20 +227,30 @@ public class GameUtils {
         }
     }
 
-    public static ItemStack customHead(String base64, String name) {
-        return customHead(base64, name, null);
+    public static ItemStack customHead(String urlString, String name) {
+        return customHead(urlString, name, null);
     }
 
     // This uses the same base64 CVTools head command
-    public static ItemStack customHead(String base64, String headName, Integer amount) {
+    public static ItemStack customHead(String urlString, String headName, Integer amount) {
         if (amount == null) { amount = 1; }
         // This is unsafe and deprecated, but spigot doesn't have a better option right now to support this
-        ItemStack head = Bukkit.getUnsafe().modifyItemStack(
-            new ItemStack(Material.PLAYER_HEAD, amount),
-            "{SkullOwner:{Id:\"" + UUID.nameUUIDFromBytes(base64.getBytes()) + "\",Properties:{textures:[{Value:\"" + base64 + "\"}]}}}"
-        );
-        ItemMeta headMeta = head.getItemMeta();
+//        ItemStack head = Bukkit.getUnsafe().modifyItemStack(
+//            new ItemStack(Material.PLAYER_HEAD, amount),
+//            "{SkullOwner:{Id:\"" + UUID.nameUUIDFromBytes(base64.getBytes()) + "\",Properties:{textures:[{Value:\"" + base64 + "\"}]}}}"
+//        );
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD, amount);
+        SkullMeta headMeta = (SkullMeta) head.getItemMeta();
         headMeta.setDisplayName(headName);
+        PlayerProfile profile = (PlayerProfile) Bukkit.getServer().createPlayerProfile(UUID.randomUUID());
+        try {
+            URL url = new URL(urlString);
+            profile.getTextures().setSkin(url);
+        } catch (MalformedURLException e) {
+            Bukkit.getLogger().warning("INVALID URL IN CVGAMES");
+            return head;
+        }
+        headMeta.setPlayerProfile(profile);
         head.setItemMeta(headMeta);
         return head;
     }
